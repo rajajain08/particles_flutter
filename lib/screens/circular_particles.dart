@@ -3,30 +3,31 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CircularParticle extends StatefulWidget {
-  CircularParticle(
-      {Key key,
-      this.height,
-      this.width,
-      this.onTapAnimation = true,
-      this.numberOfParticles = 500,
-      this.speedOfParticles = 2,
-      this.awayRadius = 100,
-      this.isRandomColor,
-      this.particleColor = Colors.white,
-      this.awayAnimationDuration = const Duration(milliseconds: 600),
-      this.particleSize = 4,
-      this.isRandSize = false,
-      this.randColorList = const [
-        Colors.black,
-        Colors.blue,
-        Colors.white,
-        Colors.red,
-        Colors.green,
-      ],
-      this.awayAnimationCurve = Curves.easeIn,
-      this.enableHover = false,
-      this.hoverColor = Colors.orangeAccent})
-      : super(key: key);
+  CircularParticle({
+    Key key,
+    this.height,
+    this.width,
+    this.onTapAnimation = true,
+    this.numberOfParticles = 500,
+    this.speedOfParticles = 2,
+    this.awayRadius = 100,
+    this.isRandomColor,
+    this.particleColor = Colors.white,
+    this.awayAnimationDuration = const Duration(milliseconds: 600),
+    this.maxParticleSize = 4,
+    this.isRandSize = false,
+    this.randColorList = const [
+      Colors.black,
+      Colors.blue,
+      Colors.white,
+      Colors.red,
+      Colors.green,
+    ],
+    this.awayAnimationCurve = Curves.easeIn,
+    this.enableHover = false,
+    this.hoverColor = Colors.orangeAccent,
+    this.hoverRadius = 80,
+  }) : super(key: key);
   final double awayRadius;
   final double height;
   final double width;
@@ -37,11 +38,12 @@ class CircularParticle extends StatefulWidget {
   final Color particleColor;
   final Duration awayAnimationDuration;
   final Curve awayAnimationCurve;
-  final double particleSize;
+  final double maxParticleSize;
   final bool isRandSize;
   final List<Color> randColorList;
   final bool enableHover;
   final Color hoverColor;
+  final hoverRadius;
 
   _CircularParticleState createState() => _CircularParticleState();
 }
@@ -200,7 +202,7 @@ class _CircularParticleState extends State<CircularParticle>
             ((tapdx - offsets[index].dx) * (tapdx - offsets[index].dx)) +
                 ((tapdy - offsets[index].dy) * (tapdy - offsets[index].dy)));
 
-        if (noAnimationDistance < widget.awayRadius) {
+        if (noAnimationDistance < widget.hoverRadius) {
           setState(() {
             if (hoverIndex.length >
                 (widget.numberOfParticles * 0.1).floor() + 1) {
@@ -234,7 +236,7 @@ class _CircularParticleState extends State<CircularParticle>
               offsets: offsets,
               isRandomColor: widget.isRandomColor,
               particleColor: widget.particleColor,
-              particleSize: widget.particleSize,
+              maxParticleSize: widget.maxParticleSize,
               randSize: randomSize,
               isRandSize: widget.isRandSize,
               randColorList: widget.randColorList,
@@ -252,7 +254,7 @@ class ParticlePainter extends CustomPainter {
   final bool isRandomColor;
   final Color particleColor;
   final Paint constColorPaint;
-  final double particleSize;
+  final double maxParticleSize;
   static Color randomColor = Colors.blue;
   static Paint randomColorPaint;
   final Paint hoverPaint;
@@ -267,7 +269,7 @@ class ParticlePainter extends CustomPainter {
     this.enableHover,
     this.randColorList,
     this.isRandSize,
-    this.particleSize,
+    this.maxParticleSize,
     this.offsets,
     this.isRandomColor,
     this.particleColor,
@@ -286,13 +288,13 @@ class ParticlePainter extends CustomPainter {
         randomColorPaint = Paint()..color = randomColor;
         canvas.drawCircle(
             offsets[index],
-            isRandSize ? particleSize * (randSize[index]) : particleSize,
+            isRandSize ? maxParticleSize * (randSize[index]) : maxParticleSize,
             hoverIndex.contains(index) ? hoverPaint : randomColorPaint);
       } else {
         randomColorPaint = Paint()..color = randomColor;
         canvas.drawCircle(
             offsets[index],
-            isRandSize ? particleSize * (randSize[index]) : particleSize,
+            isRandSize ? maxParticleSize * (randSize[index]) : maxParticleSize,
             hoverIndex.contains(index) ? hoverPaint : constColorPaint);
       }
     }
