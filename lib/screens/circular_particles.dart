@@ -3,65 +3,103 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CircularParticle extends StatefulWidget {
-  CircularParticle({Key key, this.screenHeight, this.screenWidth})
+  CircularParticle(
+      {Key key,
+      this.height,
+      this.width,
+      this.onTapAnimation = true,
+      this.numberOfParticles = 500,
+      this.speedOfParticles = 2,
+      this.awayRadius = 100,
+      this.isRandomColor,
+      this.particleColor = Colors.white,
+      this.awayAnimationDuration = const Duration(milliseconds: 600),
+      this.particleSize = 4,
+      this.isRandSize = false,
+      this.randColorList = const [
+        Colors.black,
+        Colors.blue,
+        Colors.white,
+        Colors.red,
+        Colors.green,
+      ],
+      this.awayAnimationCurve = Curves.easeIn,
+      this.enableHover = false,
+      this.hoverColor = Colors.orangeAccent})
       : super(key: key);
-  final double screenHeight;
-  final double screenWidth;
-  _CircularParticleState createState() =>
-      _CircularParticleState(screenHeight, screenWidth);
+  final double awayRadius;
+  final double height;
+  final double width;
+  final bool onTapAnimation;
+  final double numberOfParticles;
+  final double speedOfParticles;
+  final bool isRandomColor;
+  final Color particleColor;
+  final Duration awayAnimationDuration;
+  final Curve awayAnimationCurve;
+  final double particleSize;
+  final bool isRandSize;
+  final List<Color> randColorList;
+  final bool enableHover;
+  final Color hoverColor;
+
+  _CircularParticleState createState() => _CircularParticleState();
 }
 
 class _CircularParticleState extends State<CircularParticle>
     with TickerProviderStateMixin {
   Animation<double> animation;
-
   AnimationController controller;
-
   static List<Offset> offsets = [];
   static List<bool> randDirection = [];
-  double value = 0;
+  double speedOfparticle = 0;
   var rng = new Random();
   double randValue = 0;
-  final double screenHeight;
-  final double screenWidth;
   double dx;
   double dy;
-
   List<double> randomDouble = [];
+  AnimationController awayAnimationController;
+  _CircularParticleState();
+  List<double> randomSize = [];
+  List<int> hoverIndex = [];
 
-  _CircularParticleState(this.screenHeight, this.screenWidth);
-  @override
-  void initState() {
-    controller =
-        AnimationController(duration: const Duration(seconds: 10), vsync: this);
-
-    for (int index = 0; index < 1000; index++) {
+  initailizeOffsets(_) {
+    for (int index = 0; index < widget.numberOfParticles; index++) {
       offsets.add(Offset(
-          rng.nextDouble() * screenWidth, rng.nextDouble() * screenHeight));
+          rng.nextDouble() * widget.width, rng.nextDouble() * widget.height));
       randomDouble.add(rng.nextDouble());
       randDirection.add(rng.nextBool());
+      randomSize.add(rng.nextDouble());
     }
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback(initailizeOffsets);
+    controller =
+        AnimationController(duration: const Duration(seconds: 10), vsync: this);
     animation = Tween<double>(begin: 0, end: 1).animate(controller)
       ..addListener(() {
         setState(() {
-          value = 1;
+          speedOfparticle = widget.speedOfParticles;
           for (int index = 0; index < offsets.length; index++) {
             if (randDirection[index]) {
-              randValue = -value;
+              randValue = -speedOfparticle;
             } else {
-              randValue = value;
+              randValue = speedOfparticle;
             }
             dx = offsets[index].dx + (randValue * randomDouble[index]);
-            dy = offsets[index].dy + randomDouble[index] * value;
-            if (dx > screenWidth) {
-              dx = dx - screenWidth;
+            dy = offsets[index].dy + randomDouble[index] * speedOfparticle;
+            if (dx > widget.width) {
+              dx = dx - widget.width;
             } else if (dx < 0) {
-              dx = dx + screenWidth;
+              dx = dx + widget.width;
             }
-            if (dy > screenHeight) {
-              dy = dy - screenHeight;
+            if (dy > widget.height) {
+              dy = dy - widget.height;
+            } else if (dy < 0) {
+              dy = dy + widget.height;
             }
-
             offsets[index] = Offset(dx, dy);
           }
         });
@@ -71,10 +109,17 @@ class _CircularParticleState extends State<CircularParticle>
     super.initState();
   }
 
+  @override
+  void dispose() {
+    awayAnimationController.dispose();
+    controller.dispose();
+    super.dispose();
+  }
+
   changeDirection() async {
     Future.doWhile(() async {
-      await Future.delayed(Duration(milliseconds: 500));
-      for (int index = 0; index < 1000; index++) {
+      await Future.delayed(Duration(milliseconds: 600));
+      for (int index = 0; index < widget.numberOfParticles; index++) {
         randDirection[index] = (rng.nextBool());
       }
       return true;
@@ -82,68 +127,120 @@ class _CircularParticleState extends State<CircularParticle>
   }
 
   onTapGesture(double tapdx, double tapdy) {
-    AnimationController awayAnimationController;
     awayAnimationController = AnimationController(
-        duration: const Duration(milliseconds: 600), vsync: this);
+        duration: widget.awayAnimationDuration, vsync: this);
     awayAnimationController.reset();
     double directiondx;
     double directiondy;
     List<double> distance = [];
-    List<Animation<Offset>> awayAnimation = [];
-    awayAnimationController.forward();
-    for (int index = 0; index < offsets.length; index++) {
-      distance.add(sqrt(
-          ((tapdx - offsets[index].dx) * (tapdx - offsets[index].dx)) +
-              ((tapdy - offsets[index].dy) * (tapdy - offsets[index].dy))));
-      directiondx = (tapdx - offsets[index].dx) / distance[index];
-      directiondy = (tapdy - offsets[index].dy) / distance[index];
-      // if (distance < 200) {
-      Offset begin = offsets[index];
-      awayAnimation.add(Tween<Offset>(
-          begin: begin,
-          end: Offset(
-            offsets[index].dx - (100 - distance[index]) * directiondx,
-            offsets[index].dy - (100 - distance[index]) * directiondy,
-          )).animate(awayAnimationController)
-        ..addListener(() {
-          if (distance[index] < 100)
-            setState(() {
-              offsets[index] = awayAnimation[index].value;
-            });
-          if (awayAnimationController.isCompleted &&
-              index == offsets.length - 1) {
-            awayAnimationController.dispose();
-          }
-        }));
+    double noAnimationDistance = 0;
 
-      // offsets[index] = Offset(
-      //   offsets[index].dx - (200 - distance) * directiondx,
-      //   offsets[index].dy - (200 - distance) * directiondy,
-      // );
-      // }
-
+    if (widget.onTapAnimation) {
+      List<Animation<Offset>> awayAnimation = [];
+      awayAnimationController.forward();
+      for (int index = 0; index < offsets.length; index++) {
+        distance.add(sqrt(
+            ((tapdx - offsets[index].dx) * (tapdx - offsets[index].dx)) +
+                ((tapdy - offsets[index].dy) * (tapdy - offsets[index].dy))));
+        directiondx = (tapdx - offsets[index].dx) / distance[index];
+        directiondy = (tapdy - offsets[index].dy) / distance[index];
+        Offset begin = offsets[index];
+        awayAnimation.add(Tween<Offset>(
+                begin: begin,
+                end: Offset(
+                  offsets[index].dx -
+                      (widget.awayRadius - distance[index]) * directiondx,
+                  offsets[index].dy -
+                      (widget.awayRadius - distance[index]) * directiondy,
+                ))
+            .animate(CurvedAnimation(
+                parent: awayAnimationController,
+                curve: widget.awayAnimationCurve))
+              ..addListener(() {
+                if (distance[index] < widget.awayRadius)
+                  setState(() {
+                    offsets[index] = awayAnimation[index].value;
+                  });
+                if (awayAnimationController.isCompleted &&
+                    index == offsets.length - 1) {
+                  awayAnimationController.dispose();
+                }
+              }));
+      }
+    } else {
+      for (int index = 0; index < offsets.length; index++) {
+        noAnimationDistance = sqrt(
+            ((tapdx - offsets[index].dx) * (tapdx - offsets[index].dx)) +
+                ((tapdy - offsets[index].dy) * (tapdy - offsets[index].dy)));
+        directiondx = (tapdx - offsets[index].dx) / noAnimationDistance;
+        directiondy = (tapdy - offsets[index].dy) / noAnimationDistance;
+        if (noAnimationDistance < widget.awayRadius) {
+          setState(() {
+            offsets[index] = Offset(
+              offsets[index].dx -
+                  (widget.awayRadius - noAnimationDistance) * directiondx,
+              offsets[index].dy -
+                  (widget.awayRadius - noAnimationDistance) * directiondy,
+            );
+          });
+        }
+      }
     }
+  }
 
-    // offsets.retainWhere((test) =>
-    //     sqrt(((tapdx - test.dx) * (tapdx - test.dx)) +
-    //         ((tapdy - test.dy) * (tapdy - test.dy))) >
-    //     50);
+  onHover(tapdx, tapdy) {
+    {
+      awayAnimationController = AnimationController(
+          duration: widget.awayAnimationDuration, vsync: this);
+      awayAnimationController.reset();
+
+      double noAnimationDistance = 0;
+      for (int index = 0; index < offsets.length; index++) {
+        noAnimationDistance = sqrt(
+            ((tapdx - offsets[index].dx) * (tapdx - offsets[index].dx)) +
+                ((tapdy - offsets[index].dy) * (tapdy - offsets[index].dy)));
+
+        if (noAnimationDistance < widget.awayRadius) {
+          setState(() {
+            if (hoverIndex.length >
+                (widget.numberOfParticles * 0.1).floor() + 1) {
+              hoverIndex.removeAt(0);
+            }
+            hoverIndex.add(index);
+          });
+        }
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // onTap: () {
-      //   print("object");
-      // },
-      onTapUp: (TapUpDetails details) {
-        onTapGesture(details.globalPosition.dx, details.globalPosition.dy);
+      onTapDown: (TapDownDetails details) {
+        onTapGesture(details.localPosition.dx, details.localPosition.dy);
+      },
+      onPanUpdate: (DragUpdateDetails details) {
+        if (widget.enableHover)
+          onHover(details.localPosition.dx, details.globalPosition.dy);
+      },
+      onPanEnd: (DragEndDetails details) {
+        hoverIndex = [];
       },
       child: SizedBox(
-        height: screenHeight,
-        width: screenWidth,
+        height: widget.height,
+        width: widget.width,
         child: CustomPaint(
-          painter: ParticlePainter(offsets),
+          painter: ParticlePainter(
+              offsets: offsets,
+              isRandomColor: widget.isRandomColor,
+              particleColor: widget.particleColor,
+              particleSize: widget.particleSize,
+              randSize: randomSize,
+              isRandSize: widget.isRandSize,
+              randColorList: widget.randColorList,
+              hoverIndex: hoverIndex,
+              enableHover: widget.enableHover,
+              hoverColor: widget.hoverColor),
         ),
       ),
     );
@@ -152,17 +249,54 @@ class _CircularParticleState extends State<CircularParticle>
 
 class ParticlePainter extends CustomPainter {
   final List<Offset> offsets;
+  final bool isRandomColor;
+  final Color particleColor;
+  final Paint constColorPaint;
+  final double particleSize;
+  static Color randomColor = Colors.blue;
+  static Paint randomColorPaint;
+  final Paint hoverPaint;
+  final List<double> randSize;
+  final bool isRandSize;
+  final List<Color> randColorList;
+  final List<int> hoverIndex;
+  final bool enableHover;
+  final Color hoverColor;
 
-  ParticlePainter(this.offsets);
+  ParticlePainter({
+    this.enableHover,
+    this.randColorList,
+    this.isRandSize,
+    this.particleSize,
+    this.offsets,
+    this.isRandomColor,
+    this.particleColor,
+    this.randSize,
+    this.hoverIndex,
+    this.hoverColor,
+  })  : constColorPaint = Paint()..color = particleColor,
+        hoverPaint = Paint()..color = hoverColor;
 
   @override
   void paint(Canvas canvas, Size size) {
     for (int index = 0; index < offsets.length; index++) {
-      canvas.drawCircle(offsets[index], 5, colorPaint);
+      if (isRandomColor) {
+        randomColor = randColorList[index % randColorList.length];
+
+        randomColorPaint = Paint()..color = randomColor;
+        canvas.drawCircle(
+            offsets[index],
+            isRandSize ? particleSize * (randSize[index]) : particleSize,
+            hoverIndex.contains(index) ? hoverPaint : randomColorPaint);
+      } else {
+        randomColorPaint = Paint()..color = randomColor;
+        canvas.drawCircle(
+            offsets[index],
+            isRandSize ? particleSize * (randSize[index]) : particleSize,
+            hoverIndex.contains(index) ? hoverPaint : constColorPaint);
+      }
     }
   }
-
-  var colorPaint = Paint()..color = Colors.red.withAlpha(100);
 
   @override
   bool shouldRepaint(CustomPainter oldDelegate) {
