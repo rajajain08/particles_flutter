@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_web/material.dart';
 import 'package:particles_flutter/screens/circular_particles.dart';
 
 void main() => runApp(MyApp());
@@ -28,15 +28,15 @@ class CircularParticleScreen extends StatelessWidget {
     return Container(
       child: Center(
         child: CircularParticle(
-          awayRadius: 80,
-          numberOfParticles: 1000,
-          speedOfParticles: 1,
+          awayRadius: 880,
+          numberOfParticles: 2000,
+          speedOfParticles: 10,
           height: screenHeight,
           width: screenWidth,
           onTapAnimation: true,
           particleColor: Colors.white.withAlpha(180),
-          awayAnimationDuration: Duration(milliseconds: 500),
-          maxParticleSize: 10,
+          awayAnimationDuration: Duration(milliseconds: 4000),
+          maxParticleSize: 8,
           isRandSize: true,
           isRandomColor: false,
           // randColorList: [
@@ -45,7 +45,7 @@ class CircularParticleScreen extends StatelessWidget {
           //   Colors.yellow.withAlpha(210),
           //   Colors.green.withAlpha(210)
           // ],
-          awayAnimationCurve: Curves.ease,
+          awayAnimationCurve: Curves.elasticInOut,
           enableHover: true,
           hoverColor: Colors.redAccent.withAlpha(180),
           hoverRadius: 90,

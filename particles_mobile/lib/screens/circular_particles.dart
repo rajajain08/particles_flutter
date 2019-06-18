@@ -224,7 +224,7 @@ class _CircularParticleState extends State<CircularParticle>
       },
       onPanUpdate: (DragUpdateDetails details) {
         if (widget.enableHover)
-          onHover(details.localPosition.dx, details.globalPosition.dy);
+          onHover(details.localPosition.dx, details.localPosition.dy);
       },
       onPanEnd: (DragEndDetails details) {
         hoverIndex = [];

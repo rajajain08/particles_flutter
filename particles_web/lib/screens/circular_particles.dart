@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter_web/material.dart';
 import 'package:particles_flutter/component/painter.dart';
 
 class CircularParticle extends StatefulWidget {
@@ -220,11 +220,11 @@ class _CircularParticleState extends State<CircularParticle>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (TapDownDetails details) {
-        onTapGesture(details.localPosition.dx, details.localPosition.dy);
+        onTapGesture(details.globalPosition.dx, details.globalPosition.dy);
       },
       onPanUpdate: (DragUpdateDetails details) {
         if (widget.enableHover)
-          onHover(details.localPosition.dx, details.globalPosition.dy);
+          onHover(details.globalPosition.dx, details.globalPosition.dy);
       },
       onPanEnd: (DragEndDetails details) {
         hoverIndex = [];
