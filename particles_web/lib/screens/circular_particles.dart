@@ -33,7 +33,7 @@ class CircularParticle extends StatefulWidget {
   final double height;
   final double width;
   final bool onTapAnimation;
-  final double numberOfParticles;
+  final int numberOfParticles;
   final double speedOfParticles;
   final bool isRandomColor;
   final Color particleColor;
@@ -53,8 +53,8 @@ class _CircularParticleState extends State<CircularParticle>
     with TickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
-  static List<Offset> offsets = [];
-  static List<bool> randDirection = [];
+  List<Offset> offsets = [];
+  List<bool> randDirection = [];
   double speedOfparticle = 0;
   var rng = new Random();
   double randValue = 0;

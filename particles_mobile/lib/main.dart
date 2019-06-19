@@ -28,14 +28,15 @@ class CircularParticleScreen extends StatelessWidget {
     return Container(
       child: Center(
         child: CircularParticle(
+          key: UniqueKey(),
           awayRadius: 80,
           numberOfParticles: 1000,
           speedOfParticles: 1,
           height: screenHeight,
           width: screenWidth,
           onTapAnimation: true,
-          particleColor: Colors.white.withAlpha(180),
-          awayAnimationDuration: Duration(milliseconds: 500),
+          particleColor: Colors.white.withAlpha(150),
+          awayAnimationDuration: Duration(milliseconds: 600),
           maxParticleSize: 10,
           isRandSize: true,
           isRandomColor: false,
@@ -45,9 +46,9 @@ class CircularParticleScreen extends StatelessWidget {
           //   Colors.yellow.withAlpha(210),
           //   Colors.green.withAlpha(210)
           // ],
-          awayAnimationCurve: Curves.ease,
+          awayAnimationCurve: Curves.easeInOutBack,
           enableHover: true,
-          hoverColor: Colors.redAccent.withAlpha(180),
+          hoverColor: Colors.white,
           hoverRadius: 90,
         ),
       ),

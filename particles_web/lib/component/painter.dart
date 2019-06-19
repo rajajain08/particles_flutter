@@ -17,6 +17,7 @@ class ParticlePainter extends CustomPainter {
   final Color hoverColor;
 
   ParticlePainter({
+    Key key,
     this.enableHover,
     this.randColorList,
     this.isRandSize,
