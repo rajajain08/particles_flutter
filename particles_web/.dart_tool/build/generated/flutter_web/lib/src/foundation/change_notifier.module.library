@@ -1,1 +1,0 @@
-{"isEntrypoint":false,"deps":["meta|lib/meta.dart","flutter_web|lib/src/foundation/assertions.dart","flutter_web|lib/src/foundation/basic_types.dart","flutter_web|lib/src/foundation/diagnostics.dart","flutter_web|lib/src/foundation/observer_list.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[]}
