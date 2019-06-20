@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["meta|lib/meta.dart","flutter_web|lib/foundation.dart","flutter_web|lib/widgets.dart","flutter_web_ui|lib/ui.dart","flutter_web|lib/src/painting/edge_insets.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["math"]}
