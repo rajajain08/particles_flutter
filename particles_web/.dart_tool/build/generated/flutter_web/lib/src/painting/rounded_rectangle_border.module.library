@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["meta|lib/meta.dart","flutter_web_ui|lib/ui.dart","flutter_web|lib/painting.dart","flutter_web|lib/src/util.dart","flutter_web|lib/src/painting/borders.dart","flutter_web|lib/src/painting/border_radius.dart","flutter_web|lib/src/painting/circle_border.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[]}

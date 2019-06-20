@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["flutter_web|lib/foundation.dart","flutter_web|lib/src/services/message_codec.dart","flutter_web|lib/src/services/message_codecs.dart","flutter_web|lib/src/services/platform_messages.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async","typed_data"]}
