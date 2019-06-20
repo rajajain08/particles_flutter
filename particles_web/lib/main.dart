@@ -165,7 +165,8 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
                       Curves.easeIn,
                       Curves.slowMiddle,
                       Curves.fastLinearToSlowEaseIn,
-                      Curves.easeOutSine
+                      Curves.easeOutSine,
+                      Curves.elasticInOut
                     ].map<DropdownMenuItem<Curve>>((Curve value) {
                       return DropdownMenuItem<Curve>(
                         value: value,
@@ -180,7 +181,9 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
                                         : (value ==
                                                 Curves.fastLinearToSlowEaseIn)
                                             ? "fastLinearToSlowEaseIn"
-                                            : "easeOutSine"),
+                                            : (value == Curves.easeOutSine)
+                                                ? "easeOutSine"
+                                                : "elasticInOut"),
                       );
                     }).toList(),
                   ),

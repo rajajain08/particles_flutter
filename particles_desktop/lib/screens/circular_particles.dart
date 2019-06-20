@@ -32,7 +32,7 @@ class CircularParticle extends StatefulWidget {
   final double height;
   final double width;
   final bool onTapAnimation;
-  final double numberOfParticles;
+  final int numberOfParticles;
   final double speedOfParticles;
   final bool isRandomColor;
   final Color particleColor;
