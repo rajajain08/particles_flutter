@@ -14,7 +14,7 @@ class CustomSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -23,14 +23,31 @@ class CustomSlider extends StatelessWidget {
               style: TextStyle(color: Colors.white, fontSize: 12),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Slider(
-              value: value,
-              min: min,
-              max: max,
-              onChanged: onChanged,
-            ),
+          Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: <Widget>[
+              Slider(
+                value: value,
+                min: min,
+                max: max,
+                onChanged: onChanged,
+              ),
+              Row(
+                children: <Widget>[
+                  Text(
+                    min.toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                  SizedBox(
+                    width: 120,
+                  ),
+                  Text(
+                    max.toString(),
+                    style: TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ],
+              )
+            ],
           ),
         ],
       ),

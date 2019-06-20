@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Scaffold(
-          backgroundColor: Colors.purple,
+          backgroundColor: Colors.white12,
           body: CircularParticleScreen(),
         ));
   }
@@ -58,11 +58,19 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
       children: <Widget>[
         Center(
           child: Container(
-            child: Text(
-              "Flutter Particles",
-              style: TextStyle(
-                  color: Colors.white.withAlpha(120),
-                  fontSize: screenWidth * 0.05),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FlutterLogo(
+                  size: screenWidth * 0.05,
+                ),
+                Text(
+                  "Flutter Particles",
+                  style: TextStyle(
+                      color: Colors.white.withAlpha(120),
+                      fontSize: screenWidth * 0.05),
+                ),
+              ],
             ),
           ),
         ),
@@ -75,20 +83,22 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
             height: screenHeight,
             width: screenWidth,
             onTapAnimation: onTapAnimation,
-            particleColor: Colors.white.withAlpha(150),
+            particleColor: Colors.white.withAlpha(120),
             awayAnimationDuration: Duration(milliseconds: tapAnimationDuration),
             maxParticleSize: maxParticleSize,
             isRandSize: randomSize,
             isRandomColor: isRandomColor,
             randColorList: [
               Colors.blue.withAlpha(150),
-              Colors.white.withAlpha(150),
+              //  Colors.white.withAlpha(150),
               Colors.yellow.withAlpha(150),
-              Colors.green.withAlpha(150)
+              Colors.green.withAlpha(150),
+              Colors.indigo.withAlpha(150),
+              Colors.red.withAlpha(150),
             ],
             awayAnimationCurve: animationType,
             enableHover: enableHover,
-            hoverColor: Colors.red.withAlpha(140),
+            hoverColor: Colors.white,
             hoverRadius: 40,
           ),
         ),
