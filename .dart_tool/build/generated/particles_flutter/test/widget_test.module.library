@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter|lib/material.dart","flutter_test|lib/flutter_test.dart","particles_flutter|lib/main.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[]}

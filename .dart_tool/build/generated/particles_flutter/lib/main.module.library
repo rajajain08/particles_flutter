@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter_web|lib/material.dart","particles_flutter|lib/screens/circular_particles.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[]}

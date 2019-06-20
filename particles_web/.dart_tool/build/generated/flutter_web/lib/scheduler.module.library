@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter_web|lib/src/scheduler/binding.dart","flutter_web|lib/src/scheduler/debug.dart","flutter_web|lib/src/scheduler/priority.dart","flutter_web|lib/src/scheduler/ticker.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[]}
