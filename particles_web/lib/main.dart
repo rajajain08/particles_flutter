@@ -83,7 +83,7 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
           ),
         ),
         Container(
-          height: 200,
+          height: 180,
           width: 300,
           color: Colors.black.withAlpha(120),
           child: ListView(
