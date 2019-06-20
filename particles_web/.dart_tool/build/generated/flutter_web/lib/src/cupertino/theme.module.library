@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["flutter_web|lib/foundation.dart","flutter_web|lib/services.dart","flutter_web|lib/widgets.dart","flutter_web|lib/src/cupertino/colors.dart","flutter_web|lib/src/cupertino/text_theme.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[]}

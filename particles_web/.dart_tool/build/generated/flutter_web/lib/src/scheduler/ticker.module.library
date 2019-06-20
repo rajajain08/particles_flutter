@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["meta|lib/meta.dart","flutter_web|lib/foundation.dart","flutter_web|lib/scheduler.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async"]}

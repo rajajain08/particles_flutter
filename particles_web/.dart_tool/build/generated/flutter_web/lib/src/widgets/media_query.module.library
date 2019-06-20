@@ -1,0 +1,1 @@
+{"isEntrypoint":false,"deps":["meta|lib/meta.dart","flutter_web|lib/foundation.dart","flutter_web|lib/painting.dart","flutter_web_ui|lib/ui.dart","flutter_web|lib/src/widgets/framework.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[]}
