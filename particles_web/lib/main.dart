@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Scaffold(
-          backgroundColor: Colors.purple,
+          backgroundColor: Colors.black45,
           body: CircularParticleScreen(),
         ));
   }
