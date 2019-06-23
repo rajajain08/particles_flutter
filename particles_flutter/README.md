@@ -1,14 +1,50 @@
-# particles_flutter
+# Flutter Particles
 
-A new Flutter package project.
+A package that provides an easy way to add particles animation in Flutter project.
+
+<p>
+    <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/particles_mob2.gif?raw=true" width=300px/>
+     <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/particles_mob1.gif?raw=true" width=300px/>
+</p>
 
 ## Getting Started
 
-This project is a starting point for a Dart
-[package](https://flutter.dev/developing-packages/),
-a library module containing code that can be shared easily across
-multiple Flutter or Dart projects.
+You should ensure that you add the following dependency in your Flutter project.
 
-For help getting started with Flutter, view our 
-[online documentation](https://flutter.dev/docs), which offers tutorials, 
-samples, guidance on mobile development, and a full API reference.
+```yaml
+dependencies:
+  particles_flutter: "^0.1.0"
+```
+
+You should then run `flutter packages upgrade` or update your packages in IntelliJ.
+
+## How to use
+
+```dart
+CircularParticle(
+          key: UniqueKey(),
+          awayRadius: 80, 
+          numberOfParticles: 200,
+          speedOfParticles: 1,
+          height: screenHeight,
+          width: screenWidth,
+          onTapAnimation: true,
+          particleColor: Colors.white.withAlpha(150),
+          awayAnimationDuration: Duration(milliseconds: 600),
+          maxParticleSize: 8,
+          isRandSize: true,
+          isRandomColor: true,
+          randColorList: [
+            Colors.red.withAlpha(210),
+            Colors.white.withAlpha(210),
+            Colors.yellow.withAlpha(210),
+            Colors.green.withAlpha(210)
+          ],
+          awayAnimationCurve: Curves.easeInOutBack,
+          enableHover: true,
+          hoverColor: Colors.white,
+          hoverRadius: 90,
+          connectDots: false, //not recomanded
+        ),
+
+```
