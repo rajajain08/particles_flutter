@@ -32,7 +32,7 @@ In the command terminal, run the following commands:
 
 ## How to use
 
-You can change any of the value according to your needs.
+You can use CircularParticle widget and change any of it's value according to your needs.
 
 ```dart
 CircularParticle(
