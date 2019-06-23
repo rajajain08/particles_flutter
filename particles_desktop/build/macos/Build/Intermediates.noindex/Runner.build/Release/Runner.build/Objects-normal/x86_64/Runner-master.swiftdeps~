@@ -1,7 +1,0 @@
-version: "Apple Swift version 5.0.1 (swiftlang-1001.0.82.4 clang-1001.0.46.5)"
-options: "e167f8d26a10ed1207d8e22cf5aaf630"
-build_time: [1561290408, 644115000]
-inputs:
-  "/Users/raja/work/particles_flutter/particles_desktop/macos/ExampleWindow.swift": [9223372036, 854775807]
-  "/Users/raja/work/particles_flutter/particles_desktop/macos/AppDelegate.swift": [9223372036, 854775807]
-  "/Users/raja/work/particles_flutter/particles_desktop/macos/Flutter/GeneratedPluginRegistrant.swift": [9223372036, 854775807]

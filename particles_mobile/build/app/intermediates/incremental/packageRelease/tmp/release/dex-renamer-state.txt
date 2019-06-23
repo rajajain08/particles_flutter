@@ -1,4 +1,0 @@
-#Tue Jun 18 23:59:19 IST 2019
-base.0=/Users/raja/work/particles_flutter/build/app/intermediates/transforms/dexMerger/release/0
-path.0=classes.dex
-renamed.0=classes.dex
