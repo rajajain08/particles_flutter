@@ -51,7 +51,7 @@ class CircularParticleScreen extends StatelessWidget {
           hoverColor: Colors.white,
           hoverRadius: 90,
 
-          connectDots: false, //not recomanded
+          connectDots: false, //not recommended
         ),
       ),
     );
