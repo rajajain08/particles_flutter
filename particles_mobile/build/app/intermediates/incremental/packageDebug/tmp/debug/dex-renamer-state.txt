@@ -1,4 +1,4 @@
-#Sun Jun 23 17:50:06 IST 2019
+#Sun Jun 23 18:02:20 IST 2019
 base.0=/Users/raja/work/particles_flutter/particles_mobile/build/app/intermediates/transforms/dexMerger/debug/0
 path.0=classes.dex
 renamed.0=classes.dex
