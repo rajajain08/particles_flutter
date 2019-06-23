@@ -23,13 +23,12 @@ In the command terminal, run the following commands:
     $ cd particles_flutter/particles_web/
     $ flutter packages pub global run webdev serve
 
-###### For Desktop
+###### For Desktop(eg:macOs)
     $ cd particles_flutter/particles_web/
-Eg: macOs 
     $ flutter run -d macOS 
 
-###### For iOS and Android
-  Follow this [readme](https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/README.md). 
+###### For iOS and Android: Follow this [readme](https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/README.md). 
+  
 
 ## How to use
 
