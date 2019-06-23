@@ -27,7 +27,7 @@ class CircularParticleScreen extends StatefulWidget {
 }
 
 class _CircularParticleScreenState extends State<CircularParticleScreen> {
-  int numberOfParticles = 1000;
+  int numberOfParticles = 200;
   double awayRadius = 120;
   double speedOfParticles = 1.2;
   double maxParticleSize = 8;

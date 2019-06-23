@@ -15,9 +15,10 @@ class ParticlePainter extends CustomPainter {
   final List<int> hoverIndex;
   final bool enableHover;
   final Color hoverColor;
+  final List<List> lineOffsets;
 
   ParticlePainter({
-    this.enableHover,
+    this.enableHover, ////
     this.randColorList,
     this.isRandSize,
     this.maxParticleSize,
@@ -27,6 +28,7 @@ class ParticlePainter extends CustomPainter {
     this.randSize,
     this.hoverIndex,
     this.hoverColor,
+    this.lineOffsets,
   })  : constColorPaint = Paint()..color = particleColor,
         hoverPaint = Paint()..color = hoverColor;
 
@@ -49,6 +51,14 @@ class ParticlePainter extends CustomPainter {
             hoverIndex.contains(index) ? hoverPaint : constColorPaint);
       }
     }
+    lineOffsets.forEach(
+      (item) {
+        randomColorPaint = Paint()
+          ..color = particleColor
+          ..strokeWidth = 4 * (1 - item[2] / 50);
+        canvas.drawLine(item[0], item[1], randomColorPaint);
+      },
+    );
   }
 
   @override

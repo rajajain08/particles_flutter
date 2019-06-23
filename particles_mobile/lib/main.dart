@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Scaffold(
-          backgroundColor: Colors.purple,
+          backgroundColor: Colors.black,
           body: CircularParticleScreen(),
         ));
   }
@@ -30,15 +30,15 @@ class CircularParticleScreen extends StatelessWidget {
         child: CircularParticle(
           key: UniqueKey(),
           awayRadius: 80,
-          numberOfParticles: 1000,
+          numberOfParticles: 100,
           speedOfParticles: 1,
           height: screenHeight,
           width: screenWidth,
           onTapAnimation: true,
           particleColor: Colors.white.withAlpha(150),
           awayAnimationDuration: Duration(milliseconds: 600),
-          maxParticleSize: 10,
-          isRandSize: true,
+          maxParticleSize: 5,
+          isRandSize: false,
           isRandomColor: false,
           // randColorList: [
           //   Colors.red.withAlpha(210),
@@ -50,6 +50,8 @@ class CircularParticleScreen extends StatelessWidget {
           enableHover: true,
           hoverColor: Colors.white,
           hoverRadius: 90,
+
+          connectDots: true, //not recomanded
         ),
       ),
     );

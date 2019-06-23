@@ -28,6 +28,7 @@ class CircularParticle extends StatefulWidget {
     this.enableHover = false,
     this.hoverColor = Colors.orangeAccent,
     this.hoverRadius = 80,
+    this.connectDots = false,
   }) : super(key: key);
   final double awayRadius;
   final double height;
@@ -44,7 +45,8 @@ class CircularParticle extends StatefulWidget {
   final List<Color> randColorList;
   final bool enableHover;
   final Color hoverColor;
-  final hoverRadius;
+  final double hoverRadius;
+  final bool connectDots;
 
   _CircularParticleState createState() => _CircularParticleState();
 }
@@ -65,6 +67,7 @@ class _CircularParticleState extends State<CircularParticle>
   _CircularParticleState();
   List<double> randomSize = [];
   List<int> hoverIndex = [];
+  List<List> lineOffset = [];
 
   initailizeOffsets(_) {
     for (int index = 0; index < widget.numberOfParticles; index++) {
@@ -105,6 +108,7 @@ class _CircularParticleState extends State<CircularParticle>
             }
             offsets[index] = Offset(dx, dy);
           }
+          if (widget.connectDots) connectLines(); //not recomanded
         });
       });
     controller.repeat();
@@ -122,11 +126,28 @@ class _CircularParticleState extends State<CircularParticle>
   changeDirection() async {
     Future.doWhile(() async {
       await Future.delayed(Duration(milliseconds: 600));
+
       for (int index = 0; index < widget.numberOfParticles; index++) {
         randDirection[index] = (rng.nextBool());
       }
       return true;
     });
+  }
+
+  connectLines() {
+    lineOffset = [];
+    double distanceBetween = 0;
+    for (int point1 = 0; point1 < offsets.length; point1++) {
+      for (int point2 = 0; point2 < offsets.length; point2++) {
+        //    if(offsets)
+        distanceBetween = sqrt(
+            pow((offsets[point2].dx - offsets[point1].dx), 2) +
+                pow((offsets[point2].dy - offsets[point1].dy), 2));
+        if (distanceBetween < 50) {
+          lineOffset.add([offsets[point1], offsets[point2], distanceBetween]);
+        }
+      }
+    }
   }
 
   onTapGesture(double tapdx, double tapdy) {
@@ -243,7 +264,8 @@ class _CircularParticleState extends State<CircularParticle>
               randColorList: widget.randColorList,
               hoverIndex: hoverIndex,
               enableHover: widget.enableHover,
-              hoverColor: widget.hoverColor),
+              hoverColor: widget.hoverColor,
+              lineOffsets: lineOffset),
         ),
       ),
     );

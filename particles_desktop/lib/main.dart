@@ -83,7 +83,7 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
             height: screenHeight,
             width: screenWidth,
             onTapAnimation: onTapAnimation,
-            particleColor: Colors.white.withAlpha(120),
+            particleColor: Colors.white.withAlpha(110),
             awayAnimationDuration: Duration(milliseconds: tapAnimationDuration),
             maxParticleSize: maxParticleSize,
             isRandSize: randomSize,
