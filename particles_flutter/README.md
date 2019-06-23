@@ -1,5 +1,5 @@
 # Flutter Particles 
- [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/rajajain08)
+ [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/rajajain08)  [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/particles_flutter)
 
 A package that provides an easy way to add particles animation in Flutter project.
 
