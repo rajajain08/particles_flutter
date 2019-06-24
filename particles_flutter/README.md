@@ -15,7 +15,7 @@ You should ensure that you add the following dependency in your Flutter project.
 
 ```yaml
 dependencies:
-  particles_flutter: "^0.1.0"
+  particles_flutter: "^0.1.1"
 ```
 
 You should then run `flutter packages upgrade` or update your packages in IntelliJ.
