@@ -22,7 +22,7 @@ In the command terminal, run the following commands:
 ###### For Web
     $ cd particles_flutter/particles_web/
     $ flutter packages pub global run webdev serve
-######## Check out web [here](https://particles-flutter.rajajain08.now.sh).
+###### Checkout web [here](https://particles-flutter.rajajain08.now.sh).
 
 ###### For Desktop(eg:macOs)
     $ cd particles_flutter/particles_web/
