@@ -25,33 +25,36 @@ class CircularParticleScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Container(
-      child: Center(
-        child: CircularParticle(
-          key: UniqueKey(),
-          awayRadius: 80,
-          numberOfParticles: 200,
-          speedOfParticles: 1,
-          height: screenHeight,
-          width: screenWidth,
-          onTapAnimation: true,
-          particleColor: Colors.white.withAlpha(150),
-          awayAnimationDuration: Duration(milliseconds: 600),
-          maxParticleSize: 8,
-          isRandSize: true,
-          isRandomColor: true,
-          randColorList: [
-            Colors.red.withAlpha(210),
-            Colors.white.withAlpha(210),
-            Colors.yellow.withAlpha(210),
-            Colors.green.withAlpha(210)
-          ],
-          awayAnimationCurve: Curves.easeInOutBack,
-          enableHover: true,
-          hoverColor: Colors.white,
-          hoverRadius: 90,
+    return Center(
+      child: Container(
+        height: 350,
+        width: 350,
+        child: Center(
+          child: CircularParticle(
+            awayRadius: 80,
+            numberOfParticles: 200,
+            speedOfParticles: 1,
+            height: screenHeight,
+            width: screenWidth,
+            onTapAnimation: true,
+            particleColor: Colors.white.withAlpha(150),
+            awayAnimationDuration: Duration(milliseconds: 600),
+            maxParticleSize: 8,
+            isRandSize: true,
+            isRandomColor: true,
+            randColorList: [
+              Colors.red.withAlpha(210),
+              Colors.white.withAlpha(210),
+              Colors.yellow.withAlpha(210),
+              Colors.green.withAlpha(210)
+            ],
+            awayAnimationCurve: Curves.easeInOutBack,
+            enableHover: true,
+            hoverColor: Colors.white,
+            hoverRadius: 90,
 
-          connectDots: false, //not recommended
+            connectDots: false, //not recommended
+          ),
         ),
       ),
     );

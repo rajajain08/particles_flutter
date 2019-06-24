@@ -242,11 +242,16 @@ class _CircularParticleState extends State<CircularParticle>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (TapDownDetails details) {
-        onTapGesture(details.localPosition.dx, details.localPosition.dy);
+        RenderBox getBox = context.findRenderObject();
+        onTapGesture(getBox.globalToLocal(details.globalPosition).dx,
+            getBox.globalToLocal(details.globalPosition).dy);
       },
       onPanUpdate: (DragUpdateDetails details) {
-        if (widget.enableHover)
-          onHover(details.localPosition.dx, details.localPosition.dy);
+        if (widget.enableHover) {
+          RenderBox getBox = context.findRenderObject();
+          onHover(getBox.globalToLocal(details.globalPosition).dx,
+              getBox.globalToLocal(details.globalPosition).dy);
+        }
       },
       onPanEnd: (DragEndDetails details) {
         hoverIndex = [];
