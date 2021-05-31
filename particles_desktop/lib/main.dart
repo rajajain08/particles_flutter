@@ -1,11 +1,11 @@
-// import 'package:flutter/foundation.dart'
-// show debugDefaultTargetPlatformOverride;
+import 'package:flutter/foundation.dart'
+    show debugDefaultTargetPlatformOverride;
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/component/custom_slider.dart';
 import 'package:particles_flutter/screens/circular_particles.dart';
 
 void main() {
-  // debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+  debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   return runApp(MyApp());
 }
 
