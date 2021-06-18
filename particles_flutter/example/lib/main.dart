@@ -7,14 +7,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: Scaffold(
-          backgroundColor: Colors.white70,
-          body: CircularParticleScreen(),
-        ));
+      title: 'Flutter Demo',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: Scaffold(
+        backgroundColor: Colors.white70,
+        body: CircularParticleScreen(),
+      ),
+    );
   }
 }
 
@@ -27,10 +26,12 @@ class CircularParticleScreen extends StatelessWidget {
     double screenWidth = MediaQuery.of(context).size.width;
     return Center(
       child: Container(
+        key: UniqueKey(),
         height: 350,
         width: 350,
         child: Center(
           child: CircularParticle(
+            // key: UniqueKey(),
             awayRadius: 80,
             numberOfParticles: 200,
             speedOfParticles: 1,
@@ -52,8 +53,7 @@ class CircularParticleScreen extends StatelessWidget {
             enableHover: true,
             hoverColor: Colors.white,
             hoverRadius: 90,
-
-            connectDots: false, //not recommended
+            connectDots: true, //not recommended
           ),
         ),
       ),
