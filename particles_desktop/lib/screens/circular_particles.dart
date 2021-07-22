@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 
 class CircularParticle extends StatefulWidget {
   CircularParticle({
-    Key key,
-    this.height,
-    this.width,
+    Key? key,
+    required this.height,
+    required this.width,
     this.onTapAnimation = true,
     this.numberOfParticles = 500,
     this.speedOfParticles = 2,
     this.awayRadius = 100,
-    this.isRandomColor,
+    required this.isRandomColor,
     this.particleColor = Colors.white,
     this.awayAnimationDuration = const Duration(milliseconds: 600),
     this.maxParticleSize = 4,
@@ -50,17 +50,17 @@ class CircularParticle extends StatefulWidget {
 
 class _CircularParticleState extends State<CircularParticle>
     with TickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController controller;
+  late Animation<double> animation;
+  late AnimationController controller;
+  late AnimationController awayAnimationController;
+  late double dx;
+  late double dy;
   List<Offset> offsets = [];
   List<bool> randDirection = [];
   double speedOfparticle = 0;
-  var rng = new Random();
+  var rng = Random();
   double randValue = 0;
-  double dx;
-  double dy;
   List<double> randomDouble = [];
-  AnimationController awayAnimationController;
   _CircularParticleState();
   List<double> randomSize = [];
   List<int> hoverIndex = [];
@@ -77,48 +77,50 @@ class _CircularParticleState extends State<CircularParticle>
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(initailizeOffsets);
+    WidgetsBinding.instance!.addPostFrameCallback(initailizeOffsets);
     controller =
         AnimationController(duration: const Duration(seconds: 10), vsync: this);
     animation = Tween<double>(begin: 0, end: 1).animate(controller)
-      ..addListener(() {
-        setState(() {
-          speedOfparticle = widget.speedOfParticles;
-          for (int index = 0; index < offsets.length; index++) {
-            if (randDirection[index]) {
-              randValue = -speedOfparticle;
-            } else {
-              randValue = speedOfparticle;
-            }
-            dx = offsets[index].dx + (randValue * randomDouble[index]);
-            dy = offsets[index].dy + randomDouble[index] * speedOfparticle;
-            if (dx > widget.width) {
-              dx = dx - widget.width;
-            } else if (dx < 0) {
-              dx = dx + widget.width;
-            }
-            if (dy > widget.height) {
-              dy = dy - widget.height;
-            } else if (dy < 0) {
-              dy = dy + widget.height;
-            }
-            offsets[index] = Offset(dx, dy);
-          }
-        });
-      });
+      ..addListener(_myListener);
     controller.repeat();
     changeDirection();
     super.initState();
   }
 
+  void _myListener() {
+    setState(() {
+      speedOfparticle = widget.speedOfParticles;
+      for (int index = 0; index < offsets.length; index++) {
+        if (randDirection[index]) {
+          randValue = -speedOfparticle;
+        } else {
+          randValue = speedOfparticle;
+        }
+        dx = offsets[index].dx + (randValue * randomDouble[index]);
+        dy = offsets[index].dy + randomDouble[index] * speedOfparticle;
+        if (dx > widget.width) {
+          dx = dx - widget.width;
+        } else if (dx < 0) {
+          dx = dx + widget.width;
+        }
+        if (dy > widget.height) {
+          dy = dy - widget.height;
+        } else if (dy < 0) {
+          dy = dy + widget.height;
+        }
+        offsets[index] = Offset(dx, dy);
+      }
+    });
+  }
+
   @override
   void dispose() {
-    awayAnimationController.dispose();
+    animation.removeListener(_myListener);
     controller.dispose();
     super.dispose();
   }
 
-  changeDirection() async {
+  void changeDirection() async {
     Future.doWhile(() async {
       await Future.delayed(Duration(milliseconds: 600));
       for (int index = 0; index < widget.numberOfParticles; index++) {
@@ -128,7 +130,7 @@ class _CircularParticleState extends State<CircularParticle>
     });
   }
 
-  onTapGesture(double tapdx, double tapdy) {
+  void onTapGesture(double tapdx, double tapdy) {
     awayAnimationController = AnimationController(
         duration: widget.awayAnimationDuration, vsync: this);
     awayAnimationController.reset();
@@ -190,7 +192,7 @@ class _CircularParticleState extends State<CircularParticle>
     }
   }
 
-  onHover(tapdx, tapdy) {
+  void onHover(tapdx, tapdy) {
     {
       awayAnimationController = AnimationController(
           duration: widget.awayAnimationDuration, vsync: this);

@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
 }
 
 class CircularParticleScreen extends StatefulWidget {
-  const CircularParticleScreen({Key key}) : super(key: key);
+  const CircularParticleScreen({Key? key}) : super(key: key);
 
   @override
   _CircularParticleScreenState createState() => _CircularParticleScreenState();
@@ -174,11 +174,8 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
                     iconSize: 0,
                     style: TextStyle(color: Colors.blue, fontSize: 12),
                     value: animationType,
-                    onChanged: (Curve newValue) {
-                      setState(() {
-                        animationType = newValue;
-                      });
-                    },
+                    onChanged: (Curve? newValue) =>
+                        setState(() => animationType = newValue!),
                     items: <Curve>[
                       Curves.easeInOut,
                       Curves.bounceInOut,
@@ -218,10 +215,8 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
                       children: <Widget>[
                         Checkbox(
                           value: randomSize,
-                          onChanged: (bool value) {
-                            setState(() {
-                              randomSize = value;
-                            });
+                          onChanged: (bool? value) {
+                            setState(() => randomSize = value!);
                           },
                         ),
                         Text(
@@ -237,10 +232,8 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
                       children: <Widget>[
                         Checkbox(
                           value: onTapAnimation,
-                          onChanged: (bool value) {
-                            setState(() {
-                              onTapAnimation = value;
-                            });
+                          onChanged: (bool? value) {
+                            setState(() => onTapAnimation = value!);
                           },
                         ),
                         Text(
@@ -261,10 +254,8 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
                       children: <Widget>[
                         Checkbox(
                           value: isRandomColor,
-                          onChanged: (bool value) {
-                            setState(() {
-                              isRandomColor = value;
-                            });
+                          onChanged: (bool? value) {
+                            setState(() => isRandomColor = value!);
                           },
                         ),
                         Text(
@@ -280,10 +271,8 @@ class _CircularParticleScreenState extends State<CircularParticleScreen> {
                       children: <Widget>[
                         Checkbox(
                           value: enableHover,
-                          onChanged: (bool value) {
-                            setState(() {
-                              enableHover = value;
-                            });
+                          onChanged: (bool? value) {
+                            setState(() => enableHover = value!);
                           },
                         ),
                         Text(

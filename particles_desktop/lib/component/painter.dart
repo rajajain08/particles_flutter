@@ -7,7 +7,7 @@ class ParticlePainter extends CustomPainter {
   final Paint constColorPaint;
   final double maxParticleSize;
   static Color randomColor = Colors.blue;
-  static Paint randomColorPaint;
+  static Paint? randomColorPaint;
   final Paint hoverPaint;
   final List<double> randSize;
   final bool isRandSize;
@@ -17,16 +17,16 @@ class ParticlePainter extends CustomPainter {
   final Color hoverColor;
 
   ParticlePainter({
-    this.enableHover,
-    this.randColorList,
-    this.isRandSize,
-    this.maxParticleSize,
-    this.offsets,
-    this.isRandomColor,
-    this.particleColor,
-    this.randSize,
-    this.hoverIndex,
-    this.hoverColor,
+    required this.enableHover,
+    required this.randColorList,
+    required this.isRandSize,
+    required this.maxParticleSize,
+    required this.offsets,
+    required this.isRandomColor,
+    required this.particleColor,
+    required this.randSize,
+    required this.hoverIndex,
+    required this.hoverColor,
   })  : constColorPaint = Paint()..color = particleColor,
         hoverPaint = Paint()..color = hoverColor;
 
@@ -40,7 +40,7 @@ class ParticlePainter extends CustomPainter {
         canvas.drawCircle(
             offsets[index],
             isRandSize ? maxParticleSize * (randSize[index]) : maxParticleSize,
-            hoverIndex.contains(index) ? hoverPaint : randomColorPaint);
+            hoverIndex.contains(index) ? hoverPaint : randomColorPaint!);
       } else {
         randomColorPaint = Paint()..color = randomColor;
         canvas.drawCircle(
