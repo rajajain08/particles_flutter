@@ -1,6 +1,6 @@
-# Flutter Particles 
- [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/rajajain08)  
- 
+# Flutter Particles
+
+<a href="https://www.buymeacoffee.com/rajajain08" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="32" width="140"></a>
 
 A package that provides an easy way to add particles animation in Flutter project.
 
@@ -25,7 +25,7 @@ You should then run `flutter packages upgrade` or update your packages in Intell
 ```dart
 CircularParticle(
           key: UniqueKey(),
-          awayRadius: 80, 
+          awayRadius: 80,
           numberOfParticles: 200,
           speedOfParticles: 1,
           height: screenHeight,
@@ -46,7 +46,7 @@ CircularParticle(
           enableHover: true,
           hoverColor: Colors.white,
           hoverRadius: 90,
-          connectDots: false, //not recommended 
+          connectDots: false, //not recommended
         ),
 
 ```
