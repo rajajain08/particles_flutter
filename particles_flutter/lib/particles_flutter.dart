@@ -6,14 +6,14 @@ import 'package:particles_flutter/component/painter.dart';
 
 class CircularParticle extends StatefulWidget {
   CircularParticle({
-    Key key,
-    this.height,
-    this.width,
+    Key? key,
+    required this.height,
+    required this.width,
     this.onTapAnimation = true,
     this.numberOfParticles = 500,
     this.speedOfParticles = 2,
     this.awayRadius = 100,
-    this.isRandomColor,
+    required this.isRandomColor,
     this.particleColor = Colors.white,
     this.awayAnimationDuration = const Duration(milliseconds: 600),
     this.maxParticleSize = 4,
@@ -54,23 +54,23 @@ class CircularParticle extends StatefulWidget {
 
 class _CircularParticleState extends State<CircularParticle>
     with TickerProviderStateMixin {
-  Animation<double> animation;
-  AnimationController controller;
+  late Animation<double> animation;
+  late AnimationController controller;
+  late AnimationController awayAnimationController;
+  late double dx;
+  late double dy;
   List<Offset> offsets = [];
   List<bool> randDirection = [];
   double speedOfparticle = 0;
-  var rng = new Random();
+  var rng = Random();
   double randValue = 0;
-  double dx;
-  double dy;
   List<double> randomDouble = [];
-  AnimationController awayAnimationController;
   _CircularParticleState();
   List<double> randomSize = [];
   List<int> hoverIndex = [];
   List<List> lineOffset = [];
 
-  initailizeOffsets(_) {
+  void initailizeOffsets(_) {
     for (int index = 0; index < widget.numberOfParticles; index++) {
       offsets.add(Offset(
           rng.nextDouble() * widget.width, rng.nextDouble() * widget.height));
@@ -82,60 +82,65 @@ class _CircularParticleState extends State<CircularParticle>
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(initailizeOffsets);
+    WidgetsBinding.instance!.addPostFrameCallback(initailizeOffsets);
     controller =
         AnimationController(duration: const Duration(seconds: 10), vsync: this);
     animation = Tween<double>(begin: 0, end: 1).animate(controller)
-      ..addListener(() {
-        setState(() {
-          speedOfparticle = widget.speedOfParticles;
-          for (int index = 0; index < offsets.length; index++) {
-            if (randDirection[index]) {
-              randValue = -speedOfparticle;
-            } else {
-              randValue = speedOfparticle;
-            }
-            dx = offsets[index].dx + (randValue * randomDouble[index]);
-            dy = offsets[index].dy + randomDouble[index] * speedOfparticle;
-            if (dx > widget.width) {
-              dx = dx - widget.width;
-            } else if (dx < 0) {
-              dx = dx + widget.width;
-            }
-            if (dy > widget.height) {
-              dy = dy - widget.height;
-            } else if (dy < 0) {
-              dy = dy + widget.height;
-            }
-            offsets[index] = Offset(dx, dy);
-          }
-          if (widget.connectDots) connectLines(); //not recommended
-        });
-      });
+      ..addListener(_myListener);
     controller.repeat();
     changeDirection();
     super.initState();
   }
 
+  void _myListener() {
+    setState(
+      () {
+        speedOfparticle = widget.speedOfParticles;
+        for (int index = 0; index < offsets.length; index++) {
+          if (randDirection[index]) {
+            randValue = -speedOfparticle;
+          } else {
+            randValue = speedOfparticle;
+          }
+          dx = offsets[index].dx + (randValue * randomDouble[index]);
+          dy = offsets[index].dy + randomDouble[index] * speedOfparticle;
+          if (dx > widget.width) {
+            dx = dx - widget.width;
+          } else if (dx < 0) {
+            dx = dx + widget.width;
+          }
+          if (dy > widget.height) {
+            dy = dy - widget.height;
+          } else if (dy < 0) {
+            dy = dy + widget.height;
+          }
+          offsets[index] = Offset(dx, dy);
+        }
+        if (widget.connectDots) connectLines(); //not recommended
+      },
+    );
+  }
+
   @override
   void dispose() {
-    awayAnimationController.dispose();
+    animation.removeListener(_myListener);
     controller.dispose();
     super.dispose();
   }
 
-  changeDirection() async {
-    Future.doWhile(() async {
-      await Future.delayed(Duration(milliseconds: 600));
-
-      for (int index = 0; index < widget.numberOfParticles; index++) {
-        randDirection[index] = (rng.nextBool());
-      }
-      return true;
-    });
+  void changeDirection() async {
+    Future.doWhile(
+      () async {
+        await Future.delayed(Duration(milliseconds: 600));
+        for (int index = 0; index < widget.numberOfParticles; index++) {
+          randDirection[index] = (rng.nextBool());
+        }
+        return true;
+      },
+    );
   }
 
-  connectLines() {
+  void connectLines() {
     lineOffset = [];
     double distanceBetween = 0;
     for (int point1 = 0; point1 < offsets.length; point1++) {
@@ -151,7 +156,7 @@ class _CircularParticleState extends State<CircularParticle>
     }
   }
 
-  onTapGesture(double tapdx, double tapdy) {
+  void onTapGesture(double tapdx, double tapdy) {
     awayAnimationController = AnimationController(
         duration: widget.awayAnimationDuration, vsync: this);
     awayAnimationController.reset();
@@ -170,27 +175,30 @@ class _CircularParticleState extends State<CircularParticle>
         directiondx = (tapdx - offsets[index].dx) / distance[index];
         directiondy = (tapdy - offsets[index].dy) / distance[index];
         Offset begin = offsets[index];
-        awayAnimation.add(Tween<Offset>(
-                begin: begin,
-                end: Offset(
-                  offsets[index].dx -
-                      (widget.awayRadius - distance[index]) * directiondx,
-                  offsets[index].dy -
-                      (widget.awayRadius - distance[index]) * directiondy,
-                ))
-            .animate(CurvedAnimation(
-                parent: awayAnimationController,
-                curve: widget.awayAnimationCurve))
-              ..addListener(() {
-                if (distance[index] < widget.awayRadius)
-                  setState(() {
-                    offsets[index] = awayAnimation[index].value;
-                  });
-                if (awayAnimationController.isCompleted &&
-                    index == offsets.length - 1) {
-                  awayAnimationController.dispose();
-                }
-              }));
+        awayAnimation.add(
+          Tween<Offset>(
+                  begin: begin,
+                  end: Offset(
+                    offsets[index].dx -
+                        (widget.awayRadius - distance[index]) * directiondx,
+                    offsets[index].dy -
+                        (widget.awayRadius - distance[index]) * directiondy,
+                  ))
+              .animate(CurvedAnimation(
+                  parent: awayAnimationController,
+                  curve: widget.awayAnimationCurve))
+                ..addListener(
+                  () {
+                    if (distance[index] < widget.awayRadius)
+                      setState(
+                          () => offsets[index] = awayAnimation[index].value);
+                    if (awayAnimationController.isCompleted &&
+                        index == offsets.length - 1) {
+                      awayAnimationController.dispose();
+                    }
+                  },
+                ),
+        );
       }
     } else {
       for (int index = 0; index < offsets.length; index++) {
@@ -213,7 +221,7 @@ class _CircularParticleState extends State<CircularParticle>
     }
   }
 
-  onHover(tapdx, tapdy) {
+  void onHover(tapdx, tapdy) {
     {
       awayAnimationController = AnimationController(
           duration: widget.awayAnimationDuration, vsync: this);
@@ -242,13 +250,13 @@ class _CircularParticleState extends State<CircularParticle>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTapDown: (TapDownDetails details) {
-        RenderBox getBox = context.findRenderObject();
+        RenderBox getBox = context.findRenderObject() as RenderBox;
         onTapGesture(getBox.globalToLocal(details.globalPosition).dx,
             getBox.globalToLocal(details.globalPosition).dy);
       },
       onPanUpdate: (DragUpdateDetails details) {
         if (widget.enableHover) {
-          RenderBox getBox = context.findRenderObject();
+          RenderBox getBox = context.findRenderObject() as RenderBox;
           onHover(getBox.globalToLocal(details.globalPosition).dx,
               getBox.globalToLocal(details.globalPosition).dy);
         }
