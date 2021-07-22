@@ -1,6 +1,6 @@
-# Flutter Particles 
- [![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/rajajain08)  
- 
+# Flutter Particles
+
+<a href="https://www.buymeacoffee.com/rajajain08" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="32" width="140"></a>
 
 Easy way to add particles animation in Flutter project.
 
@@ -12,6 +12,7 @@ Easy way to add particles animation in Flutter project.
 </p>
 
 ## Getting Started
+
 **Note:** Make sure your Flutter environment is setup.
 
 #### Installation
@@ -19,17 +20,20 @@ Easy way to add particles animation in Flutter project.
 In the command terminal, run the following commands:
 
     $ git clone https://github.com/rajajain08/particles_flutter.git
+
 ###### For Web
+
     $ cd particles_flutter/particles_web/
     $ flutter packages pub global run webdev serve
+
 ###### Checkout web [here](https://particles-flutter.rajajain08.now.sh).
 
 ###### For Desktop(eg:macOs)
-    $ cd particles_flutter/particles_web/
-    $ flutter run -d macOS 
 
-###### For iOS and Android: Follow this [readme](https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/README.md). 
-  
+    $ cd particles_flutter/particles_web/
+    $ flutter run -d macOS
+
+###### For iOS and Android: Follow this [readme](https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/README.md).
 
 ## How to use
 
@@ -38,7 +42,7 @@ You can use CircularParticle widget and change any of it's value according to yo
 ```dart
 CircularParticle(
           key: UniqueKey(),
-          awayRadius: 80, 
+          awayRadius: 80,
           numberOfParticles: 200,
           speedOfParticles: 1,
           height: screenHeight,
@@ -59,7 +63,7 @@ CircularParticle(
           enableHover: true,
           hoverColor: Colors.white,
           hoverRadius: 90,
-          connectDots: false, //not recommended 
+          connectDots: false, //not recommended
         ),
 
 ```
