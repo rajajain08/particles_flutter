@@ -95,7 +95,10 @@ class CircularParticleScreen extends StatelessWidget {
                         launchUrl(Uri.parse(
                             "https://pub.dev/packages/particles_flutter"));
                       },
-                      child: Image.asset('assets/pub.png', height: 30),
+                      child: Image.asset(
+                        'assets/pub.png',
+                        height: 30,
+                      ),
                     ),
                   ],
                 ),

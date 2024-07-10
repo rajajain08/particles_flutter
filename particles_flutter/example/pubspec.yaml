@@ -17,6 +17,7 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 flutter:
   uses-material-design: true
-assets:
-  - assets/
+  assets:
+    - assets/github.png
+    - assets/pub.png
 
