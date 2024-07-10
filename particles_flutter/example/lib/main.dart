@@ -113,7 +113,7 @@ class CircularParticleScreen extends StatelessWidget {
   List<Particle> createParticles() {
     var rng = Random();
     List<Particle> particles = [];
-    for (int i = 0; i < 120; i++) {
+    for (int i = 0; i < 140; i++) {
       particles.add(Particle(
         color: Colors.white.withOpacity(0.6),
         size: rng.nextDouble() * 10,
