@@ -32,8 +32,8 @@ dependencies:
 
 ```
 
-## Checkout web [here](https://particles-flutter.rajajain08.now.sh).
-https://particles-flutter.rajajain08.now.sh
+## Checkout web [here](https://praticles-flutter-k68abklre-raja-jains-projects.vercel.app).
+https://praticles-flutter-k68abklre-raja-jains-projects.vercel.app
 <p>
     <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/web.gif?raw=true"/>
 </p>
