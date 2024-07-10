@@ -85,11 +85,7 @@ class CircularParticleScreen extends StatelessWidget {
                         launchUrl(Uri.parse(
                             "https://github.com/rajajain08/particles_flutter"));
                       },
-                      child: Image.asset(
-                          kDebugMode && kIsWeb
-                              ? 'github.png'
-                              : 'assets/github.png',
-                          height: 30),
+                      child: Image.asset('assets/github.png', height: 30),
                     ),
                     const SizedBox(
                       width: 20,
@@ -99,9 +95,7 @@ class CircularParticleScreen extends StatelessWidget {
                         launchUrl(Uri.parse(
                             "https://pub.dev/packages/particles_flutter"));
                       },
-                      child: Image.asset(
-                          kDebugMode && kIsWeb ? 'pub.png' : 'assets/pub.png',
-                          height: 30),
+                      child: Image.asset('assets/pub.png', height: 30),
                     ),
                   ],
                 ),
