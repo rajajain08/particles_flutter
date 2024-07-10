@@ -1,15 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:particles_flutter/particles_flutter.dart';
+import 'dart:io';
+import 'dart:math';
 
-void main() => runApp(MyApp());
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:particles_flutter/component/particle/particle.dart';
+import 'package:particles_flutter/particles_engine.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: Scaffold(
+      home: const Scaffold(
         backgroundColor: Colors.black,
         body: CircularParticleScreen(),
       ),
@@ -18,43 +26,106 @@ class MyApp extends StatelessWidget {
 }
 
 class CircularParticleScreen extends StatelessWidget {
-  const CircularParticleScreen({Key key}) : super(key: key);
-
+  const CircularParticleScreen({super.key});
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
-    return Center(
-      child: Container(
-        key: UniqueKey(),
-        child: Center(
-          child: CircularParticle(
-            // key: UniqueKey(),
-            awayRadius: 80,
-            numberOfParticles: 200,
-            speedOfParticles: 1,
+    return Stack(
+      children: [
+        Container(
+          color: Colors.blue,
+          child: Particles(
+            awayRadius: 150,
+            particles: createParticles(),
             height: screenHeight,
             width: screenWidth,
             onTapAnimation: true,
-            particleColor: Colors.white.withAlpha(150),
-            awayAnimationDuration: Duration(milliseconds: 600),
-            maxParticleSize: 8,
-            isRandSize: true,
-            isRandomColor: true,
-            randColorList: [
-              Colors.red.withAlpha(210),
-              Colors.white.withAlpha(210),
-              Colors.yellow.withAlpha(210),
-              Colors.green.withAlpha(210)
-            ],
-            awayAnimationCurve: Curves.easeInOutBack,
+            awayAnimationDuration: const Duration(milliseconds: 100),
+            awayAnimationCurve: Curves.linear,
             enableHover: true,
-            hoverColor: Colors.white,
             hoverRadius: 90,
-            connectDots: true, //not recommended
+            connectDots: false,
           ),
         ),
-      ),
+        Center(
+          child: Container(
+            height: 250,
+            width: 200,
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 221, 218, 218),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'particles flutter',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const Text(
+                  'v1.0.0',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 12,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        launchUrl(Uri.parse(
+                            "https://github.com/rajajain08/particles_flutter"));
+                      },
+                      child: Image.asset(
+                          kIsWeb ? 'github.png' : 'assets/github.png',
+                          height: 30),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        launchUrl(Uri.parse(
+                            "https://pub.dev/packages/particles_flutter"));
+                      },
+                      child: Image.asset(kIsWeb ? 'pub.png' : 'assets/pub.png',
+                          height: 30),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
+  }
+
+  List<Particle> createParticles() {
+    var rng = Random();
+    List<Particle> particles = [];
+    for (int i = 0; i < 120; i++) {
+      particles.add(Particle(
+        color: Colors.white.withOpacity(0.6),
+        size: rng.nextDouble() * 10,
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+      ));
+    }
+    return particles;
+  }
+
+  double randomSign() {
+    var rng = Random();
+    return rng.nextBool() ? 1 : -1;
   }
 }

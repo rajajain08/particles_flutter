@@ -17,3 +17,7 @@
 ## [0.1.3.1] - 22/07/2021.
 
 - Updated doc.
+
+## [1.0.0] - 22/07/2021.
+
+- Added engine and other enhancements

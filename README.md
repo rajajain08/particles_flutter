@@ -1,72 +1,48 @@
 # Flutter Particles
-
-<a href="https://www.buymeacoffee.com/rajajain08" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="32" width="140"></a>
-
-Easy way to add particles animation in Flutter project.
+A package that provides an easy way to add particles animation in Flutter project.
 
 <p>
-    <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/particles_mob2.gif?raw=true" width=300px/>
-     <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/particles_mob1.gif?raw=true" width=300px/>
-    <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/particles_web.gif?raw=true" width=800px/>
-    <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/particles_desktop.gif?raw=true" width=800px/>
+    <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/mob.gif?raw=true" width=300px height=700px/>
 </p>
 
 ## Getting Started
 
-**Note:** Make sure your Flutter environment is setup.
+You should ensure that you add the following dependency in your Flutter project.
 
-#### Installation
-
-In the command terminal, run the following commands:
-
-    $ git clone https://github.com/rajajain08/particles_flutter.git
-
-###### For Web
-
-    $ cd particles_flutter/particles_web/
-    $ flutter packages pub global run webdev serve
-
-###### Checkout web [here](https://particles-flutter.rajajain08.now.sh).
-
-###### For Desktop(eg:macOs)
-
-    $ cd particles_flutter/particles_web/
-    $ flutter run -d macOS
-
-###### For iOS and Android: Follow this [readme](https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/README.md).
+```yaml
+dependencies:
+  particles_flutter: "^1.0.0"
+```
 
 ## How to use
 
-You can use CircularParticle widget and change any of it's value according to your needs.
-
 ```dart
-CircularParticle(
-          key: UniqueKey(),
-          awayRadius: 80,
-          numberOfParticles: 200,
-          speedOfParticles: 1,
-          height: screenHeight,
-          width: screenWidth,
-          onTapAnimation: true,
-          particleColor: Colors.white.withAlpha(150),
-          awayAnimationDuration: Duration(milliseconds: 600),
-          maxParticleSize: 8,
-          isRandSize: true,
-          isRandomColor: true,
-          randColorList: [
-            Colors.red.withAlpha(210),
-            Colors.white.withAlpha(210),
-            Colors.yellow.withAlpha(210),
-            Colors.green.withAlpha(210)
-          ],
-          awayAnimationCurve: Curves.easeInOutBack,
-          enableHover: true,
-          hoverColor: Colors.white,
-          hoverRadius: 90,
-          connectDots: false, //not recommended
-        ),
+  Particles(
+        awayRadius: 150,
+        particles: [], // List of particles
+        height: screenHeight,
+        width: screenWidth,
+        onTapAnimation: true,
+        awayAnimationDuration: const Duration(milliseconds: 100),
+        awayAnimationCurve: Curves.linear,
+        enableHover: true,
+        hoverRadius: 90,
+        connectDots: false,
+      )
 
 ```
+
+## Checkout web [here](https://particles-flutter.rajajain08.now.sh).
+https://particles-flutter.rajajain08.now.sh
+<p>
+    <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/web.gif?raw=true"/>
+</p>
+
+
+## Support
+If you find this package useful, please consider giving it a star on [GitHub](https://github.com/rajajain08/particles_flutter) and a thumbs up on [Pub.dev](https://pub.dev/packages/particles_flutter). Your support is greatly appreciated!
+
+<a href="https://www.buymeacoffee.com/rajajain08" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="32" width="140"></a>
 
 ## Contributions
 
@@ -76,3 +52,5 @@ If you find a bug or want a feature, but don't know how to fix/implement it, ple
 If you fixed a bug or implemented a new feature, please send a [pull request](https://github.com/rajajain08/particles_flutter/pulls).
 
 If you want to contact me, Please send me a short DM on [Twitter](https://twitter.com/rajajain08).
+
+
