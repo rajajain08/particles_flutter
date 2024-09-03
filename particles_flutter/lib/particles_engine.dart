@@ -34,22 +34,21 @@ class Particles extends StatefulWidget {
   _ParticlesState createState() => _ParticlesState();
 }
 
-class _ParticlesState extends State<Particles>
-    with TickerProviderStateMixin {
+class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   late AnimationController awayAnimationController;
   List<Particle> particles = [];
   var rng = Random();
+  Runner _runner = Runner();
   _ParticlesState();
 
- 
   List<List> lineOffset = [];
-  
+
   get math => null;
 
   void initailizeParticles(_) {
     particles = widget.particles;
     for (int index = 0; index < widget.particles.length; index++) {
-        particles[index].updatePosition = Offset(
+      particles[index].updatePosition = Offset(
         rng.nextDouble() * widget.width,
         rng.nextDouble() * widget.height,
       );
@@ -59,19 +58,21 @@ class _ParticlesState extends State<Particles>
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(initailizeParticles);
-    Runner().run((double deltaTime, double correction) {
-     _engine(deltaTime);
+
+    _runner.run((double deltaTime, double correction) {
+      _engine(deltaTime);
     });
     super.initState();
   }
 
-
   void _engine(double deltaTime) {
     setState(
-      () { 
+      () {
         for (int index = 0; index < particles.length; index++) {
-         double dx = particles[index].position.dx  +  deltaTime*particles[index].velocity.dx; 
-         double dy = particles[index].position.dy +  deltaTime*particles[index].velocity.dy; 
+          double dx = particles[index].position.dx +
+              deltaTime * particles[index].velocity.dx;
+          double dy = particles[index].position.dy +
+              deltaTime * particles[index].velocity.dy;
           if (dx > widget.width) {
             dx = dx - widget.width;
           } else if (dx < 0) {
@@ -91,6 +92,7 @@ class _ParticlesState extends State<Particles>
 
   @override
   void dispose() {
+    _runner.stop();
     super.dispose();
   }
 
@@ -99,11 +101,14 @@ class _ParticlesState extends State<Particles>
     double distanceBetween = 0;
     for (int point1 = 0; point1 < particles.length; point1++) {
       for (int point2 = 0; point2 < particles.length; point2++) {
-        distanceBetween = sqrt(
-            pow((particles[point2].position.dx - particles[point1].position.dx), 2) +
-                pow((particles[point2].position.dy - particles[point1].position.dy), 2));
+        distanceBetween = sqrt(pow(
+                (particles[point2].position.dx - particles[point1].position.dx),
+                2) +
+            pow((particles[point2].position.dy - particles[point1].position.dy),
+                2));
         if (distanceBetween < 110) {
-          lineOffset.add([particles[point1], particles[point2], distanceBetween]);
+          lineOffset
+              .add([particles[point1], particles[point2], distanceBetween]);
         }
       }
     }
@@ -122,44 +127,48 @@ class _ParticlesState extends State<Particles>
       List<Animation<Offset>> awayAnimation = [];
       awayAnimationController.forward();
       for (int index = 0; index < particles.length; index++) {
-        distance.add(sqrt(
-            ((tapdx - particles[index].position.dx) * (tapdx - particles[index].position.dx)) +
-                ((tapdy - particles[index].position.dy) * (tapdy -particles[index].position.dy))));
-        directiondx = (tapdx -particles[index].position.dx) / distance[index];
-        directiondy = (tapdy -particles[index].position.dy) / distance[index];
-        Offset begin =particles[index].position;
+        distance.add(sqrt(((tapdx - particles[index].position.dx) *
+                (tapdx - particles[index].position.dx)) +
+            ((tapdy - particles[index].position.dy) *
+                (tapdy - particles[index].position.dy))));
+        directiondx = (tapdx - particles[index].position.dx) / distance[index];
+        directiondy = (tapdy - particles[index].position.dy) / distance[index];
+        Offset begin = particles[index].position;
         awayAnimation.add(
           Tween<Offset>(
                   begin: begin,
                   end: Offset(
-                   particles[index].position.dx -
+                    particles[index].position.dx -
                         (widget.awayRadius - distance[index]) * directiondx,
-                   particles[index].position.dy -
+                    particles[index].position.dy -
                         (widget.awayRadius - distance[index]) * directiondy,
                   ))
               .animate(CurvedAnimation(
                   parent: awayAnimationController,
                   curve: widget.awayAnimationCurve))
-                ..addListener(
-                  () {
-                    if (distance[index] < widget.awayRadius)
-                      setState(
-                          () => particles[index].updatePosition =  awayAnimation[index].value);
-                    if (awayAnimationController.isCompleted &&
-                        index == particles.length - 1) {
-                      awayAnimationController.dispose();
-                    }
-                  },
-                ),
+            ..addListener(
+              () {
+                if (distance[index] < widget.awayRadius)
+                  setState(() => particles[index].updatePosition =
+                      awayAnimation[index].value);
+                if (awayAnimationController.isCompleted &&
+                    index == particles.length - 1) {
+                  awayAnimationController.dispose();
+                }
+              },
+            ),
         );
       }
     } else {
       for (int index = 0; index < particles.length; index++) {
-        noAnimationDistance = sqrt(
-            ((tapdx - particles[index].position.dx) * (tapdx - particles[index].position.dx)) +
-                ((tapdy - particles[index].position.dy) * (tapdy - particles[index].position.dy)));
-        directiondx = (tapdx - particles[index].position.dx) / noAnimationDistance;
-        directiondy = (tapdy - particles[index].position.dy) / noAnimationDistance;
+        noAnimationDistance = sqrt(((tapdx - particles[index].position.dx) *
+                (tapdx - particles[index].position.dx)) +
+            ((tapdy - particles[index].position.dy) *
+                (tapdy - particles[index].position.dy)));
+        directiondx =
+            (tapdx - particles[index].position.dx) / noAnimationDistance;
+        directiondy =
+            (tapdy - particles[index].position.dy) / noAnimationDistance;
         if (noAnimationDistance < widget.awayRadius) {
           setState(() {
             particles[index].updatePosition = Offset(
@@ -177,12 +186,15 @@ class _ParticlesState extends State<Particles>
   void onHover(tapdx, tapdy) {
     {
       double noAnimationDistance = 0;
-       for (int index = 0; index < particles.length; index++) {
-        noAnimationDistance = sqrt(
-            ((tapdx - particles[index].position.dx) * (tapdx - particles[index].position.dx)) +
-                ((tapdy - particles[index].position.dy) * (tapdy - particles[index].position.dy)));
-      var  directiondx = (tapdx - particles[index].position.dx) / noAnimationDistance;
-      var  directiondy = (tapdy - particles[index].position.dy) / noAnimationDistance;
+      for (int index = 0; index < particles.length; index++) {
+        noAnimationDistance = sqrt(((tapdx - particles[index].position.dx) *
+                (tapdx - particles[index].position.dx)) +
+            ((tapdy - particles[index].position.dy) *
+                (tapdy - particles[index].position.dy)));
+        var directiondx =
+            (tapdx - particles[index].position.dx) / noAnimationDistance;
+        var directiondy =
+            (tapdy - particles[index].position.dy) / noAnimationDistance;
         if (noAnimationDistance < widget.awayRadius) {
           setState(() {
             particles[index].updatePosition = Offset(
@@ -192,7 +204,8 @@ class _ParticlesState extends State<Particles>
                   (widget.awayRadius - noAnimationDistance) * directiondy,
             );
           });
-        }}
+        }
+      }
     }
   }
 
@@ -218,8 +231,7 @@ class _ParticlesState extends State<Particles>
           width: widget.width,
           child: CustomPaint(
             painter: CircularParticlePainter(
-               particles: particles,
-                lineOffsets: lineOffset),
+                particles: particles, lineOffsets: lineOffset),
           ),
         ),
       ),
