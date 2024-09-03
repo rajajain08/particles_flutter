@@ -21,3 +21,7 @@
 ## [1.0.0] - 22/07/2021.
 
 - Added engine and other enhancements
+
+## [1.0.1] - 03/08/2024.
+
+- Bugfix.
