@@ -1,11 +1,11 @@
 library particles_flutter;
 
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:particles_flutter/component/particle_line.dart';
 import 'package:particles_flutter/core/runner.dart';
-import 'package:particles_flutter/painters/circular_painter.dart';
 import 'package:particles_flutter/component/particle/particle.dart';
+import 'package:particles_flutter/painters/particle_painter.dart';
 
 class Particles extends StatefulWidget {
   Particles({
@@ -54,7 +54,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   Runner _runner = Runner();
   _ParticlesState();
 
-  List<List> lineOffset = [];
+  List<ParticleLine> lineList = [];
 
   get math => null;
 
@@ -120,7 +120,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   }
 
   void connectLines() {
-    lineOffset = [];
+    lineList = [];
     double distanceBetween = 0;
     for (int point1 = 0; point1 < particles.length; point1++) {
       for (int point2 = 0; point2 < particles.length; point2++) {
@@ -130,8 +130,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
             pow((particles[point2].position.dy - particles[point1].position.dy),
                 2));
         if (distanceBetween < 110) {
-          lineOffset
-              .add([particles[point1], particles[point2], distanceBetween]);
+          lineList.add( ParticleLine(particles[point1], particles[point2], distanceBetween) );
         }
       }
     }
@@ -253,8 +252,8 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           height: widget.height,
           width: widget.width,
           child: CustomPaint(
-            painter: CircularParticlePainter(
-                particles: particles, lineOffsets: lineOffset),
+            painter: ParticlePainter(
+                particles: particles, lines: lineList),
           ),
         ),
       ),

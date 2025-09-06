@@ -4,6 +4,10 @@ import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/component/particle/particle.dart';
+import 'package:particles_flutter/component/particle/circular_particle.dart';
+import 'package:particles_flutter/component/particle/rectangular_particle.dart';
+import 'package:particles_flutter/component/particle/ovoidal_particle.dart';
+import 'package:particles_flutter/component/particle/triangular_particle.dart';
 import 'package:particles_flutter/particles_engine.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -113,10 +117,37 @@ class CircularParticleScreen extends StatelessWidget {
   List<Particle> createParticles() {
     var rng = Random();
     List<Particle> particles = [];
-    for (int i = 0; i < 140; i++) {
-      particles.add(Particle(
+    for (int i = 0; i < 32; i++) {
+      particles.add(CircularParticle(
         color: Colors.white.withOpacity(0.6),
-        size: rng.nextDouble() * 10,
+        radius: rng.nextDouble() * 10,
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+      ));
+    }
+    for (int i = 0; i < 32; i++) {
+      particles.add(RectangularParticle(
+        color: Colors.white.withOpacity(0.6),
+        height: rng.nextDouble() * 30,
+        width: rng.nextDouble() * 30,
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+      ));
+    }
+    for (int i = 0; i < 32; i++) {
+      particles.add(OvoidalParticle(
+        color: Colors.white.withOpacity(0.6),
+        height: rng.nextDouble() * 25,
+        width: rng.nextDouble() * 50,
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+      ));
+    }
+    for (int i = 0; i < 32; i++) {
+      particles.add(TriangularParticle(
+        color: Colors.white.withOpacity(0.6),
+        height: rng.nextDouble() * 30,
+        width: rng.nextDouble() * 30,
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),
       ));
