@@ -1,6 +1,7 @@
 library particles_flutter;
 
 import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/core/runner.dart';
 import 'package:particles_flutter/painters/circular_painter.dart';
@@ -19,6 +20,9 @@ class Particles extends StatefulWidget {
     this.enableHover = false,
     this.hoverRadius = 80,
     this.connectDots = false,
+    this.randomStartPosition = true,
+    this.startPosition = const Offset(0,0),
+    this.startPositionRadius = 0
   }) : super(key: key);
   final double awayRadius;
   final double height;
@@ -30,6 +34,15 @@ class Particles extends StatefulWidget {
   final double hoverRadius;
   final List<Particle> particles;
   final bool connectDots; //not recommended
+
+  /// toggle emission position / random spawning
+  final bool randomStartPosition;
+
+  /// emission position
+  final Offset startPosition;
+
+  /// maximum distance from the start position which a particle may spawn
+  final double startPositionRadius;
 
   _ParticlesState createState() => _ParticlesState();
 }
@@ -47,11 +60,21 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
 
   void initailizeParticles(_) {
     particles = widget.particles;
-    for (int index = 0; index < widget.particles.length; index++) {
-      particles[index].updatePosition = Offset(
-        rng.nextDouble() * widget.width,
-        rng.nextDouble() * widget.height,
-      );
+    if(widget.randomStartPosition) {
+      for (int index = 0; index < widget.particles.length; index++) {
+        particles[index].updatePosition = Offset(
+          rng.nextDouble() * widget.width,
+          rng.nextDouble() * widget.height,
+        );
+      }
+    }
+    else {
+      for (int index = 0; index < widget.particles.length; index++) {
+        particles[index].updatePosition = Offset(
+          widget.startPosition.dx + ((rng.nextDouble() * 2 - 1) * widget.startPositionRadius),
+          widget.startPosition.dy + ((rng.nextDouble() * 2 - 1) * widget.startPositionRadius),
+        );
+      }
     }
   }
 
