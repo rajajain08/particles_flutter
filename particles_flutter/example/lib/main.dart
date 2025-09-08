@@ -168,10 +168,9 @@ class ParticleScreen extends StatelessWidget {
     
     // Image particle example
     for (int i = 0; i < 30; i++) {
-      particles.add(ImageParticle(
+      particles.add(ImageParticle.Ratio(
         particleImage: particleImage,
-        height: 100,
-        width: 100,
+        sizeRatio: 0.1,
         color: Colors.white.withOpacity(0.8),
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),

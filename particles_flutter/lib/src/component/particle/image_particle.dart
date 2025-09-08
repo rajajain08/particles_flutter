@@ -13,6 +13,18 @@ class ImageParticle extends Particle {
     double rotationSpeed = 0,
     }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
+  ImageParticle.Ratio({
+    required this.particleImage,
+    /// % Ratio of the original image size
+    required double sizeRatio,
+    required Color color, 
+    required Offset velocity,
+    double rotationSpeed = 0,
+  }) : 
+  this.height = particleImage.height.toDouble() * sizeRatio,
+  this.width = particleImage.width.toDouble() * sizeRatio,
+  super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
+
   /// Define the height of the rectangular particle
   final ui.Image particleImage;
 
