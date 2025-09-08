@@ -24,6 +24,13 @@ abstract class Particle {
   }
   Offset get position => _position;
 
+  // Update the current particle velocity - only used when BoundType is set to Bounce
+  Offset _velocity = Offset(0, 0);
+  set updateVelocity(Offset newVelocity) {
+    _velocity = newVelocity;
+  }
+  Offset get currentVelocity => _velocity;
+
   // Update the current rotation of the particle
   double _rotation = 0;
   set updateRotation(double newRotation) {

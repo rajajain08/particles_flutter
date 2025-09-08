@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'dart:math';
 import 'dart:ui' as ui;
-
+import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:particles_flutter/shapes.dart';
 import 'package:particles_flutter/engine.dart';
 import 'package:particles_flutter/src/component/particle/image_particle.dart';
-import 'splash.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const MyApp());
@@ -24,6 +24,46 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.black,
         body: SplashScreen(),
+      ),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState()
+  {
+    super.initState();
+    InitializeData();
+  }
+  Future<void> InitializeData() async {
+    final ui.Image particleImage = await loadImage('assets/fug.png');
+    Navigator.pushReplacement(
+      context, 
+      MaterialPageRoute(builder: (context) => ParticleScreen(particleImage: particleImage,))
+      );
+  }
+
+  Future<ui.Image> loadImage(String imagePath) async {
+    ByteData data = await rootBundle.load(imagePath);
+    final Completer<ui.Image> completer = Completer();
+    ui.decodeImageFromList(Uint8List.view(data.buffer), (ui.Image img) {
+      return completer.complete(img);
+    });
+
+    return completer.future;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }
@@ -52,6 +92,7 @@ class ParticleScreen extends StatelessWidget {
             enableHover: true,
             hoverRadius: 90,
             connectDots: false,
+            boundType: BoundType.Bounce,
           ),
         ),
         Center(
