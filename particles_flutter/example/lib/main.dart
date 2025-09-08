@@ -120,7 +120,7 @@ class CircularParticleScreen extends StatelessWidget {
     for (int i = 0; i < 32; i++) {
       particles.add(CircularParticle(
         color: Colors.white.withOpacity(0.6),
-        radius: rng.nextDouble() * 10,
+        radius: rng.nextDouble() * 20,
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),
       ));
@@ -128,28 +128,31 @@ class CircularParticleScreen extends StatelessWidget {
     for (int i = 0; i < 32; i++) {
       particles.add(RectangularParticle(
         color: Colors.white.withOpacity(0.6),
-        height: rng.nextDouble() * 30,
-        width: rng.nextDouble() * 30,
+        height: (rng.nextDouble() * 30) + 20,
+        width: (rng.nextDouble() * 30) + 20,
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),
+        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
     for (int i = 0; i < 32; i++) {
       particles.add(OvoidalParticle(
         color: Colors.white.withOpacity(0.6),
-        height: rng.nextDouble() * 25,
-        width: rng.nextDouble() * 50,
+        height: rng.nextDouble() * 30,
+        width: rng.nextDouble() * 60,
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),
+        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
     for (int i = 0; i < 32; i++) {
       particles.add(TriangularParticle(
         color: Colors.white.withOpacity(0.6),
-        height: rng.nextDouble() * 30,
-        width: rng.nextDouble() * 30,
+        height: rng.nextDouble() * 40,
+        width: rng.nextDouble() * 40,
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),
+        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
     return particles;

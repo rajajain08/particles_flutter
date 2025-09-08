@@ -6,14 +6,15 @@ class CircularParticle extends Particle {
   CircularParticle({
     required this.radius,
     required Color color, 
-    required Offset velocity}) : 
-  super(color: color, velocity: velocity);
+    required Offset velocity,
+    double rotationSpeed = 0,
+    }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
   /// Define the radius of the circular particle
   final double radius;
 
   @override
-  void paint(Canvas canvas, Size size) { 
+  void DrawParticle(Canvas canvas, Size size) { 
     canvas.drawCircle(
       position,
       radius,

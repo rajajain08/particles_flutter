@@ -92,6 +92,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
     setState(
       () {
         for (int index = 0; index < particles.length; index++) {
+          //update particle position
           double dx = particles[index].position.dx +
               deltaTime * particles[index].velocity.dx;
           double dy = particles[index].position.dy +
@@ -107,6 +108,11 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
             dy = dy + widget.height;
           }
           particles[index].updatePosition = (Offset(dx, dy));
+
+          //update particle rotation
+          double r = particles[index].rotation +
+              deltaTime * particles[index].rotationSpeed;
+          particles[index].updateRotation = (r);
         }
         if (widget.connectDots) connectLines(); //not recommended
       },

@@ -7,8 +7,9 @@ class TriangularParticle extends Particle {
     required this.height,
     required this.width,
     required Color color, 
-    required Offset velocity}) : 
-  super(color: color, velocity: velocity);
+    required Offset velocity,
+    double rotationSpeed = 0,
+    }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
   /// Define the height of the triangular particle
   final double height;
@@ -17,7 +18,7 @@ class TriangularParticle extends Particle {
   final double width;
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void DrawParticle(Canvas canvas, Size size) {
     canvas.drawPath(
       getTrianglePath(),
       Paint()..color = color,
@@ -26,10 +27,11 @@ class TriangularParticle extends Particle {
   
   Path getTrianglePath()
   {
+    /// Ensure pivot centre is the same as triangle centre
     return Path()
-      ..moveTo(0 +position.dx, height +position.dy)
-      ..lineTo(width/2 +position.dx, 0 +position.dy)
-      ..lineTo(width +position.dx, height +position.dy)
-      ..lineTo(0 +position.dx, height +position.dy);
+      ..moveTo(-width / 2, height / 2)
+      ..lineTo(0, -height / 2)
+      ..lineTo(width / 2, height / 2)
+      ..lineTo(-width / 2, height / 2);
   }
 }

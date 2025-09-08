@@ -7,8 +7,9 @@ class RectangularParticle extends Particle {
     required this.height,
     required this.width,
     required Color color, 
-    required Offset velocity}) : 
-  super(color: color, velocity: velocity);
+    required Offset velocity,
+    double rotationSpeed = 0,
+    }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
   /// Define the height of the rectangular particle
   final double height;
@@ -17,9 +18,9 @@ class RectangularParticle extends Particle {
   final double width;
 
   @override
-  void paint(Canvas canvas, Size size) {
+  void DrawParticle(Canvas canvas, Size size) {
     canvas.drawRect(
-        Rect.fromLTWH(position.dx, position.dy, width, height),
+        Rect.fromCenter(center:Offset.zero, width:width, height:height),
         Paint()..color = color,
         );
     }
