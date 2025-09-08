@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:particles_flutter/component/particle/particle.dart';
+import 'package:particles_flutter/src/component/particle/particle.dart';
 
 /// Single Triangular Particle
 class TriangularParticle extends Particle {

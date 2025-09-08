@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:particles_flutter/component/particle/particle.dart';
+import 'package:particles_flutter/src/component/particle/particle.dart';
 
 /// Single Circular Particle
 class CircularParticle extends Particle {

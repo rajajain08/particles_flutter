@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:particles_flutter/component/particle/particle.dart';
+import 'package:particles_flutter/src/component/particle/particle.dart';
 
 class ParticleLine extends CustomPainter {
   ParticleLine(

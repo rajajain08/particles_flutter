@@ -1,9 +1,9 @@
 import 'dart:ui';
-import 'package:particles_flutter/component/particle/particle.dart';
+import 'package:particles_flutter/src/component/particle/particle.dart';
 
-/// Single Rectangular Particle
-class RectangularParticle extends Particle {
-  RectangularParticle({
+/// Single Ovoidal Particle
+class OvoidalParticle extends Particle {
+  OvoidalParticle({
     required this.height,
     required this.width,
     required Color color, 
@@ -19,8 +19,8 @@ class RectangularParticle extends Particle {
 
   @override
   void DrawParticle(Canvas canvas, Size size) {
-    canvas.drawRect(
-        Rect.fromCenter(center:Offset.zero, width:width, height:height),
+    canvas.drawOval(
+        Rect.fromCenter(center: Offset.zero, width:width, height:height),
         Paint()..color = color,
         );
     }

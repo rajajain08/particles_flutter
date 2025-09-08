@@ -1,14 +1,14 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:particles_flutter/component/particle/particle.dart';
-import 'package:particles_flutter/component/particle/circular_particle.dart';
-import 'package:particles_flutter/component/particle/rectangular_particle.dart';
-import 'package:particles_flutter/component/particle/ovoidal_particle.dart';
-import 'package:particles_flutter/component/particle/triangular_particle.dart';
-import 'package:particles_flutter/particles_engine.dart';
+import 'package:flutter/services.dart';
+import 'package:particles_flutter/shapes.dart';
+import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/src/component/particle/image_particle.dart';
+import 'splash.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const MyApp());
@@ -21,16 +21,18 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const Scaffold(
+      home: Scaffold(
         backgroundColor: Colors.black,
-        body: CircularParticleScreen(),
+        body: SplashScreen(),
       ),
     );
   }
 }
 
-class CircularParticleScreen extends StatelessWidget {
-  const CircularParticleScreen({super.key});
+class ParticleScreen extends StatelessWidget {
+  const ParticleScreen({required this.particleImage, super.key});
+
+  final ui.Image particleImage;
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -117,6 +119,8 @@ class CircularParticleScreen extends StatelessWidget {
   List<Particle> createParticles() {
     var rng = Random();
     List<Particle> particles = [];
+
+    // Circle particle example
     for (int i = 0; i < 32; i++) {
       particles.add(CircularParticle(
         color: Colors.white.withOpacity(0.6),
@@ -125,6 +129,8 @@ class CircularParticleScreen extends StatelessWidget {
             rng.nextDouble() * 200 * randomSign()),
       ));
     }
+
+    // Rectangle particle example
     for (int i = 0; i < 32; i++) {
       particles.add(RectangularParticle(
         color: Colors.white.withOpacity(0.6),
@@ -135,6 +141,8 @@ class CircularParticleScreen extends StatelessWidget {
         rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
+
+    // Oval particle example
     for (int i = 0; i < 32; i++) {
       particles.add(OvoidalParticle(
         color: Colors.white.withOpacity(0.6),
@@ -145,6 +153,8 @@ class CircularParticleScreen extends StatelessWidget {
         rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
+
+    // Triangle particle example
     for (int i = 0; i < 32; i++) {
       particles.add(TriangularParticle(
         color: Colors.white.withOpacity(0.6),
@@ -155,8 +165,22 @@ class CircularParticleScreen extends StatelessWidget {
         rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
+    
+    // Image particle example
+    for (int i = 0; i < 30; i++) {
+      particles.add(ImageParticle(
+        particleImage: particleImage,
+        height: 100,
+        width: 100,
+        color: Colors.white.withOpacity(0.8),
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
+      ));
+    }
+    
     return particles;
-  }
+  } 
 
   double randomSign() {
     var rng = Random();

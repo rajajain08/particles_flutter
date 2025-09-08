@@ -2,10 +2,10 @@ library particles_flutter;
 
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:particles_flutter/component/particle_line.dart';
-import 'package:particles_flutter/core/runner.dart';
-import 'package:particles_flutter/component/particle/particle.dart';
-import 'package:particles_flutter/painters/particle_painter.dart';
+import 'package:particles_flutter/src/component/particle_line.dart';
+import 'package:particles_flutter/src/core/runner.dart';
+import 'package:particles_flutter/src/component/particle/particle.dart';
+import 'package:particles_flutter/src/painters/particle_painter.dart';
 
 class Particles extends StatefulWidget {
   Particles({
