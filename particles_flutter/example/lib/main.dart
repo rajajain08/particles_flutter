@@ -93,7 +93,6 @@ class ParticleScreen extends StatelessWidget {
                 delay: const Duration(milliseconds: 5),
                 recycles: true,
               ),
-              particlePhysics: const ParticlePhysics(),
               interaction: ParticleInteraction(
                 awayRadius: 150,
                 onTapAnimation: true,
@@ -117,7 +116,7 @@ class ParticleScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  'particles flutter',
+                  'particles expanded',
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 18,
@@ -129,6 +128,20 @@ class ParticleScreen extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 12,
+                  ),
+                ),
+                const Text(
+                  'Expanded by RealEeveahy',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 10,
+                  ),
+                ),
+                const Text(
+                  'Forked from rajajain08',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 10,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -215,18 +228,17 @@ class ParticleScreen extends StatelessWidget {
         rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
-    
-    // Image particle example
-    for (int i = 0; i < 30; i++) {
-      particles.add(ImageParticle.Ratio(
-        particleImage: particleImage,
-        sizeRatio: 0.05,
-        color: Colors.white.withOpacity(0.8),
-        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
-            rng.nextDouble() * 200 * randomSign()),
-        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
-      ));
-    }
+    // // Image particle example
+    // for (int i = 0; i < 30; i++) {
+    //   particles.add(ImageParticle.Ratio(
+    //     particleImage: particleImage,
+    //     sizeRatio: 0.05,
+    //     color: Colors.white.withOpacity(0.8),
+    //     velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+    //         rng.nextDouble() * 200 * randomSign()),
+    //     rotationSpeed: rng.nextDouble() * 10 * randomSign(),
+    //   ));
+    // }
     particles.shuffle();
     return particles;
   } 
