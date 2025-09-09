@@ -59,5 +59,8 @@ class Emitter {
       startPosition.dx + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
       startPosition.dy + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
     );
+
+    // Reset the particle velocity to it's initial number on recylce - in case of physics
+    particle.updateVelocity = particle.velocity;
   }
 }

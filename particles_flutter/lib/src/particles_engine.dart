@@ -9,6 +9,7 @@ import 'package:particles_flutter/src/component/particle/particle.dart';
 import 'package:particles_flutter/src/painters/particle_painter.dart';
 import 'package:particles_flutter/src/utils/bound_type.dart';
 import 'package:particles_flutter/src/utils/emitter.dart';
+import 'package:particles_flutter/src/utils/particle_physics.dart';
 
 class Particles extends StatefulWidget {
   /// Creates a widget that handles per-frame animation of particles.
@@ -19,6 +20,7 @@ class Particles extends StatefulWidget {
     required this.width,
     this.connectDots = false,
     this.particleEmitter,
+    this.particlePhysics,
     this.boundType = BoundType.None,
     this.interaction,
   }) : super(key: key);
@@ -51,8 +53,11 @@ class Particles extends StatefulWidget {
   /// Not recommended for performance reasons.
   final bool connectDots;
 
-  /// Toggle emission position.
+  /// Set emission options.
   final Emitter? particleEmitter;
+
+  /// Set physics options.
+  final ParticlePhysics? particlePhysics;
 
   _ParticlesState createState() => _ParticlesState();
 }
@@ -122,6 +127,11 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
                 if(widget.particleEmitter!.recycles) widget.particleEmitter!.Recycle(particles[index]);
             }
             else particles[index].updatePosition = (Offset(dx, dy)); // Continue as normal
+
+          if(widget.particlePhysics != null)
+          {
+            particles[index].updateVelocity = widget.particlePhysics!.applyGravity(particles[index].currentVelocity);
+          }
 
           //update particle rotation
           double r = particles[index].rotation +

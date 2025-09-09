@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:particles_flutter/shapes.dart';
 import 'package:particles_flutter/engine.dart';
 import 'package:particles_flutter/interactions.dart';
-import 'package:particles_flutter/src/component/particle/image_particle.dart';
+import 'package:particles_flutter/physics.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const MyApp());
@@ -93,6 +93,7 @@ class ParticleScreen extends StatelessWidget {
                 delay: const Duration(milliseconds: 5),
                 recycles: true,
               ),
+              particlePhysics: const ParticlePhysics(),
               interaction: ParticleInteraction(
                 awayRadius: 150,
                 onTapAnimation: true,
