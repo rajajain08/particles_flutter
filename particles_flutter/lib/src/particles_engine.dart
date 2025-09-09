@@ -2,6 +2,7 @@ library particles_flutter;
 
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:particles_flutter/interactions.dart';
 import 'package:particles_flutter/src/component/particle_line.dart';
 import 'package:particles_flutter/src/core/runner.dart';
 import 'package:particles_flutter/src/component/particle/particle.dart';
@@ -9,50 +10,63 @@ import 'package:particles_flutter/src/painters/particle_painter.dart';
 import 'package:particles_flutter/src/utils/bound_type.dart';
 
 class Particles extends StatefulWidget {
-  Particles({
+  /// Creates a widget that handles per-frame animation of particles.
+  const Particles({
     Key? key,
     required this.particles,
     required this.height,
     required this.width,
-    this.onTapAnimation = true,
-    this.awayRadius = 100,
-    this.awayAnimationDuration = const Duration(milliseconds: 600),
-    this.awayAnimationCurve = Curves.easeIn,
-    this.enableHover = false,
-    this.hoverRadius = 80,
     this.connectDots = false,
     this.randomStartPosition = true,
     this.startPosition = const Offset(0,0),
     this.startPositionRadius = 0,
-    this.boundType = BoundType.None
+    this.boundType = BoundType.None,
+    this.interaction,
   }) : super(key: key);
-  final double awayRadius;
-  final double height;
-  final double width;
-  final bool onTapAnimation;
-  final Duration awayAnimationDuration;
-  final Curve awayAnimationCurve;
-  final bool enableHover;
-  final double hoverRadius;
-  final List<Particle> particles;
-  final BoundType boundType;
-  final bool connectDots; //not recommended
 
-  /// toggle emission position / random spawning
+  /// Define the boundary size for the particle engine.
+  final double height;
+  /// Define the boundary size for the particle engine.
+  final double width;
+
+  /// Set a list of pre-defined particles to be used by the particle engine.
+  /// 
+  /// Size, Velocity, Colour and Rotation Speed are defined per-particle, 
+  /// allowing for a degree of randomness to be generated before assigning them to the engine.
+  /// 
+  /// See: [Particle].
+  final List<Particle> particles;
+
+  /// Define the boundary type for the engine, one of:
+  /// *  [BoundType.None] : Particles do not interact with the engine boundary.
+  /// *  [BoundType.WrapAround] : Particles that reach a boundary are pushed to the opposite boundary
+  /// *  [BoundType.Bounce] : Particles that reach a boundary have their velocity set in the opposite direction
+  final BoundType boundType;
+
+  /// Define the touch control interaction settings for the engine.
+  /// 
+  /// See: [ParticleInteraction].
+  final ParticleInteraction? interaction;
+
+  /// Toggle line connections between particles.  
+  /// Not recommended for performance reasons.
+  final bool connectDots;
+
+  /// Toggle emission position.
   final bool randomStartPosition;
 
-  /// emission position
+  /// Emission position.
   final Offset startPosition;
 
-  /// maximum distance from the start position which a particle may spawn
+  /// Maximum distance from [startPosition] which a particle may spawn.
   final double startPositionRadius;
 
   _ParticlesState createState() => _ParticlesState();
 }
 
-class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
-  late AnimationController awayAnimationController;
+class _ParticlesState extends State<Particles> with TickerProviderStateMixin {  
   List<Particle> particles = [];
+
   var rng = Random();
   Runner _runner = Runner();
   _ParticlesState();
@@ -63,6 +77,8 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
 
   void initailizeParticles(_) {
     particles = widget.particles;
+    if (widget.interaction != null)
+      widget.interaction?.state.particles = particles;
     for (int index = 0; index < widget.particles.length; index++) {
 
       /// Initialise particles at random positions (default)
@@ -146,126 +162,19 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
     }
   }
 
-  void onTapGesture(double tapdx, double tapdy) {
-    awayAnimationController = AnimationController(
-        duration: widget.awayAnimationDuration, vsync: this);
-    awayAnimationController.reset();
-    double directiondx;
-    double directiondy;
-    List<double> distance = [];
-    double noAnimationDistance = 0;
-
-    if (widget.onTapAnimation) {
-      List<Animation<Offset>> awayAnimation = [];
-      awayAnimationController.forward();
-      for (int index = 0; index < particles.length; index++) {
-        distance.add(sqrt(((tapdx - particles[index].position.dx) *
-                (tapdx - particles[index].position.dx)) +
-            ((tapdy - particles[index].position.dy) *
-                (tapdy - particles[index].position.dy))));
-        directiondx = (tapdx - particles[index].position.dx) / distance[index];
-        directiondy = (tapdy - particles[index].position.dy) / distance[index];
-        Offset begin = particles[index].position;
-        awayAnimation.add(
-          Tween<Offset>(
-                  begin: begin,
-                  end: Offset(
-                    particles[index].position.dx -
-                        (widget.awayRadius - distance[index]) * directiondx,
-                    particles[index].position.dy -
-                        (widget.awayRadius - distance[index]) * directiondy,
-                  ))
-              .animate(CurvedAnimation(
-                  parent: awayAnimationController,
-                  curve: widget.awayAnimationCurve))
-            ..addListener(
-              () {
-                if (distance[index] < widget.awayRadius)
-                  setState(() => particles[index].updatePosition =
-                      awayAnimation[index].value);
-                if (awayAnimationController.isCompleted &&
-                    index == particles.length - 1) {
-                  awayAnimationController.dispose();
-                }
-              },
-            ),
-        );
-      }
-    } else {
-      for (int index = 0; index < particles.length; index++) {
-        noAnimationDistance = sqrt(((tapdx - particles[index].position.dx) *
-                (tapdx - particles[index].position.dx)) +
-            ((tapdy - particles[index].position.dy) *
-                (tapdy - particles[index].position.dy)));
-        directiondx =
-            (tapdx - particles[index].position.dx) / noAnimationDistance;
-        directiondy =
-            (tapdy - particles[index].position.dy) / noAnimationDistance;
-        if (noAnimationDistance < widget.awayRadius) {
-          setState(() {
-            particles[index].updatePosition = Offset(
-              particles[index].position.dx -
-                  (widget.awayRadius - noAnimationDistance) * directiondx,
-              particles[index].position.dy -
-                  (widget.awayRadius - noAnimationDistance) * directiondy,
-            );
-          });
-        }
-      }
-    }
-  }
-
-  void onHover(tapdx, tapdy) {
-    {
-      double noAnimationDistance = 0;
-      for (int index = 0; index < particles.length; index++) {
-        noAnimationDistance = sqrt(((tapdx - particles[index].position.dx) *
-                (tapdx - particles[index].position.dx)) +
-            ((tapdy - particles[index].position.dy) *
-                (tapdy - particles[index].position.dy)));
-        var directiondx =
-            (tapdx - particles[index].position.dx) / noAnimationDistance;
-        var directiondy =
-            (tapdy - particles[index].position.dy) / noAnimationDistance;
-        if (noAnimationDistance < widget.awayRadius) {
-          setState(() {
-            particles[index].updatePosition = Offset(
-              particles[index].position.dx -
-                  (widget.awayRadius - noAnimationDistance) * directiondx,
-              particles[index].position.dy -
-                  (widget.awayRadius - noAnimationDistance) * directiondy,
-            );
-          });
-        }
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      cursor: MouseCursor.defer,
-      onHover: (event) {
-        if (widget.enableHover) {
-          RenderBox getBox = context.findRenderObject() as RenderBox;
-          onHover(getBox.globalToLocal(event.position).dx,
-              getBox.globalToLocal(event.position).dy);
-        }
-      },
-      child: GestureDetector(
-        onTapDown: (TapDownDetails details) {
-          RenderBox getBox = context.findRenderObject() as RenderBox;
-          onTapGesture(getBox.globalToLocal(details.globalPosition).dx,
-              getBox.globalToLocal(details.globalPosition).dy);
-        },
-        child: SizedBox(
-          height: widget.height,
-          width: widget.width,
-          child: CustomPaint(
+    return SizedBox(
+      height: widget.height,
+      width: widget.width,
+      child: Stack(
+        children: [
+          CustomPaint(
             painter: ParticlePainter(
                 particles: particles, lines: lineList),
           ),
-        ),
+          widget.interaction!,
+        ],
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:particles_flutter/shapes.dart';
 import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/interactions.dart';
 import 'package:particles_flutter/src/component/particle/image_particle.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -81,19 +82,21 @@ class ParticleScreen extends StatelessWidget {
       children: [
         Container(
           color: Colors.blue,
-          child: Particles(
-            awayRadius: 150,
-            particles: createParticles(),
-            height: screenHeight,
-            width: screenWidth,
-            onTapAnimation: true,
-            awayAnimationDuration: const Duration(milliseconds: 100),
-            awayAnimationCurve: Curves.linear,
-            enableHover: true,
-            hoverRadius: 90,
-            connectDots: false,
-            boundType: BoundType.Bounce,
-          ),
+            child: Particles(
+              particles: createParticles(),
+              height: screenHeight,
+              width: screenWidth,
+              connectDots: false,
+              boundType: BoundType.Bounce,
+              interaction: ParticleInteraction(
+                awayRadius: 150,
+                onTapAnimation: true,
+                awayAnimationDuration: const Duration(milliseconds: 100),
+                awayAnimationCurve: Curves.linear,
+                enableHover: true,
+                hoverRadius: 90,
+            ),
+          )
         ),
         Center(
           child: Container(

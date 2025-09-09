@@ -8,13 +8,13 @@ abstract class Particle {
     this.rotationSpeed = 0
     });
   
-  /// Define the color of a single particle
+  /// Define the color of a single particle.
   final Color color;
 
-  /// Define the direction and speed of a single particle
+  /// Define the direction and speed of a single particle.
   final Offset velocity;
 
-  /// Define the rotation speed of a single particle
+  /// Define the rotation speed of a single particle.
   final double rotationSpeed;
 
   // Update the current position of the particle
