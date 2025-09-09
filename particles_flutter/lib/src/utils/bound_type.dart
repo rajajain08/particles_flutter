@@ -7,7 +7,7 @@ enum BoundType {
   Bounce
 }
 
-Offset GetWrapPosition(nextX, nextY, maxX, maxY)
+Offset GetWrapPosition(double nextX, double nextY, double maxX, double maxY)
 {
   if (nextX > maxX) { // Exceeding right bound
     nextX = nextX - maxX;
@@ -22,7 +22,7 @@ Offset GetWrapPosition(nextX, nextY, maxX, maxY)
   return Offset(nextX, nextY);
 }
 
-Offset CheckForBounce(nextX, nextY, maxX, maxY, Particle particle)
+Offset CheckForBounce(double nextX, double nextY, double maxX, double maxY, Particle particle)
 {
   if (nextX > maxX) { // Exceeding right bound
     particle.updateVelocity = Offset(-particle.currentVelocity.dx, particle.currentVelocity.dy);
@@ -39,4 +39,15 @@ Offset CheckForBounce(nextX, nextY, maxX, maxY, Particle particle)
     nextY = 0;
   }
   return Offset(nextX, nextY);
+}
+
+bool OutOfBound(double nextX, double nextY, double maxX, double maxY, {double overflow = 5})
+{
+  if(
+      nextX > maxX + overflow ||
+      nextX < 0 - overflow ||
+      nextY > maxY + overflow ||
+      nextY < 0 - overflow
+    ) return true;
+  else return false;
 }

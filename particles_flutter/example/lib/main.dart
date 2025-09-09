@@ -87,7 +87,12 @@ class ParticleScreen extends StatelessWidget {
               height: screenHeight,
               width: screenWidth,
               connectDots: false,
-              boundType: BoundType.Bounce,
+              boundType: BoundType.None,
+              particleEmitter: Emitter(
+                startPosition: Offset(screenWidth/2, screenHeight/2),
+                delay: const Duration(milliseconds: 5),
+                recycles: true,
+              ),
               interaction: ParticleInteraction(
                 awayRadius: 150,
                 onTapAnimation: true,
@@ -95,8 +100,8 @@ class ParticleScreen extends StatelessWidget {
                 awayAnimationCurve: Curves.linear,
                 enableHover: true,
                 hoverRadius: 90,
-            ),
-          )
+              ),
+            )
         ),
         Center(
           child: Container(
@@ -214,14 +219,14 @@ class ParticleScreen extends StatelessWidget {
     for (int i = 0; i < 30; i++) {
       particles.add(ImageParticle.Ratio(
         particleImage: particleImage,
-        sizeRatio: 0.1,
+        sizeRatio: 0.05,
         color: Colors.white.withOpacity(0.8),
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),
         rotationSpeed: rng.nextDouble() * 10 * randomSign(),
       ));
     }
-    
+    particles.shuffle();
     return particles;
   } 
 

@@ -16,7 +16,7 @@ class CircularParticle extends Particle {
   @override
   void DrawParticle(Canvas canvas, Size size) { 
     canvas.drawCircle(
-      position,
+      Offset(size.width/2, size.height/2),
       radius,
       Paint()..color = color,
     );

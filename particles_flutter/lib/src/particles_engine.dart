@@ -8,6 +8,7 @@ import 'package:particles_flutter/src/core/runner.dart';
 import 'package:particles_flutter/src/component/particle/particle.dart';
 import 'package:particles_flutter/src/painters/particle_painter.dart';
 import 'package:particles_flutter/src/utils/bound_type.dart';
+import 'package:particles_flutter/src/utils/emitter.dart';
 
 class Particles extends StatefulWidget {
   /// Creates a widget that handles per-frame animation of particles.
@@ -17,9 +18,7 @@ class Particles extends StatefulWidget {
     required this.height,
     required this.width,
     this.connectDots = false,
-    this.randomStartPosition = true,
-    this.startPosition = const Offset(0,0),
-    this.startPositionRadius = 0,
+    this.particleEmitter,
     this.boundType = BoundType.None,
     this.interaction,
   }) : super(key: key);
@@ -53,13 +52,7 @@ class Particles extends StatefulWidget {
   final bool connectDots;
 
   /// Toggle emission position.
-  final bool randomStartPosition;
-
-  /// Emission position.
-  final Offset startPosition;
-
-  /// Maximum distance from [startPosition] which a particle may spawn.
-  final double startPositionRadius;
+  final Emitter? particleEmitter;
 
   _ParticlesState createState() => _ParticlesState();
 }
@@ -76,28 +69,24 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   get math => null;
 
   void initailizeParticles(_) {
-    particles = widget.particles;
-    if (widget.interaction != null)
-      widget.interaction?.state.particles = particles;
-    for (int index = 0; index < widget.particles.length; index++) {
+    widget.interaction!.state.particles = widget.particles;
 
-      /// Initialise particles at random positions (default)
-      if(widget.randomStartPosition) {
+    /// Initialise particles at random positions (default)
+    if(widget.particleEmitter == null) {
+      particles = widget.particles;
+      for (int index = 0; index < widget.particles.length; index++) {
         particles[index].updatePosition = Offset(
           rng.nextDouble() * widget.width,
           rng.nextDouble() * widget.height,
         );
       }
-      /// Initialise particles at the given position + given radius
-      else {
-        particles[index].updatePosition = Offset(
-          widget.startPosition.dx + ((rng.nextDouble() * 2 - 1) * widget.startPositionRadius),
-          widget.startPosition.dy + ((rng.nextDouble() * 2 - 1) * widget.startPositionRadius),
-        );
-      }
-
+    }
+    else {
+      widget.particleEmitter!.Emit(widget.particles, particles);
+    }
+    for (int index = 0; index < widget.particles.length; index++) {
       /// Set the initial velocity amount
-      particles[index].updateVelocity = particles[index].velocity;
+      widget.particles[index].updateVelocity = widget.particles[index].velocity;
     }
   }
 
@@ -127,7 +116,12 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           else if(widget.boundType == BoundType.Bounce)
             particles[index].updatePosition = CheckForBounce(dx, dy, widget.width, widget.height, particles[index]);
           else
-            particles[index].updatePosition = (Offset(dx, dy));
+            if(OutOfBound(dx, dy, widget.width, widget.height))
+            {
+              if(widget.particleEmitter != null)
+                if(widget.particleEmitter!.recycles) widget.particleEmitter!.Recycle(particles[index]);
+            }
+            else particles[index].updatePosition = (Offset(dx, dy)); // Continue as normal
 
           //update particle rotation
           double r = particles[index].rotation +

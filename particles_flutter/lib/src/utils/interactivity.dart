@@ -21,6 +21,16 @@ class ParticleInteraction extends StatefulWidget{
     this.hoverRadius = 80,
   }) : super(key: key);
 
+  ParticleInteraction.None ({
+    Key? key,
+    this.onTapAnimation = false,
+    this.awayRadius = 0,
+    this.awayAnimationDuration = Duration.zero,
+    this.awayAnimationCurve = Curves.easeIn,
+    this.enableHover = false,
+    this.hoverRadius = 0,
+  }) : super(key: key);
+
   /// Define the radius of a cursor/gesture.
   /// 
   /// Particles will be pushed away from the cursor/gesture by this amount.
