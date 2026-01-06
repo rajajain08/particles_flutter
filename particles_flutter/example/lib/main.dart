@@ -1,10 +1,15 @@
 import 'dart:io';
 import 'dart:math';
-
+import 'dart:ui' as ui;
+import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:particles_flutter/component/particle/particle.dart';
-import 'package:particles_flutter/particles_engine.dart';
+import 'package:flutter/services.dart';
+import 'package:particles_flutter/shapes.dart';
+import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/interactions.dart';
+import 'package:particles_flutter/physics.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() => runApp(const MyApp());
@@ -17,16 +22,58 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: const Scaffold(
+      home: Scaffold(
         backgroundColor: Colors.black,
-        body: CircularParticleScreen(),
+        body: SplashScreen(),
       ),
     );
   }
 }
 
-class CircularParticleScreen extends StatelessWidget {
-  const CircularParticleScreen({super.key});
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState()
+  {
+    super.initState();
+    InitializeData();
+  }
+  Future<void> InitializeData() async {
+    final ui.Image particleImage = await loadImage('assets/fug.png');
+    Navigator.pushReplacement(
+      context, 
+      MaterialPageRoute(builder: (context) => ParticleScreen(particleImage: particleImage,))
+      );
+  }
+
+  Future<ui.Image> loadImage(String imagePath) async {
+    ByteData data = await rootBundle.load(imagePath);
+    final Completer<ui.Image> completer = Completer();
+    ui.decodeImageFromList(Uint8List.view(data.buffer), (ui.Image img) {
+      return completer.complete(img);
+    });
+
+    return completer.future;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+}
+
+class ParticleScreen extends StatelessWidget {
+  const ParticleScreen({required this.particleImage, super.key});
+
+  final ui.Image particleImage;
   @override
   Widget build(BuildContext context) {
     double screenHeight = MediaQuery.of(context).size.height;
@@ -35,18 +82,26 @@ class CircularParticleScreen extends StatelessWidget {
       children: [
         Container(
           color: Colors.blue,
-          child: Particles(
-            awayRadius: 150,
-            particles: createParticles(),
-            height: screenHeight,
-            width: screenWidth,
-            onTapAnimation: true,
-            awayAnimationDuration: const Duration(milliseconds: 100),
-            awayAnimationCurve: Curves.linear,
-            enableHover: true,
-            hoverRadius: 90,
-            connectDots: false,
-          ),
+            child: Particles(
+              particles: createParticles(),
+              height: screenHeight,
+              width: screenWidth,
+              connectDots: false,
+              boundType: BoundType.None,
+              particleEmitter: Emitter(
+                startPosition: Offset(screenWidth/2, screenHeight/2),
+                delay: const Duration(milliseconds: 5),
+                recycles: true,
+              ),
+              interaction: ParticleInteraction(
+                awayRadius: 150,
+                onTapAnimation: true,
+                awayAnimationDuration: const Duration(milliseconds: 100),
+                awayAnimationCurve: Curves.linear,
+                enableHover: true,
+                hoverRadius: 90,
+              ),
+            )
         ),
         Center(
           child: Container(
@@ -61,7 +116,7 @@ class CircularParticleScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  'particles flutter',
+                  'particles expanded',
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 18,
@@ -73,6 +128,20 @@ class CircularParticleScreen extends StatelessWidget {
                   style: TextStyle(
                     color: Colors.black87,
                     fontSize: 12,
+                  ),
+                ),
+                const Text(
+                  'Expanded by RealEeveahy',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 10,
+                  ),
+                ),
+                const Text(
+                  'Forked from rajajain08',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 10,
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -113,16 +182,66 @@ class CircularParticleScreen extends StatelessWidget {
   List<Particle> createParticles() {
     var rng = Random();
     List<Particle> particles = [];
-    for (int i = 0; i < 140; i++) {
-      particles.add(Particle(
+
+    // Circle particle example
+    for (int i = 0; i < 32; i++) {
+      particles.add(CircularParticle(
         color: Colors.white.withOpacity(0.6),
-        size: rng.nextDouble() * 10,
+        radius: rng.nextDouble() * 20,
         velocity: Offset(rng.nextDouble() * 200 * randomSign(),
             rng.nextDouble() * 200 * randomSign()),
       ));
     }
+
+    // Rectangle particle example
+    for (int i = 0; i < 32; i++) {
+      particles.add(RectangularParticle(
+        color: Colors.white.withOpacity(0.6),
+        height: (rng.nextDouble() * 30) + 20,
+        width: (rng.nextDouble() * 30) + 20,
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
+      ));
+    }
+
+    // Oval particle example
+    for (int i = 0; i < 32; i++) {
+      particles.add(OvoidalParticle(
+        color: Colors.white.withOpacity(0.6),
+        height: rng.nextDouble() * 30,
+        width: rng.nextDouble() * 60,
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
+      ));
+    }
+
+    // Triangle particle example
+    for (int i = 0; i < 32; i++) {
+      particles.add(TriangularParticle(
+        color: Colors.white.withOpacity(0.6),
+        height: rng.nextDouble() * 40,
+        width: rng.nextDouble() * 40,
+        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+            rng.nextDouble() * 200 * randomSign()),
+        rotationSpeed: rng.nextDouble() * 10 * randomSign(),
+      ));
+    }
+    // // Image particle example
+    // for (int i = 0; i < 30; i++) {
+    //   particles.add(ImageParticle.Ratio(
+    //     particleImage: particleImage,
+    //     sizeRatio: 0.05,
+    //     color: Colors.white.withOpacity(0.8),
+    //     velocity: Offset(rng.nextDouble() * 200 * randomSign(),
+    //         rng.nextDouble() * 200 * randomSign()),
+    //     rotationSpeed: rng.nextDouble() * 10 * randomSign(),
+    //   ));
+    // }
+    particles.shuffle();
     return particles;
-  }
+  } 
 
   double randomSign() {
     var rng = Random();

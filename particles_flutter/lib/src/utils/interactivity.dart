@@ -1,118 +1,64 @@
-library particles_flutter;
-
 import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:particles_flutter/core/runner.dart';
-import 'package:particles_flutter/painters/circular_painter.dart';
-import 'package:particles_flutter/component/particle/particle.dart';
 
-class Particles extends StatefulWidget {
-  Particles({
+import 'package:flutter/material.dart';
+import 'package:particles_flutter/engine.dart';
+
+// ignore: must_be_immutable
+class ParticleInteraction extends StatefulWidget{
+  /// Creates touch and hover interaction with a particle engine.
+  /// 
+  /// For use in the [interaction] field of [Particles]
+  /// 
+  /// Defines hover interaction for interfaces with a cursor.
+  /// Defines tocuh gesture interaction for mobile device interfaces.
+  ParticleInteraction ({
     Key? key,
-    required this.particles,
-    required this.height,
-    required this.width,
     this.onTapAnimation = true,
     this.awayRadius = 100,
     this.awayAnimationDuration = const Duration(milliseconds: 600),
     this.awayAnimationCurve = Curves.easeIn,
     this.enableHover = false,
     this.hoverRadius = 80,
-    this.connectDots = false,
   }) : super(key: key);
-  final double awayRadius;
-  final double height;
-  final double width;
-  final bool onTapAnimation;
-  final Duration awayAnimationDuration;
-  final Curve awayAnimationCurve;
-  final bool enableHover;
-  final double hoverRadius;
-  final List<Particle> particles;
-  final bool connectDots; //not recommended
 
-  _ParticlesState createState() => _ParticlesState();
+  ParticleInteraction.None ({
+    Key? key,
+    this.onTapAnimation = false,
+    this.awayRadius = 0,
+    this.awayAnimationDuration = Duration.zero,
+    this.awayAnimationCurve = Curves.easeIn,
+    this.enableHover = false,
+    this.hoverRadius = 0,
+  }) : super(key: key);
+
+  /// Define the radius of a cursor/gesture.
+  /// 
+  /// Particles will be pushed away from the cursor/gesture by this amount.
+  final double awayRadius;
+
+  /// Toggle interactions with particles with touch controls.
+  final bool onTapAnimation;
+
+  /// Define the length of time that movement caused by a gesture will occur.
+  final Duration awayAnimationDuration;
+
+  /// Define the [Curve] of movement away from the cursor/gesture.
+  final Curve awayAnimationCurve;
+
+  /// Toggle interactions with particles from a cursor.
+  final bool enableHover;
+
+  /// Unused, but implemented in the original package.
+  final double hoverRadius;
+  
+  late _InteractivityState state;
+
+  _InteractivityState createState() => state = _InteractivityState();
 }
 
-class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
+class _InteractivityState extends State<ParticleInteraction> with TickerProviderStateMixin {
   late AnimationController awayAnimationController;
   List<Particle> particles = [];
-  var rng = Random();
-  Runner _runner = Runner();
-  _ParticlesState();
-
-  List<List> lineOffset = [];
-
-  get math => null;
-
-  void initailizeParticles(_) {
-    particles = widget.particles;
-    for (int index = 0; index < widget.particles.length; index++) {
-      particles[index].updatePosition = Offset(
-        rng.nextDouble() * widget.width,
-        rng.nextDouble() * widget.height,
-      );
-    }
-  }
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(initailizeParticles);
-
-    _runner.run((double deltaTime, double correction) {
-      _engine(deltaTime);
-    });
-    super.initState();
-  }
-
-  void _engine(double deltaTime) {
-    setState(
-      () {
-        for (int index = 0; index < particles.length; index++) {
-          double dx = particles[index].position.dx +
-              deltaTime * particles[index].velocity.dx;
-          double dy = particles[index].position.dy +
-              deltaTime * particles[index].velocity.dy;
-          if (dx > widget.width) {
-            dx = dx - widget.width;
-          } else if (dx < 0) {
-            dx = dx + widget.width;
-          }
-          if (dy > widget.height) {
-            dy = dy - widget.height;
-          } else if (dy < 0) {
-            dy = dy + widget.height;
-          }
-          particles[index].updatePosition = (Offset(dx, dy));
-        }
-        if (widget.connectDots) connectLines(); //not recommended
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    _runner.stop();
-    super.dispose();
-  }
-
-  void connectLines() {
-    lineOffset = [];
-    double distanceBetween = 0;
-    for (int point1 = 0; point1 < particles.length; point1++) {
-      for (int point2 = 0; point2 < particles.length; point2++) {
-        distanceBetween = sqrt(pow(
-                (particles[point2].position.dx - particles[point1].position.dx),
-                2) +
-            pow((particles[point2].position.dy - particles[point1].position.dy),
-                2));
-        if (distanceBetween < 110) {
-          lineOffset
-              .add([particles[point1], particles[point2], distanceBetween]);
-        }
-      }
-    }
-  }
 
   void onTapGesture(double tapdx, double tapdy) {
     awayAnimationController = AnimationController(
@@ -209,6 +155,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
     }
   }
 
+  
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
@@ -226,14 +173,6 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           onTapGesture(getBox.globalToLocal(details.globalPosition).dx,
               getBox.globalToLocal(details.globalPosition).dy);
         },
-        child: SizedBox(
-          height: widget.height,
-          width: widget.width,
-          child: CustomPaint(
-            painter: CircularParticlePainter(
-                particles: particles, lineOffsets: lineOffset),
-          ),
-        ),
       ),
     );
   }

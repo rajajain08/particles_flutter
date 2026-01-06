@@ -20,4 +20,5 @@ flutter:
   assets:
     - assets/github.png
     - assets/pub.png
+    - assets/fug.png
 
