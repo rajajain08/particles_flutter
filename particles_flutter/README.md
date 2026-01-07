@@ -3,7 +3,7 @@ A package that provides an easy way to add customisable particles with animation
 
 
 <p>
-    <img src="readme_src/newparticledemo.gif"  height = 400px/>
+    <img src="particles_flutter/readme_src/newparticledemo.gif" height=400px/>
 </p>
 
 ## Getting Started
@@ -111,18 +111,7 @@ If you like my extensions, give this fork a star on GitHub :)
 
 If you find a bug or want to contribute, please fill out an issue / make a pull request!
 
-## Awesome Contributors
-
-Thank you to all the amazing people who have contributed to this project! 🎉
-
-<a href="https://github.com/RealEeveahy">
-  <img src="https://github.com/RealEeveahy.png" width="60" height="60" alt="RealEeveahy" style="border-radius: 50%;">
-</a>
-
-Want to contribute? Feel free to submit a pull request!
-
-
-<!-- ## Checkout web [here](https://praticles-flutter-raja-jains-projects.vercel.app/).
+## Checkout web [here](https://praticles-flutter-raja-jains-projects.vercel.app/).
 https://praticles-flutter-raja-jains-projects.vercel.app/
 <p>
     <img src="https://github.com/rajajain08/readme_data/blob/master/flutter_particles/web.gif?raw=true"/>
@@ -135,12 +124,17 @@ If you find this package useful, please consider giving it a star on [GitHub](ht
 <a href="https://www.buymeacoffee.com/rajajain08" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="32" width="140"></a>
 
 ## Contributions
+Thank you to all the amazing people who have contributed to this project! 🎉
 
-Feel free to contribute to this project.
+<a href="https://github.com/RealEeveahy">
+  <img src="https://github.com/RealEeveahy.png" width="60" height="60" alt="RealEeveahy" style="border-radius: 50%;">
+</a>
+
+Want to contribute? Feel free to submit a pull request!
 
 If you find a bug or want a feature, but don't know how to fix/implement it, please fill an [issue](https://github.com/rajajain08/particles_flutter/issues).  
 If you fixed a bug or implemented a new feature, please send a [pull request](https://github.com/rajajain08/particles_flutter/pulls).
 
 If you want to contact me, Please send me a short DM on [Twitter](https://twitter.com/rajajain08).
- -->
+
 
