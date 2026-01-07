@@ -1,7 +1,7 @@
 name: particles_flutter
 description: >-
   A flutter package for particle animation. You can control the animation speed, number of Particles on the screen, dimension and shape of particle via connecting lines,etc.
-version: 1.0.1
+version: 2.0.0
 homepage: https://github.com/rajajain08/particles_flutter/tree/master/particles_flutter
 issue_tracker: https://github.com/rajajain08/particles_flutter/issues
 
