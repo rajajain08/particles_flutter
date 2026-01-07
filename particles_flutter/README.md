@@ -1,7 +1,6 @@
-# Flutter Particles - Expanded!
+# Flutter Particles
 A package that provides an easy way to add customisable particles with animation in a Flutter project.
 
-This package is forked and built off of the original particles_flutter, which you can find [here](https://github.com/rajajain08/particles_flutter).
 
 <p>
     <img src="readme_src/newparticledemo.gif" width=300px/>
@@ -13,11 +12,7 @@ You should ensure that you add the following dependency in your Flutter project.
 
 ```yaml
 dependencies:
-  particles_flutter:
-    git:
-      url: https://github.com/RealEeveahy/particles_flutter.git
-      ref: particle_extensions
-      path: particles_flutter
+  particles_flutter: 2.0,0
 ```
 And you can ensure you have the latest version of this repo by running ```flutter pub upgrade``` in the terminal.
 
@@ -115,6 +110,16 @@ Import with
 If you like my extensions, give this fork a star on GitHub :)
 
 If you find a bug or want to contribute, please fill out an issue / make a pull request!
+
+## Awesome Contributors
+
+Thank you to all the amazing people who have contributed to this project! 🎉
+
+<a href="https://github.com/RealEeveahy">
+  <img src="https://github.com/RealEeveahy.png" width="60" height="60" alt="RealEeveahy" style="border-radius: 50%;">
+</a>
+
+Want to contribute? Feel free to submit a pull request!
 
 
 <!-- ## Checkout web [here](https://praticles-flutter-raja-jains-projects.vercel.app/).
