@@ -25,3 +25,12 @@
 ## [1.0.1] - 03/08/2024.
 
 - Bugfix.
+
+## [2.0.0] - 07/01/2026.
+
+- Major update with new features and improvements.
+- Added new particle shapes and effects.
+- Particle can now rotate.
+- Added boundary types.
+- Particles emitters added to decide the position of particle generation.
+
