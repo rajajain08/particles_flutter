@@ -3,7 +3,7 @@ A package that provides an easy way to add customisable particles with animation
 
 
 <p>
-    <img src="readme_src/newparticledemo.gif" width=300px/>
+    <img src="readme_src/newparticledemo.gif" width=200px/>
 </p>
 
 ## Getting Started
