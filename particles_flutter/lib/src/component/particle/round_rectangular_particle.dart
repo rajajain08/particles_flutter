@@ -7,10 +7,10 @@ class RoundRectangularParticle extends Particle {
     required this.height,
     required this.width,
     required this.cornerRadius,
-    required Color color, 
+    required Color color,
     required Offset velocity,
     double rotationSpeed = 0,
-    }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
+  }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
   /// Define the height of the rectangular particle.
   final double height;
@@ -22,13 +22,13 @@ class RoundRectangularParticle extends Particle {
   final double cornerRadius;
 
   @override
-  void DrawParticle(Canvas canvas, Size size) {
+  void drawParticle(Canvas canvas, Size size) {
     canvas.drawRRect(
-        RRect.fromRectXY(
-          Rect.fromCenter(center:Offset.zero, width:width, height:height),
-          cornerRadius, cornerRadius
-        ),
-        Paint()..color = color,
-        );
-    }
+      RRect.fromRectXY(
+          Rect.fromCenter(center: Offset.zero, width: width, height: height),
+          cornerRadius,
+          cornerRadius),
+      Paint()..color = color,
+    );
+  }
 }

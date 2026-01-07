@@ -1,13 +1,10 @@
 import 'dart:ui';
 
-/// Single Particle Model 
+/// Single Particle Model
 abstract class Particle {
-  Particle( { 
-    required this.color, 
-    required this.velocity, 
-    this.rotationSpeed = 0
-    });
-  
+  Particle(
+      {required this.color, required this.velocity, this.rotationSpeed = 0});
+
   /// Define the color of a single particle.
   final Color color;
 
@@ -22,6 +19,7 @@ abstract class Particle {
   set updatePosition(Offset newPosition) {
     _position = newPosition;
   }
+
   Offset get position => _position;
 
   // Update the current particle velocity - only used when BoundType is set to Bounce
@@ -29,6 +27,7 @@ abstract class Particle {
   set updateVelocity(Offset newVelocity) {
     _velocity = newVelocity;
   }
+
   Offset get currentVelocity => _velocity;
 
   // Update the current rotation of the particle
@@ -36,24 +35,23 @@ abstract class Particle {
   set updateRotation(double newRotation) {
     _rotation = newRotation;
   }
+
   double get rotation => _rotation;
 
-  // Apply rotation, draw the particle, then restore  
-  void paint(Canvas canvas, Size size)
-  {
+  // Apply rotation, draw the particle, then restore
+  void paint(Canvas canvas, Size size) {
     canvas.save();
-    Rotate(canvas, size.width/2, size.height/2);
-    DrawParticle(canvas, size);
+    rotate(canvas, size.width / 2, size.height / 2);
+    drawParticle(canvas, size);
     canvas.restore();
   }
 
-  void Rotate(Canvas canvas, double cx, double cy)
-  {
+  void rotate(Canvas canvas, double cx, double cy) {
     canvas.translate(position.dx, position.dy);
     canvas.rotate(rotation);
     //canvas.translate(-cx, -cy);
   }
 
   /// Allow subclasses to define their own draw method
-  void DrawParticle(Canvas canvas, Size size);
+  void drawParticle(Canvas canvas, Size size);
 }

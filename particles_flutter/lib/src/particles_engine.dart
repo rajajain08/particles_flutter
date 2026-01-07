@@ -27,14 +27,15 @@ class Particles extends StatefulWidget {
 
   /// Define the boundary size for the particle engine.
   final double height;
+
   /// Define the boundary size for the particle engine.
   final double width;
 
   /// Set a list of pre-defined particles to be used by the particle engine.
-  /// 
-  /// Size, Velocity, Colour and Rotation Speed are defined per-particle, 
+  ///
+  /// Size, Velocity, Colour and Rotation Speed are defined per-particle,
   /// allowing for a degree of randomness to be generated before assigning them to the engine.
-  /// 
+  ///
   /// See: [Particle].
   final List<Particle> particles;
 
@@ -45,11 +46,11 @@ class Particles extends StatefulWidget {
   final BoundType boundType;
 
   /// Define the touch control interaction settings for the engine.
-  /// 
+  ///
   /// See: [ParticleInteraction].
   final ParticleInteraction? interaction;
 
-  /// Toggle line connections between particles.  
+  /// Toggle line connections between particles.
   /// Not recommended for performance reasons.
   final bool connectDots;
 
@@ -62,7 +63,7 @@ class Particles extends StatefulWidget {
   _ParticlesState createState() => _ParticlesState();
 }
 
-class _ParticlesState extends State<Particles> with TickerProviderStateMixin {  
+class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   List<Particle> particles = [];
 
   var rng = Random();
@@ -77,7 +78,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
     widget.interaction!.state.particles = widget.particles;
 
     /// Initialise particles at random positions (default)
-    if(widget.particleEmitter == null) {
+    if (widget.particleEmitter == null) {
       particles = widget.particles;
       for (int index = 0; index < widget.particles.length; index++) {
         particles[index].updatePosition = Offset(
@@ -85,9 +86,8 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           rng.nextDouble() * widget.height,
         );
       }
-    }
-    else {
-      widget.particleEmitter!.Emit(widget.particles, particles);
+    } else {
+      widget.particleEmitter!.emit(widget.particles, particles);
     }
     for (int index = 0; index < widget.particles.length; index++) {
       /// Set the initial velocity amount
@@ -116,21 +116,22 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           double dy = particles[index].position.dy +
               deltaTime * particles[index].currentVelocity.dy;
 
-          if(widget.boundType == BoundType.WrapAround)
-            particles[index].updatePosition = GetWrapPosition(dx, dy, widget.width, widget.height);
-          else if(widget.boundType == BoundType.Bounce)
-            particles[index].updatePosition = CheckForBounce(dx, dy, widget.width, widget.height, particles[index]);
-          else
-            if(OutOfBound(dx, dy, widget.width, widget.height))
-            {
-              if(widget.particleEmitter != null)
-                if(widget.particleEmitter!.recycles) widget.particleEmitter!.Recycle(particles[index]);
-            }
-            else particles[index].updatePosition = (Offset(dx, dy)); // Continue as normal
+          if (widget.boundType == BoundType.WrapAround)
+            particles[index].updatePosition =
+                getWrapPosition(dx, dy, widget.width, widget.height);
+          else if (widget.boundType == BoundType.Bounce)
+            particles[index].updatePosition = checkForBounce(
+                dx, dy, widget.width, widget.height, particles[index]);
+          else if (outOfBound(dx, dy, widget.width, widget.height)) {
+            if (widget.particleEmitter != null) if (widget.particleEmitter!
+                .recycles) widget.particleEmitter!.recycle(particles[index]);
+          } else
+            particles[index].updatePosition =
+                (Offset(dx, dy)); // Continue as normal
 
-          if(widget.particlePhysics != null)
-          {
-            particles[index].updateVelocity = widget.particlePhysics!.applyGravity(particles[index].currentVelocity);
+          if (widget.particlePhysics != null) {
+            particles[index].updateVelocity = widget.particlePhysics!
+                .applyGravity(particles[index].currentVelocity);
           }
 
           //update particle rotation
@@ -160,7 +161,8 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
             pow((particles[point2].position.dy - particles[point1].position.dy),
                 2));
         if (distanceBetween < 110) {
-          lineList.add( ParticleLine(particles[point1], particles[point2], distanceBetween) );
+          lineList.add(ParticleLine(
+              particles[point1], particles[point2], distanceBetween));
         }
       }
     }
@@ -174,8 +176,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
       child: Stack(
         children: [
           CustomPaint(
-            painter: ParticlePainter(
-                particles: particles, lines: lineList),
+            painter: ParticlePainter(particles: particles, lines: lineList),
           ),
           widget.interaction!,
         ],

@@ -6,10 +6,10 @@ class OvoidalParticle extends Particle {
   OvoidalParticle({
     required this.height,
     required this.width,
-    required Color color, 
+    required Color color,
     required Offset velocity,
     double rotationSpeed = 0,
-    }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
+  }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
   /// Define the height of the rectangular particle
   final double height;
@@ -18,10 +18,10 @@ class OvoidalParticle extends Particle {
   final double width;
 
   @override
-  void DrawParticle(Canvas canvas, Size size) {
+  void drawParticle(Canvas canvas, Size size) {
     canvas.drawOval(
-        Rect.fromCenter(center: Offset.zero, width:width, height:height),
-        Paint()..color = color,
-        );
-    }
+      Rect.fromCenter(center: Offset.zero, width: width, height: height),
+      Paint()..color = color,
+    );
+  }
 }

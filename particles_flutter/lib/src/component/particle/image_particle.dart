@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'dart:ui' as ui;
 import 'package:particles_flutter/src/component/particle/particle.dart';
 
 /// Single Rectangular Particle
@@ -8,25 +7,25 @@ class ImageParticle extends Particle {
     required this.particleImage,
     required this.height,
     required this.width,
-    required Color color, 
+    required Color color,
     required Offset velocity,
     double rotationSpeed = 0,
-    }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
+  }) : super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
-  ImageParticle.Ratio({
+  ImageParticle.ratio({
     required this.particleImage,
+
     /// % Ratio of the original image size
     required double sizeRatio,
-    required Color color, 
+    required Color color,
     required Offset velocity,
     double rotationSpeed = 0,
-  }) : 
-  this.height = particleImage.height.toDouble() * sizeRatio,
-  this.width = particleImage.width.toDouble() * sizeRatio,
-  super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
+  })  : this.height = particleImage.height.toDouble() * sizeRatio,
+        this.width = particleImage.width.toDouble() * sizeRatio,
+        super(color: color, velocity: velocity, rotationSpeed: rotationSpeed);
 
   /// Define the height of the rectangular particle
-  final ui.Image particleImage;
+  final Image particleImage;
 
   /// Define the height of the rectangular particle
   final double height;
@@ -35,18 +34,11 @@ class ImageParticle extends Particle {
   final double width;
 
   @override
-  void DrawParticle(Canvas canvas, Size size) {
-    Rect src = Rect.fromLTWH(0, 0, particleImage.width.toDouble(), particleImage.height.toDouble());
-    Rect dest = Rect.fromCenter(
-      center: Offset.zero,
-      width:width, 
-      height:height
-    );
-    canvas.drawImageRect(
-          particleImage,
-          src,
-          dest,
-          Paint()..color = color
-        );
-    }
+  void drawParticle(Canvas canvas, Size size) {
+    Rect src = Rect.fromLTWH(
+        0, 0, particleImage.width.toDouble(), particleImage.height.toDouble());
+    Rect dest =
+        Rect.fromCenter(center: Offset.zero, width: width, height: height);
+    canvas.drawImageRect(particleImage, src, dest, Paint()..color = color);
+  }
 }

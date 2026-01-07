@@ -25,19 +25,17 @@ class Emitter {
 
   /// Define whether or not the emitter will re-use particles that exit the boundary,
   /// creating an infinite loop from the emitter.
-  /// 
+  ///
   /// Note - requires the particle engine to have a [boundType] of [BoundType.None]
   final bool recycles;
 
-  void Emit(List<Particle> particles, List<Particle> render) async
-  {
+  void emit(List<Particle> particles, List<Particle> render) async {
     var rng = Random();
 
     /// Initialise particles at the given position + given radius
-    for(int index = 0; index < particles.length; index+=0)
-    {
-      /// Release particles in clusters 
-      for(int cluster = 0; cluster < clusterSize; cluster++){
+    for (int index = 0; index < particles.length; index += 0) {
+      /// Release particles in clusters
+      for (int cluster = 0; cluster < clusterSize; cluster++) {
         particles[index].updatePosition = Offset(
           startPosition.dx + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
           startPosition.dy + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
@@ -47,13 +45,13 @@ class Emitter {
         render.add(particles[index]);
         index++;
       }
+
       /// Wait for the delay between cluster release
       await Future.delayed(delay);
     }
   }
 
-  void Recycle(Particle particle)
-  {
+  void recycle(Particle particle) {
     var rng = Random();
     particle.updatePosition = Offset(
       startPosition.dx + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
