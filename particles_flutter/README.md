@@ -114,7 +114,7 @@ If you find a bug or want to contribute, please fill out an issue / make a pull 
 ## Checkout web [here](https://praticles-flutter-raja-jains-projects.vercel.app/).
 https://praticles-flutter-raja-jains-projects.vercel.app/
 <p>
-    <img src="readme_src/web_demo.gif" width=600px/>
+    <img src="readme_src/web_demo.gif"/>
 </p>
 
 
