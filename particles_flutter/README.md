@@ -3,7 +3,7 @@ A package that provides an easy way to add customisable particles with animation
 
 
 <p>
-    <img src="readme_src/newparticledemo.gif" height=400px/>
+    <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/newparticledemo.gif" height=400px/>
 </p>
 
 ## Getting Started
@@ -114,7 +114,7 @@ If you find a bug or want to contribute, please fill out an issue / make a pull 
 ## Checkout web [here](https://praticles-flutter-raja-jains-projects.vercel.app/).
 https://praticles-flutter-raja-jains-projects.vercel.app/
 <p>
-    <img src="readme_src/web_demo.gif"/>
+    <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/web_demo.gif"/>
 </p>
 
 
