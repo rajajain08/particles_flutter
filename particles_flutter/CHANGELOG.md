@@ -34,3 +34,7 @@
 - Added boundary types.
 - Particles emitters added to decide the position of particle generation.
 
+## [2.0.1] - 07/01/2026.
+
+- Updated doc.
+
