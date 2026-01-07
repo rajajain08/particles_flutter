@@ -12,7 +12,7 @@ You should ensure that you add the following dependency in your Flutter project.
 
 ```yaml
 dependencies:
-  particles_flutter: 2.0,0
+  particles_flutter: 2.0.2
 ```
 And you can ensure you have the latest version of this repo by running ```flutter pub upgrade``` in the terminal.
 

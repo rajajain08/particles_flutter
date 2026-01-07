@@ -38,3 +38,7 @@
 
 - Updated doc.
 
+## [2.0.2] - 07/01/2026.
+
+- Updated doc.
+
