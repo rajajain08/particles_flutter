@@ -81,7 +81,7 @@ class ParticleScreen extends StatelessWidget {
       body: Stack(
         children: [
           Container(
-              color: Colors.blue.withValues(alpha: 0.5),
+              color: Colors.blue.withValues(alpha: 0.4),
               child: Particles(
                 particles: createParticles(),
                 height: screenHeight,
@@ -104,10 +104,11 @@ class ParticleScreen extends StatelessWidget {
               )),
           Center(
             child: Container(
-              height: 250,
-              width: 200,
+              height: 220,
+              width: 180,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 221, 218, 218),
+                color: const Color.fromARGB(255, 221, 218, 218)
+                    .withValues(alpha: 0.4),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Column(
