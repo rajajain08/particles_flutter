@@ -11,23 +11,39 @@ class SceneBadge extends StatelessWidget {
       duration: const Duration(milliseconds: 300),
       child: Container(
         key: ValueKey(scene.name),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
         decoration: BoxDecoration(
-          color: Colors.black54,
+          color: Colors.black.withValues(alpha: 0.65),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: scene.accentColor.withValues(alpha: 0.6),
+            color: scene.accentColor.withValues(alpha: 0.5),
             width: 1,
           ),
         ),
-        child: Text(
-          '${scene.emoji}  ${scene.name}',
-          style: TextStyle(
-            color: scene.accentColor,
-            fontWeight: FontWeight.w700,
-            fontSize: 14,
-            letterSpacing: 0.5,
-          ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              '${scene.emoji}  ${scene.name}',
+              style: TextStyle(
+                color: scene.accentColor,
+                fontWeight: FontWeight.w700,
+                fontSize: 14,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              scene.tagline,
+              style: TextStyle(
+                color: scene.accentColor.withValues(alpha: 0.6),
+                fontSize: 10,
+                letterSpacing: 0.3,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
         ),
       ),
     );

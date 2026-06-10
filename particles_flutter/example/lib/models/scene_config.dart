@@ -7,6 +7,8 @@ class SceneConfig {
   final SceneId id;
   final String name;
   final String emoji;
+  final String tagline;
+  final String codeSnippet;
   final Color bgColor;
   final Color accentColor;
   final BoundType boundType;
@@ -23,6 +25,8 @@ class SceneConfig {
     required this.id,
     required this.name,
     required this.emoji,
+    required this.tagline,
+    required this.codeSnippet,
     required this.bgColor,
     required this.accentColor,
     required this.boundType,
@@ -51,6 +55,8 @@ class SceneConfig {
         id: id,
         name: name,
         emoji: emoji,
+        tagline: tagline,
+        codeSnippet: codeSnippet,
         bgColor: bgColor,
         accentColor: accentColor,
         boundType: boundType ?? this.boundType,
@@ -70,6 +76,23 @@ const List<SceneConfig> kScenes = [
     id: SceneId.starfield,
     name: 'Starfield',
     emoji: '✨',
+    tagline: 'Repels from cursor · wrap-around bounds',
+    codeSnippet: '''Particles(
+  particles: List.generate(120, (_) =>
+    CircularParticle(
+      radius: 2.5,
+      color: Colors.white,
+      velocity: Offset(30, 30),
+    ),
+  ),
+  width: size.width,
+  height: size.height,
+  boundType: BoundType.WrapAround,
+  interaction: ParticleInteraction(
+    awayRadius: 120,
+    enableHover: true,
+  ),
+)''',
     bgColor: Color(0xFF050A1A),
     accentColor: Color(0xFF7C4DFF),
     boundType: BoundType.WrapAround,
@@ -82,6 +105,24 @@ const List<SceneConfig> kScenes = [
     id: SceneId.web,
     name: 'Web',
     emoji: '🕸️',
+    tagline: 'Connected mesh · bouncing physics',
+    codeSnippet: '''Particles(
+  particles: List.generate(80, (_) =>
+    CircularParticle(
+      radius: 3,
+      color: Color(0xFF00E5FF),
+      velocity: Offset(40, 40),
+    ),
+  ),
+  width: size.width,
+  height: size.height,
+  connectDots: true,
+  boundType: BoundType.Bounce,
+  interaction: ParticleInteraction(
+    awayRadius: 120,
+    enableHover: true,
+  ),
+)''',
     bgColor: Color(0xFF0A0A0A),
     accentColor: Color(0xFF00E5FF),
     boundType: BoundType.Bounce,
@@ -94,6 +135,22 @@ const List<SceneConfig> kScenes = [
     id: SceneId.snow,
     name: 'Snow',
     emoji: '❄️',
+    tagline: 'Gravity-driven · wrap-around bounds',
+    codeSnippet: '''Particles(
+  particles: List.generate(100, (_) =>
+    CircularParticle(
+      radius: 5,
+      color: Colors.white,
+      velocity: Offset(0, 15),
+    ),
+  ),
+  width: size.width,
+  height: size.height,
+  boundType: BoundType.WrapAround,
+  particlePhysics: ParticlePhysics(
+    gravityScale: 20,
+  ),
+)''',
     bgColor: Color(0xFF0D1B2A),
     accentColor: Color(0xFFB0C4DE),
     boundType: BoundType.WrapAround,
@@ -107,6 +164,25 @@ const List<SceneConfig> kScenes = [
     id: SceneId.nebula,
     name: 'Nebula',
     emoji: '🌌',
+    tagline: 'Ovoidal shapes · rotating particles',
+    codeSnippet: '''Particles(
+  particles: List.generate(60, (_) =>
+    OvoidalParticle(
+      width: 20,
+      height: 12,
+      color: Color(0xFFFF4081),
+      velocity: Offset(20, 20),
+      rotationSpeed: 0.3,
+    ),
+  ),
+  width: size.width,
+  height: size.height,
+  boundType: BoundType.WrapAround,
+  interaction: ParticleInteraction(
+    awayRadius: 120,
+    enableHover: true,
+  ),
+)''',
     bgColor: Color(0xFF0B0020),
     accentColor: Color(0xFFFF4081),
     boundType: BoundType.WrapAround,
@@ -120,6 +196,27 @@ const List<SceneConfig> kScenes = [
     id: SceneId.fireworks,
     name: 'Fireworks',
     emoji: '🎆',
+    tagline: 'Particle emitter · burst with gravity',
+    codeSnippet: '''Particles(
+  particles: List.generate(80, (_) =>
+    TriangularParticle(
+      width: 6,
+      height: 6,
+      color: Color(0xFFFF6D00),
+      velocity: Offset(120, 120),
+      rotationSpeed: 2.0,
+    ),
+  ),
+  width: size.width,
+  height: size.height,
+  boundType: BoundType.None,
+  particlePhysics: ParticlePhysics(gravityScale: 40),
+  particleEmitter: Emitter(
+    startPosition: center,
+    clusterSize: 10,
+    recycles: false,
+  ),
+)''',
     bgColor: Color(0xFF0A0000),
     accentColor: Color(0xFFFF6D00),
     boundType: BoundType.None,
