@@ -1,0 +1,5 @@
+{
+  "buildCommand": "bash scripts/build_flutter_web.sh",
+  "outputDirectory": "particles_flutter/example/build/web",
+  "installCommand": "echo 'skip npm install'"
+}
