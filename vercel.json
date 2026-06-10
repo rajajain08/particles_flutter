@@ -1,5 +1,6 @@
 {
-  "buildCommand": "/bin/bash scripts/build_flutter_web.sh",
+  "buildCommand": "/bin/bash ./scripts/build_flutter_web.sh",
   "outputDirectory": "particles_flutter/example/build/web",
-  "installCommand": "echo 'skip'"
+  "installCommand": "echo skip",
+  "framework": null
 }
