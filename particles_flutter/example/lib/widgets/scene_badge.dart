@@ -9,6 +9,13 @@ class SceneBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
+      transitionBuilder: (child, animation) {
+        // Clamp opacity so badge never fully disappears — min 0.4
+        final clamped = animation.drive(
+          Tween<double>(begin: 0.4, end: 1.0),
+        );
+        return FadeTransition(opacity: clamped, child: child);
+      },
       child: Container(
         key: ValueKey(scene.name),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),

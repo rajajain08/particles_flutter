@@ -128,7 +128,7 @@ class _DemoShellState extends State<DemoShell> {
                   width: size.width,
                   boundType: BoundType.None,
                   particlePhysics:
-                      ParticlePhysics(gravityScale: _scene.gravityScale),
+                      const ParticlePhysics(gravityScale: 120),
                   particleEmitter: Emitter(
                     startPosition: burst.position,
                     startPositionRadius: 20,
@@ -448,6 +448,72 @@ class _WideLayout extends StatelessWidget {
             children: [
               Positioned.fill(child: particleCanvas),
 
+              // Watermark — full splash branding at low opacity
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: Center(
+                    child: Opacity(
+                      opacity: 0.35,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'particles',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 36,
+                              fontWeight: FontWeight.w200,
+                              letterSpacing: 8,
+                            ),
+                          ),
+                          Text(
+                            'flutter',
+                            style: TextStyle(
+                              color: scene.accentColor,
+                              fontSize: 36,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 8,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 5),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: const Color(0xFF7C4DFF)
+                                      .withValues(alpha: 0.5)),
+                              borderRadius: BorderRadius.circular(20),
+                              color: const Color(0xFF7C4DFF)
+                                  .withValues(alpha: 0.1),
+                            ),
+                            child: const Text(
+                              'pub.dev  ·  particles_flutter',
+                              style: TextStyle(
+                                color: Color(0xFF7C4DFF),
+                                fontSize: 11,
+                                letterSpacing: 1.2,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          const Text(
+                            'by Raja Jain',
+                            style: TextStyle(
+                              color: Colors.white38,
+                              fontSize: 11,
+                              letterSpacing: 1.5,
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
               // Top-left badge
               Positioned(
                 top: 16,
@@ -574,9 +640,74 @@ class _NarrowLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return SizedBox.expand(
+      child: Stack(
       children: [
         Positioned.fill(child: particleCanvas),
+
+        // Watermark — full splash branding at low opacity
+        Positioned.fill(
+          child: IgnorePointer(
+            child: Center(
+              child: Opacity(
+                opacity: 0.35,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'particles',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w200,
+                        letterSpacing: 8,
+                      ),
+                    ),
+                    Text(
+                      'flutter',
+                      style: TextStyle(
+                        color: scene.accentColor,
+                        fontSize: 36,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 8,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 5),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                            color: const Color(0xFF7C4DFF).withValues(alpha: 0.5)),
+                        borderRadius: BorderRadius.circular(20),
+                        color: const Color(0xFF7C4DFF).withValues(alpha: 0.1),
+                      ),
+                      child: const Text(
+                        'pub.dev  ·  particles_flutter',
+                        style: TextStyle(
+                          color: Color(0xFF7C4DFF),
+                          fontSize: 11,
+                          letterSpacing: 1.2,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'by Raja Jain',
+                      style: TextStyle(
+                        color: Colors.white38,
+                        fontSize: 11,
+                        letterSpacing: 1.5,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
 
         // Top bar
         SafeArea(
@@ -708,6 +839,7 @@ class _NarrowLayout extends StatelessWidget {
           ),
         ),
       ],
+      ),
     );
   }
 }

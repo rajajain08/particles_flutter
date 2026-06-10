@@ -75,7 +75,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   get math => null;
 
   void initailizeParticles(_) {
-    widget.interaction!.state.particles = widget.particles;
+    widget.interaction?.state.particles = widget.particles;
 
     if (widget.particleEmitter == null) {
       particles = widget.particles;
@@ -181,7 +181,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           CustomPaint(
             painter: ParticlePainter(particles: particles, lines: lineList),
           ),
-          widget.interaction!,
+          if (widget.interaction != null) widget.interaction!,
         ],
       ),
     );

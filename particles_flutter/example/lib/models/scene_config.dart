@@ -254,7 +254,7 @@ const List<SceneConfig> kScenes = [
 )''',
     bgColor: Color(0xFF0A0A14),
     accentColor: Color(0xFFFFD700),
-    boundType: BoundType.WrapAround,
+    boundType: BoundType.None,
     connectDots: false,
     gravity: true,
     interaction: false,
