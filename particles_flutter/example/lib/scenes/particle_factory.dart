@@ -5,6 +5,49 @@ import 'package:particles_flutter/engine.dart';
 import 'package:particles_flutter/shapes.dart';
 import '../models/scene_config.dart';
 
+// Corner burst — 60 confetti particles shot inward from a corner
+List<Particle> buildCornerBurst(SceneConfig s, Offset corner) {
+  const colors = [
+    Color(0xFFE53935), Color(0xFF8E24AA), Color(0xFF1E88E5),
+    Color(0xFF00ACC1), Color(0xFF43A047), Color(0xFFFFB300),
+    Color(0xFFFF6F00), Color(0xFFEC407A), Color(0xFFFFFFFF),
+    Color(0xFFFFD700),
+  ];
+  // Angle range pointing inward from each corner (±60° from diagonal)
+  final baseAngle = atan2(-corner.dy == 0 ? 1 : -1, -corner.dx == 0 ? 1 : -1);
+  return List.generate(60, (_) {
+    final color = colors[_rng.nextInt(colors.length)];
+    final spread = ((_rng.nextDouble() - 0.5) * pi * 0.7);
+    final angle = baseAngle + spread;
+    final speed = _rng.nextDouble() * 300 + 150;
+    final shape = _rng.nextInt(3);
+    if (shape == 0) {
+      return RoundRectangularParticle(
+        width: (_rng.nextDouble() * 12 + 6) * s.sizeMultiplier,
+        height: (_rng.nextDouble() * 4 + 2) * s.sizeMultiplier,
+        cornerRadius: 1.5,
+        color: color.withValues(alpha: 0.9 * s.opacity),
+        velocity: Offset(cos(angle) * speed, sin(angle) * speed),
+        rotationSpeed: _rng.nextDouble() * 5 * _sign(),
+      );
+    } else if (shape == 1) {
+      return CircularParticle(
+        radius: (_rng.nextDouble() * 4 + 2) * s.sizeMultiplier,
+        color: color.withValues(alpha: 0.9 * s.opacity),
+        velocity: Offset(cos(angle) * speed, sin(angle) * speed),
+      );
+    } else {
+      final side = (_rng.nextDouble() * 7 + 4) * s.sizeMultiplier;
+      return TriangularParticle(
+        width: side, height: side,
+        color: color.withValues(alpha: 0.9 * s.opacity),
+        velocity: Offset(cos(angle) * speed, sin(angle) * speed),
+        rotationSpeed: _rng.nextDouble() * 4 * _sign(),
+      );
+    }
+  });
+}
+
 final _rng = Random();
 double _sign() => _rng.nextBool() ? 1 : -1;
 

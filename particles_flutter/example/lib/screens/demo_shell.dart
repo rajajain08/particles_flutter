@@ -24,6 +24,12 @@ class DemoShell extends StatefulWidget {
   State<DemoShell> createState() => _DemoShellState();
 }
 
+class _CornerBurst {
+  final Offset position;
+  final Key key;
+  _CornerBurst({required this.position}) : key = UniqueKey();
+}
+
 class _DemoShellState extends State<DemoShell> {
   int _sceneIndex = 0;
   int _particleCount = 120;
@@ -31,6 +37,7 @@ class _DemoShellState extends State<DemoShell> {
   _PanelTab _panelTab = _PanelTab.config;
   late SceneConfig _scene;
   Key _particleKey = UniqueKey();
+  final List<_CornerBurst> _cornerBursts = [];
 
   @override
   void initState() {
@@ -56,49 +63,99 @@ class _DemoShellState extends State<DemoShell> {
         _particleKey = UniqueKey();
       });
 
+  void _fireCorner(Offset position) {
+    final burst = _CornerBurst(position: position);
+    setState(() => _cornerBursts.add(burst));
+    // Remove burst after particles have had time to fall off screen
+    Future.delayed(const Duration(seconds: 4), () {
+      if (mounted) setState(() => _cornerBursts.remove(burst));
+    });
+  }
+
   Widget _buildParticleCanvas(Size size) {
+    final mainParticles = Particles(
+      particles: buildParticles(_scene, _particleCount, widget.snowflake),
+      height: size.height,
+      width: size.width,
+      connectDots: _scene.connectDots,
+      boundType: _scene.boundType,
+      particlePhysics: _scene.gravity
+          ? ParticlePhysics(gravityScale: _scene.gravityScale)
+          : null,
+      particleEmitter: _scene.id == SceneId.fireworks
+          ? Emitter(
+              startPosition: Offset(size.width / 2, size.height / 2),
+              startPositionRadius: size.width * 0.25,
+              clusterSize: 15,
+              delay: const Duration(milliseconds: 300),
+              recycles: true,
+            )
+          : _scene.id == SceneId.confetti
+              ? Emitter(
+                  startPosition: Offset(size.width / 2, 0),
+                  startPositionRadius: size.width * 0.5,
+                  clusterSize: 8,
+                  delay: const Duration(milliseconds: 80),
+                  recycles: true,
+                )
+              : null,
+      interaction: _scene.interaction
+          ? ParticleInteraction(
+              awayRadius: _scene.awayRadius,
+              onTapAnimation: true,
+              awayAnimationDuration: const Duration(milliseconds: 400),
+              awayAnimationCurve: Curves.easeOut,
+              enableHover: true,
+              hoverRadius: _scene.awayRadius * 0.7,
+            )
+          : ParticleInteraction.none(),
+    );
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 600),
       color: _scene.bgColor,
-      child: KeyedSubtree(
-        key: _particleKey,
-        child: Particles(
-          particles: buildParticles(_scene, _particleCount, widget.snowflake),
-          height: size.height,
-          width: size.width,
-          connectDots: _scene.connectDots,
-          boundType: _scene.boundType,
-          particlePhysics: _scene.gravity
-              ? ParticlePhysics(gravityScale: _scene.gravityScale)
-              : null,
-          particleEmitter: _scene.id == SceneId.fireworks
-              ? Emitter(
-                  startPosition: Offset(size.width / 2, size.height / 2),
-                  startPositionRadius: size.width * 0.25,
-                  clusterSize: 15,
-                  delay: const Duration(milliseconds: 300),
-                  recycles: false,
-                )
-              : _scene.id == SceneId.confetti
-                  ? Emitter(
-                      startPosition: Offset(size.width / 2, 0),
-                      startPositionRadius: size.width * 0.5,
-                      clusterSize: 8,
-                      delay: const Duration(milliseconds: 80),
-                      recycles: true,
-                    )
-                  : null,
-          interaction: _scene.interaction
-              ? ParticleInteraction(
-                  awayRadius: _scene.awayRadius,
-                  onTapAnimation: true,
-                  awayAnimationDuration: const Duration(milliseconds: 400),
-                  awayAnimationCurve: Curves.easeOut,
-                  enableHover: true,
-                  hoverRadius: _scene.awayRadius * 0.7,
-                )
-              : ParticleInteraction.none(),
-        ),
+      child: Stack(
+        children: [
+          KeyedSubtree(key: _particleKey, child: mainParticles),
+          // Corner burst overlays (confetti scene only)
+          for (final burst in _cornerBursts)
+            Positioned.fill(
+              key: burst.key,
+              child: IgnorePointer(
+                child: Particles(
+                  particles: buildCornerBurst(_scene, burst.position),
+                  height: size.height,
+                  width: size.width,
+                  boundType: BoundType.None,
+                  particlePhysics:
+                      ParticlePhysics(gravityScale: _scene.gravityScale),
+                  particleEmitter: Emitter(
+                    startPosition: burst.position,
+                    startPositionRadius: 20,
+                    clusterSize: 40,
+                    delay: const Duration(milliseconds: 1),
+                    recycles: false,
+                  ),
+                ),
+              ),
+            ),
+          // Corner buttons (confetti scene only)
+          if (_scene.id == SceneId.confetti) ...[
+            _CornerButton(
+                alignment: Alignment.topLeft,
+                onTap: () => _fireCorner(const Offset(0, 0))),
+            _CornerButton(
+                alignment: Alignment.topRight,
+                onTap: () => _fireCorner(Offset(size.width, 0))),
+            _CornerButton(
+                alignment: Alignment.bottomLeft,
+                onTap: () => _fireCorner(Offset(0, size.height))),
+            _CornerButton(
+                alignment: Alignment.bottomRight,
+                onTap: () =>
+                    _fireCorner(Offset(size.width, size.height))),
+          ],
+        ],
       ),
     );
   }
@@ -694,6 +751,40 @@ class _SocialButton extends StatelessWidget {
               ],
             )
           : icon,
+    );
+  }
+}
+
+class _CornerButton extends StatelessWidget {
+  final Alignment alignment;
+  final VoidCallback onTap;
+
+  const _CornerButton({required this.alignment, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: alignment,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: GestureDetector(
+          onTap: onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.black.withValues(alpha: 0.55),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: const Color(0xFFFFD700).withValues(alpha: 0.5),
+              ),
+            ),
+            child: const Text(
+              '🎉',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
