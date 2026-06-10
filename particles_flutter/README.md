@@ -1,13 +1,19 @@
+<div align="center">
+
 # particles_flutter
 
-[![pub.dev](https://img.shields.io/pub/v/particles_flutter.svg)](https://pub.dev/packages/particles_flutter)
+**A Flutter package for high-performance, fully customisable particle animations. Build starfields, snow, confetti, fireworks, connected webs, and more — with physics, touch/hover interaction, and an emission controller.**
+
+[![pub package](https://img.shields.io/pub/v/particles_flutter.svg)](https://pub.dev/packages/particles_flutter)
 [![pub points](https://img.shields.io/pub/points/particles_flutter)](https://pub.dev/packages/particles_flutter/score)
 [![likes](https://img.shields.io/pub/likes/particles_flutter)](https://pub.dev/packages/particles_flutter)
-[![GitHub stars](https://img.shields.io/github/stars/rajajain08/particles_flutter?style=flat)](https://github.com/rajajain08/particles_flutter/stargazers)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/demo-particles--flutter.vercel.app-0B0C14?logo=vercel&logoColor=white)](https://particles-flutter.vercel.app)
+[![Buy Me A Coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-rajajain08-FFDD00?logo=buymeacoffee&logoColor=000)](https://buymeacoffee.com/rajajain08)
 
-A Flutter package for high-performance, fully customisable particle animations. Build starfields, snow, confetti, fireworks, connected webs, and more — with physics, touch/hover interaction, and an emission controller.
+[**Live Demo**](https://particles-flutter.vercel.app) · [pub.dev](https://pub.dev/packages/particles_flutter) · [Issues](https://github.com/rajajain08/particles_flutter/issues) · [Contributing](#contributing)
 
-**Made by [Raja Jain](https://github.com/rajajain08)**  ·  [Live Demo](https://particles-flutter.vercel.app/)  ·  [pub.dev](https://pub.dev/packages/particles_flutter)
+</div>
 
 ---
 
