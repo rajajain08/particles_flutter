@@ -29,24 +29,21 @@ class Emitter {
   /// Note - requires the particle engine to have a [boundType] of [BoundType.None]
   final bool recycles;
 
-  void emit(List<Particle> particles, List<Particle> render) async {
+  Future<void> emit(List<Particle> particles, List<Particle> render) async {
     var rng = Random();
 
-    /// Initialise particles at the given position + given radius
-    for (int index = 0; index < particles.length; index += 0) {
-      /// Release particles in clusters
-      for (int cluster = 0; cluster < clusterSize; cluster++) {
+    for (int index = 0; index < particles.length;) {
+      for (int cluster = 0;
+          cluster < clusterSize && index < particles.length;
+          cluster++) {
         particles[index].updatePosition = Offset(
           startPosition.dx + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
           startPosition.dy + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
         );
-
-        /// Once started, add the particle to the rendered list in the engine's state.
         render.add(particles[index]);
         index++;
       }
 
-      /// Wait for the delay between cluster release
       await Future.delayed(delay);
     }
   }

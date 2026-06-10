@@ -8,13 +8,7 @@ class ParticlePhysics {
   final double gravityScale;
 
 
-  Offset applyGravity(Offset velocity) 
-  {
-    // mass is assumed to be 1 until further extension. 
-    // ideally, particles do not need to define a mass unless the physics package is being used.
-
-    double newVerticalVelocity = velocity.dy + gravityScale * (10/60);
-
-    return Offset(velocity.dx, newVerticalVelocity);
+  Offset applyGravity(Offset velocity, double deltaTime) {
+    return Offset(velocity.dx, velocity.dy + gravityScale * deltaTime);
   }
 }

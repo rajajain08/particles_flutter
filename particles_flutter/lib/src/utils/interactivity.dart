@@ -58,12 +58,14 @@ class ParticleInteraction extends StatefulWidget {
 
 class _InteractivityState extends State<ParticleInteraction>
     with TickerProviderStateMixin {
-  late AnimationController awayAnimationController;
+  final List<AnimationController> _activeControllers = [];
   List<Particle> particles = [];
+  DateTime _lastHoverTime = DateTime.fromMillisecondsSinceEpoch(0);
 
   void onTapGesture(double tapdx, double tapdy) {
-    awayAnimationController = AnimationController(
+    final awayAnimationController = AnimationController(
         duration: widget.awayAnimationDuration, vsync: this);
+    _activeControllers.add(awayAnimationController);
     awayAnimationController.reset();
     double directiondx;
     double directiondy;
@@ -100,6 +102,7 @@ class _InteractivityState extends State<ParticleInteraction>
                       awayAnimation[index].value);
                 if (awayAnimationController.isCompleted &&
                     index == particles.length - 1) {
+                  _activeControllers.remove(awayAnimationController);
                   awayAnimationController.dispose();
                 }
               },
@@ -130,8 +133,20 @@ class _InteractivityState extends State<ParticleInteraction>
     }
   }
 
+  @override
+  void dispose() {
+    for (final c in _activeControllers) {
+      c.dispose();
+    }
+    _activeControllers.clear();
+    super.dispose();
+  }
+
   void onHover(tapdx, tapdy) {
     {
+      final now = DateTime.now();
+      if (now.difference(_lastHoverTime).inMilliseconds < 16) return;
+      _lastHoverTime = now;
       double noAnimationDistance = 0;
       for (int index = 0; index < particles.length; index++) {
         noAnimationDistance = sqrt(((tapdx - particles[index].position.dx) *

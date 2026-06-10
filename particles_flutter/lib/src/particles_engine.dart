@@ -77,7 +77,6 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   void initailizeParticles(_) {
     widget.interaction!.state.particles = widget.particles;
 
-    /// Initialise particles at random positions (default)
     if (widget.particleEmitter == null) {
       particles = widget.particles;
       for (int index = 0; index < widget.particles.length; index++) {
@@ -86,22 +85,26 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           rng.nextDouble() * widget.height,
         );
       }
+      for (int index = 0; index < widget.particles.length; index++) {
+        widget.particles[index].updateVelocity = widget.particles[index].velocity;
+      }
+      _runner.run((double deltaTime, double correction) {
+        _engine(deltaTime);
+      });
     } else {
+      for (int index = 0; index < widget.particles.length; index++) {
+        widget.particles[index].updateVelocity = widget.particles[index].velocity;
+      }
+      _runner.run((double deltaTime, double correction) {
+        _engine(deltaTime);
+      });
       widget.particleEmitter!.emit(widget.particles, particles);
-    }
-    for (int index = 0; index < widget.particles.length; index++) {
-      /// Set the initial velocity amount
-      widget.particles[index].updateVelocity = widget.particles[index].velocity;
     }
   }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback(initailizeParticles);
-
-    _runner.run((double deltaTime, double correction) {
-      _engine(deltaTime);
-    });
     super.initState();
   }
 
@@ -131,7 +134,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
 
           if (widget.particlePhysics != null) {
             particles[index].updateVelocity = widget.particlePhysics!
-                .applyGravity(particles[index].currentVelocity);
+                .applyGravity(particles[index].currentVelocity, deltaTime);
           }
 
           //update particle rotation
@@ -152,15 +155,15 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
 
   void connectLines() {
     lineList = [];
-    double distanceBetween = 0;
+    const double threshold = 110;
+    const double thresholdSquared = threshold * threshold;
     for (int point1 = 0; point1 < particles.length; point1++) {
-      for (int point2 = 0; point2 < particles.length; point2++) {
-        distanceBetween = sqrt(pow(
-                (particles[point2].position.dx - particles[point1].position.dx),
-                2) +
-            pow((particles[point2].position.dy - particles[point1].position.dy),
-                2));
-        if (distanceBetween < 110) {
+      for (int point2 = point1 + 1; point2 < particles.length; point2++) {
+        final double dx = particles[point2].position.dx - particles[point1].position.dx;
+        final double dy = particles[point2].position.dy - particles[point1].position.dy;
+        final double distSquared = dx * dx + dy * dy;
+        if (distSquared < thresholdSquared) {
+          final double distanceBetween = sqrt(distSquared);
           lineList.add(ParticleLine(
               particles[point1], particles[point2], distanceBetween));
         }

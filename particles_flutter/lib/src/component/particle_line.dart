@@ -21,7 +21,5 @@ class ParticleLine extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
-  }
+  bool shouldRepaint(ParticleLine oldDelegate) => true;
 }
