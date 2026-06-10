@@ -74,11 +74,20 @@ class _DemoShellState extends State<DemoShell> {
           particleEmitter: _scene.id == SceneId.fireworks
               ? Emitter(
                   startPosition: Offset(size.width / 2, size.height / 2),
-                  clusterSize: 10,
-                  delay: const Duration(milliseconds: 1),
+                  startPositionRadius: size.width * 0.25,
+                  clusterSize: 15,
+                  delay: const Duration(milliseconds: 300),
                   recycles: false,
                 )
-              : null,
+              : _scene.id == SceneId.confetti
+                  ? Emitter(
+                      startPosition: Offset(size.width / 2, 0),
+                      startPositionRadius: size.width * 0.5,
+                      clusterSize: 8,
+                      delay: const Duration(milliseconds: 80),
+                      recycles: true,
+                    )
+                  : null,
           interaction: _scene.interaction
               ? ParticleInteraction(
                   awayRadius: _scene.awayRadius,
@@ -250,31 +259,49 @@ class _WideLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const sidebarW = 88.0;
     const panelW = 320.0;
 
     return Row(
       children: [
-        // Left: scene rail
-        Container(
-          width: sidebarW,
-          decoration: const BoxDecoration(
-            color: Color(0xFF090909),
-            border: Border(right: BorderSide(color: Colors.white10)),
+        // Left: Flutter NavigationRail
+        Theme(
+          data: Theme.of(context).copyWith(
+            navigationRailTheme: NavigationRailThemeData(
+              backgroundColor: const Color(0xFF090909),
+              indicatorColor: scene.accentColor.withValues(alpha: 0.18),
+              selectedIconTheme: IconThemeData(color: scene.accentColor),
+              unselectedIconTheme:
+                  const IconThemeData(color: Colors.white38),
+              selectedLabelTextStyle: TextStyle(
+                color: scene.accentColor,
+                fontSize: 10,
+                fontWeight: FontWeight.w700,
+              ),
+              unselectedLabelTextStyle: const TextStyle(
+                color: Colors.white38,
+                fontSize: 10,
+              ),
+            ),
           ),
-          child: Column(
-            children: [
-              const SizedBox(height: 20),
-              // Wordmark
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0xFF090909),
+              border: Border(right: BorderSide(color: Colors.white10)),
+            ),
+            child: NavigationRail(
+              selectedIndex: sceneIndex,
+              onDestinationSelected: onSwitchScene,
+              labelType: NavigationRailLabelType.all,
+              leading: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
                 child: Column(
                   children: [
+                    const SizedBox(height: 8),
                     Text(
                       'particles',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.7),
-                        fontSize: 9,
+                        color: Colors.white.withValues(alpha: 0.5),
+                        fontSize: 8,
                         fontWeight: FontWeight.w300,
                         letterSpacing: 2,
                       ),
@@ -283,96 +310,78 @@ class _WideLayout extends StatelessWidget {
                       'flutter',
                       style: TextStyle(
                         color: scene.accentColor,
-                        fontSize: 10,
+                        fontSize: 9,
                         fontWeight: FontWeight.w800,
                         letterSpacing: 2,
                       ),
                     ),
+                    const SizedBox(height: 8),
+                    Divider(
+                        color: Colors.white.withValues(alpha: 0.08),
+                        height: 1,
+                        indent: 8,
+                        endIndent: 8),
                   ],
                 ),
               ),
-              const SizedBox(height: 8),
-              Divider(color: Colors.white.withValues(alpha: 0.06), height: 1),
-              const SizedBox(height: 8),
-
-              // Scene buttons
-              Expanded(
-                child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 4),
-                  itemCount: kScenes.length,
-                  itemBuilder: (_, i) {
-                    final s = kScenes[i];
-                    final selected = i == sceneIndex;
-                    return GestureDetector(
-                      onTap: () => onSwitchScene(i),
-                      child: Tooltip(
-                        message: s.tagline,
-                        preferBelow: false,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 3),
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? s.accentColor.withValues(alpha: 0.15)
-                                : Colors.transparent,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: selected
-                                  ? s.accentColor.withValues(alpha: 0.6)
-                                  : Colors.transparent,
-                              width: 1,
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(s.emoji,
-                                  style: const TextStyle(fontSize: 22)),
-                              const SizedBox(height: 3),
-                              Text(
-                                s.name,
-                                style: TextStyle(
-                                  color: selected
-                                      ? s.accentColor
-                                      : Colors.white30,
-                                  fontSize: 8.5,
-                                  fontWeight: selected
-                                      ? FontWeight.w700
-                                      : FontWeight.normal,
-                                  letterSpacing: 0.3,
-                                ),
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+              trailing: Expanded(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Divider(
+                            color: Colors.white.withValues(alpha: 0.08),
+                            height: 1,
+                            indent: 8,
+                            endIndent: 8),
+                        const SizedBox(height: 12),
+                        const Text(
+                          'Raja Jain',
+                          style: TextStyle(
+                            color: Colors.white54,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 0.5,
                           ),
                         ),
-                      ),
-                    );
-                  },
+                        const SizedBox(height: 8),
+                        const _SocialButton(
+                          asset: 'assets/github.png',
+                          url:
+                              'https://github.com/rajajain08/particles_flutter',
+                          label: 'GitHub',
+                        ),
+                        const SizedBox(height: 8),
+                        const _SocialButton(
+                          asset: 'assets/pub.png',
+                          url:
+                              'https://pub.dev/packages/particles_flutter',
+                          label: 'pub.dev',
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-
-              // Social links
-              Divider(color: Colors.white.withValues(alpha: 0.06), height: 1),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                child: Column(
-                  children: [
-                    _SocialButton(
-                      asset: 'assets/github.png',
-                      url: 'https://github.com/rajajain08/particles_flutter',
-                    ),
-                    const SizedBox(height: 12),
-                    _SocialButton(
-                      asset: 'assets/pub.png',
-                      url: 'https://pub.dev/packages/particles_flutter',
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              destinations: kScenes.map((s) {
+                return NavigationRailDestination(
+                  icon: Tooltip(
+                    message: s.tagline,
+                    child: Text(s.emoji,
+                        style: const TextStyle(fontSize: 20)),
+                  ),
+                  selectedIcon: Tooltip(
+                    message: s.tagline,
+                    child: Text(s.emoji,
+                        style: const TextStyle(fontSize: 22)),
+                  ),
+                  label: Text(s.name),
+                );
+              }).toList(),
+            ),
           ),
         ),
 
@@ -604,29 +613,36 @@ class _NarrowLayout extends StatelessWidget {
               Container(
                 color: const Color(0xFF090909),
                 padding: const EdgeInsets.only(
-                    bottom: 12, left: 16, right: 16, top: 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                    bottom: 12, left: 16, right: 16, top: 8),
+                child: Column(
                   children: [
-                    Text(
-                      'particles flutter',
+                    const Text(
+                      'particles flutter  ·  by Raja Jain',
                       style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.25),
+                        color: Colors.white54,
                         fontSize: 11,
-                        letterSpacing: 1,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.5,
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    _SocialButton(
-                      asset: 'assets/github.png',
-                      url: 'https://github.com/rajajain08/particles_flutter',
-                      size: 18,
-                    ),
-                    const SizedBox(width: 12),
-                    _SocialButton(
-                      asset: 'assets/pub.png',
-                      url: 'https://pub.dev/packages/particles_flutter',
-                      size: 18,
+                    const SizedBox(height: 8),
+                    const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _SocialButton(
+                          asset: 'assets/github.png',
+                          url: 'https://github.com/rajajain08/particles_flutter',
+                          size: 16,
+                          label: 'GitHub',
+                        ),
+                        SizedBox(width: 20),
+                        _SocialButton(
+                          asset: 'assets/pub.png',
+                          url: 'https://pub.dev/packages/particles_flutter',
+                          size: 16,
+                          label: 'pub.dev',
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -643,22 +659,41 @@ class _SocialButton extends StatelessWidget {
   final String asset;
   final String url;
   final double size;
+  final String? label;
 
   const _SocialButton({
     required this.asset,
     required this.url,
     this.size = 20,
+    this.label,
   });
 
   @override
   Widget build(BuildContext context) {
+    final icon = Image.asset(
+      asset,
+      height: size,
+      color: Colors.white.withValues(alpha: 0.5),
+    );
     return GestureDetector(
       onTap: () => launchUrl(Uri.parse(url)),
-      child: Image.asset(
-        asset,
-        height: size,
-        color: Colors.white.withValues(alpha: 0.35),
-      ),
+      child: label != null
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                icon,
+                const SizedBox(width: 6),
+                Text(
+                  label!,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            )
+          : icon,
     );
   }
 }

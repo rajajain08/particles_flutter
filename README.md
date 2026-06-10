@@ -1,140 +1,238 @@
-# Flutter Particles
-A package that provides an easy way to add customisable particles with animation in a Flutter project.
+# particles_flutter
 
+[![pub.dev](https://img.shields.io/pub/v/particles_flutter.svg)](https://pub.dev/packages/particles_flutter)
+[![pub points](https://img.shields.io/pub/points/particles_flutter)](https://pub.dev/packages/particles_flutter/score)
+[![likes](https://img.shields.io/pub/likes/particles_flutter)](https://pub.dev/packages/particles_flutter)
+[![GitHub stars](https://img.shields.io/github/stars/rajajain08/particles_flutter?style=flat)](https://github.com/rajajain08/particles_flutter/stargazers)
 
-<p>
-    <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/newparticledemo.gif?raw=true" height=400px/>
+A Flutter package for high-performance, fully customisable particle animations. Build starfields, snow, confetti, fireworks, connected webs, and more — with physics, touch/hover interaction, and an emission controller.
+
+**Made by [Raja Jain](https://github.com/rajajain08)**  ·  [Live Demo](https://particles-flutter.vercel.app/)  ·  [pub.dev](https://pub.dev/packages/particles_flutter)
+
+---
+
+<p align="center">
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/newparticledemo.gif?raw=true" height="400"/>
 </p>
 
-## Getting Started
+---
 
-You should ensure that you add the following dependency in your Flutter project.
+## Install
 
-```yaml
-dependencies:
-  particles_flutter: 2.0.2
+```sh
+flutter pub add particles_flutter
 ```
-And you can ensure you have the latest version of this repo by running ```flutter pub upgrade``` in the terminal.
 
-## How to use
+---
 
-The most simple implementation of the particle system looks like:
+## Quick Start
 
 ```dart
-  import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/shapes.dart';
 
-  Particles(
-        particles: [], // List of particles
-        height: screenHeight,
-        width: screenWidth,
-      )
+Particles(
+  width: MediaQuery.of(context).size.width,
+  height: MediaQuery.of(context).size.height,
+  boundType: BoundType.WrapAround,
+  particles: List.generate(80, (_) {
+    final rng = Random();
+    return CircularParticle(
+      radius: rng.nextDouble() * 4 + 1,
+      color: Colors.white.withValues(alpha: 0.7),
+      velocity: Offset(
+        (rng.nextDouble() - 0.5) * 60,
+        (rng.nextDouble() - 0.5) * 60,
+      ),
+    );
+  }),
+)
 ```
 
-A list of particles can be easily defined for use by replacing the ```[]``` above with a method call to:
+---
 
-```dart
-  List<Particle> createParticles() {
-    var rng = Random();
-    List<Particle> particles = [];
+## Features
 
-    // Circle particle example
-    for (int i = 0; i < 32; i++) {
-      particles.add(CircularParticle(
-        color: Colors.white.withOpacity(0.6),
-        radius: rng.nextDouble() * 20,
-        velocity: Offset(rng.nextDouble() * 200 * randomSign(),
-            rng.nextDouble() * 200 * randomSign()),
-      ));
-    }
-    return particles;
-  }
-```
-Due to the particle values (velocity, radius) being defined _per-particle_, a degree of randomness can be made between particles, as shown above.
+### Particle Shapes
 
-This example, however, won't get very far - since no ```boundType``` has been set for ```Particles```, all of the particles that are initially rendered will slowly exit the screen.
+Import with `import 'package:particles_flutter/shapes.dart';`
 
-You can extend your particle system with the following features:
+| Shape | Class |
+|---|---|
+| Circle | `CircularParticle(radius, color, velocity)` |
+| Rectangle | `RectangularParticle(width, height, color, velocity)` |
+| Rounded Rectangle | `RoundRectangularParticle(width, height, cornerRadius, ...)` |
+| Triangle | `TriangularParticle(width, height, color, velocity)` |
+| Oval | `OvoidalParticle(width, height, color, velocity, rotationSpeed)` |
+| Image | `ImageParticle(image, width, height, color, velocity)` |
+
+All shapes support `rotationSpeed` for spinning effects.
+
+---
 
 ### Boundary Types
 
-There are 3 options for the boundary of a particle system.
+```dart
+Particles(
+  boundType: BoundType.WrapAround, // wrap | Bounce | None
+  ...
+)
+```
 
-- ```BoundType.None``` -> Default, particles have no interaction with the engine boundaries.
-- ```BoundType.WrapAround``` -> Particles will jump to the opposite boundary on contact with a given boundary. This is the behaviour shown in the original package.
-- ```BoundType.Bounce``` -> On contact with a boundary, particles will have their velocity flipped on the axis of that boundary, causing them to bounce.
+| Value | Behaviour |
+|---|---|
+| `BoundType.None` | Particles exit the canvas (default) |
+| `BoundType.WrapAround` | Particles reappear from the opposite edge |
+| `BoundType.Bounce` | Particles reflect off edges |
 
-### Touch/Hover Controls
+---
 
-The touch/hover interactions shown in the original package can now be implemented in the ```interaction``` field of ```Particles``` with the ```ParticleInteraction``` class.
+### Touch & Hover Interaction
 
-This class implements all the same features that were built in the original package.
+Import with `import 'package:particles_flutter/interactions.dart';`
 
-Import with
-```import 'package:particles_flutter/interactions.dart';```
+```dart
+Particles(
+  interaction: ParticleInteraction(
+    awayRadius: 120,
+    enableHover: true,
+    onTapAnimation: true,
+    awayAnimationDuration: Duration(milliseconds: 400),
+    awayAnimationCurve: Curves.easeOut,
+    hoverRadius: 80,
+  ),
+  ...
+)
+```
+
+---
+
+### Particle Physics (Gravity)
+
+Import with `import 'package:particles_flutter/physics.dart';`
+
+```dart
+Particles(
+  particlePhysics: ParticlePhysics(gravityScale: 30),
+  ...
+)
+```
+
+---
 
 ### Emission Controller
 
-Rather than the random particle spawning implemented by the original package, you can now start all particles at a given position using the ```Emitter``` class in the ```particleEmitter``` field of ```Particles```. For example: 
+Spawn particles from a fixed point — great for fireworks and fountains.
 
-```Dart
+```dart
+Particles(
+  boundType: BoundType.None,
   particleEmitter: Emitter(
-    startPosition: Offset(screenWidth/2, screenHeight/2),
-    delay: const Duration(milliseconds: 5),
-    recycles: true,
+    startPosition: Offset(width / 2, height / 2),
+    startPositionRadius: 10,  // spawn spread radius
+    clusterSize: 10,           // particles per burst
+    delay: Duration(milliseconds: 300),
+    recycles: false,           // true = infinite loop
   ),
+  ...
+)
 ```
 
-Emitter allows you to set a start position, spawn delay and cluster size, as well as toggle ```recycles``` - which will return a particle back to the emitter when it reaches a boundary.
+---
 
-### Particle Shapes
-In addition to the circular particle created in the original package, I have provided:
-- Rectangular (+ Rounded Rectangular)
-- Triangular
-- Ovoidal
-- Image particles - which can essentially allow _any_ particle shape you wish
+## Example Scenes
 
-All of which can be imported to your project with:   
- ```import 'package:particles_flutter/shapes.dart';```
+### ✨ Starfield
+```dart
+Particles(
+  boundType: BoundType.WrapAround,
+  interaction: ParticleInteraction(awayRadius: 120, enableHover: true),
+  particles: List.generate(120, (_) => CircularParticle(
+    radius: Random().nextDouble() * 3 + 0.5,
+    color: Colors.white.withValues(alpha: 0.7),
+    velocity: Offset((Random().nextDouble() - 0.5) * 40,
+                     (Random().nextDouble() - 0.5) * 40),
+  )),
+  ...
+)
+```
 
-### Particle Physics
+### ❄️ Snow
+```dart
+Particles(
+  boundType: BoundType.WrapAround,
+  particlePhysics: ParticlePhysics(gravityScale: 20),
+  particles: List.generate(100, (_) => CircularParticle(
+    radius: Random().nextDouble() * 6 + 2,
+    color: Colors.white.withValues(alpha: 0.8),
+    velocity: Offset((Random().nextDouble() - 0.5) * 20,
+                     Random().nextDouble() * 15 + 5),
+  )),
+  ...
+)
+```
 
-A (developing) feature that can automatically calculate gravity for your particle engine.
+### 🎆 Fireworks
+```dart
+Particles(
+  boundType: BoundType.None,
+  particlePhysics: ParticlePhysics(gravityScale: 45),
+  particleEmitter: Emitter(
+    startPosition: Offset(width / 2, height / 2),
+    startPositionRadius: width * 0.25,
+    clusterSize: 15,
+    delay: Duration(milliseconds: 300),
+  ),
+  particles: List.generate(150, (_) {
+    final angle = Random().nextDouble() * 2 * pi;
+    final speed = Random().nextDouble() * 120 + 60;
+    return TriangularParticle(
+      width: 6, height: 6,
+      color: Colors.orange,
+      velocity: Offset(cos(angle) * speed, sin(angle) * speed),
+      rotationSpeed: 3.0,
+    );
+  }),
+  ...
+)
+```
 
-Used by assigning a ```ParticlePhysics``` in the ```particlePhysics``` field of ```Particles```.
+---
 
-Import with 
-```import 'package:particles_flutter/physics.dart';```
+## Live Demo
 
-## Support & Contribute
+See all scenes running live → **[particles-flutter.vercel.app](https://particles-flutter.vercel.app/)**
 
-If you like my extensions, give this fork a star on GitHub :)
-
-If you find a bug or want to contribute, please fill out an issue / make a pull request!
-
-## Checkout web [here](https://praticles-flutter-raja-jains-projects.vercel.app/).
-https://praticles-flutter-raja-jains-projects.vercel.app/
-<p>
-    <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/web_demo.gif?raw=true"/>
+<p align="center">
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/web_demo.gif?raw=true"/>
 </p>
 
+---
 
 ## Support
-If you find this package useful, please consider giving it a star on [GitHub](https://github.com/rajajain08/particles_flutter) and a thumbs up on [Pub.dev](https://pub.dev/packages/particles_flutter). Your support is greatly appreciated!
 
-<a href="https://www.buymeacoffee.com/rajajain08" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="32" width="140"></a>
+If this package saved you time, please:
 
-## Contributions
-Thank you to all the amazing people who have contributed to this project! 🎉
+- ⭐ [Star on GitHub](https://github.com/rajajain08/particles_flutter)
+- 👍 [Thumbs up on pub.dev](https://pub.dev/packages/particles_flutter)
+- ☕ [Buy me a coffee](https://www.buymeacoffee.com/rajajain08)
 
-<a href="https://github.com/RealEeveahy">
-  <img src="https://github.com/RealEeveahy.png" width="60" height="60" alt="RealEeveahy" style="border-radius: 50%;">
+<a href="https://www.buymeacoffee.com/rajajain08" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="32" width="140">
 </a>
 
-Want to contribute? Feel free to submit a pull request!
+---
 
-If you find a bug or want a feature, but don't know how to fix/implement it, please fill an [issue](https://github.com/rajajain08/particles_flutter/issues).  
-If you fixed a bug or implemented a new feature, please send a [pull request](https://github.com/rajajain08/particles_flutter/pulls).
+## Contributing
 
-If you want to contact me, Please send me a short DM on [Twitter](https://twitter.com/rajajain08).
+Bug reports and pull requests welcome.
 
+- Found a bug? → [Open an issue](https://github.com/rajajain08/particles_flutter/issues)
+- Have a fix? → [Send a PR](https://github.com/rajajain08/particles_flutter/pulls)
+- Want to chat? → [Twitter @rajajain08](https://twitter.com/rajajain08)
 
+### Contributors
+
+<a href="https://github.com/RealEeveahy">
+  <img src="https://github.com/RealEeveahy.png" width="48" height="48" alt="RealEeveahy" style="border-radius:50%">
+</a>

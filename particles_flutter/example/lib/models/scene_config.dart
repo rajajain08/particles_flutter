@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/engine.dart';
 
-enum SceneId { starfield, web, snow, nebula, fireworks }
+enum SceneId { starfield, web, snow, nebula, fireworks, confetti }
 
 class SceneConfig {
   final SceneId id;
@@ -196,34 +196,70 @@ const List<SceneConfig> kScenes = [
     id: SceneId.fireworks,
     name: 'Fireworks',
     emoji: '🎆',
-    tagline: 'Particle emitter · burst with gravity',
+    tagline: 'Multi-burst emitter · gravity trails',
     codeSnippet: '''Particles(
-  particles: List.generate(80, (_) =>
+  particles: List.generate(150, (_) =>
     TriangularParticle(
-      width: 6,
-      height: 6,
+      width: 5,
+      height: 5,
       color: Color(0xFFFF6D00),
-      velocity: Offset(120, 120),
-      rotationSpeed: 2.0,
+      velocity: Offset(140, 140),
+      rotationSpeed: 3.0,
     ),
   ),
   width: size.width,
   height: size.height,
   boundType: BoundType.None,
-  particlePhysics: ParticlePhysics(gravityScale: 40),
+  particlePhysics: ParticlePhysics(gravityScale: 45),
   particleEmitter: Emitter(
     startPosition: center,
-    clusterSize: 10,
+    startPositionRadius: 80,
+    clusterSize: 15,
+    delay: Duration(milliseconds: 300),
     recycles: false,
   ),
 )''',
-    bgColor: Color(0xFF0A0000),
+    bgColor: Color(0xFF05000A),
     accentColor: Color(0xFFFF6D00),
     boundType: BoundType.None,
     connectDots: false,
     gravity: true,
     interaction: false,
-    speed: 120,
-    gravityScale: 40,
+    speed: 140,
+    gravityScale: 45,
+    sizeMultiplier: 1.2,
+  ),
+  SceneConfig(
+    id: SceneId.confetti,
+    name: 'Confetti',
+    emoji: '🎉',
+    tagline: 'Celebration rain · rotating ribbons',
+    codeSnippet: '''Particles(
+  particles: List.generate(120, (_) =>
+    RoundRectangularParticle(
+      width: 10,
+      height: 4,
+      cornerRadius: 2,
+      color: Colors.red,
+      velocity: Offset(20, 60),
+      rotationSpeed: 2.5,
+    ),
+  ),
+  width: size.width,
+  height: size.height,
+  boundType: BoundType.WrapAround,
+  particlePhysics: ParticlePhysics(
+    gravityScale: 25,
+  ),
+)''',
+    bgColor: Color(0xFF0A0A14),
+    accentColor: Color(0xFFFFD700),
+    boundType: BoundType.WrapAround,
+    connectDots: false,
+    gravity: true,
+    interaction: false,
+    speed: 60,
+    gravityScale: 25,
+    sizeMultiplier: 1.0,
   ),
 ];

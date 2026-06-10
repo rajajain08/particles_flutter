@@ -148,6 +148,16 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                     ),
                   ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'by Raja Jain',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 11,
+                      letterSpacing: 1.5,
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
                   const SizedBox(height: 40),
                   SizedBox(
                     width: 20,
