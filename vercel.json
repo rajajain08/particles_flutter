@@ -1,5 +1,5 @@
 {
-  "buildCommand": "git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.24.0 $HOME/flutter || true && export PATH=\"$HOME/flutter/bin:$PATH\" && flutter config --enable-web && cd particles_flutter/example && flutter pub get && flutter build web --release",
+  "buildCommand": "/bin/bash scripts/build_flutter_web.sh",
   "outputDirectory": "particles_flutter/example/build/web",
   "installCommand": "echo 'skip'"
 }

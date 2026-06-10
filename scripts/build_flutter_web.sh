@@ -1,17 +1,14 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -e
 
-FLUTTER_VERSION="3.38.1"
-FLUTTER_DIR="$HOME/flutter"
+export FLUTTER_HOME="$HOME/flutter"
+export PATH="$FLUTTER_HOME/bin:$PATH"
 
-if [ ! -d "$FLUTTER_DIR" ]; then
-  echo "Installing Flutter $FLUTTER_VERSION..."
-  curl -sL "https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_${FLUTTER_VERSION}-stable.tar.xz" -o /tmp/flutter.tar.xz
-  tar -xf /tmp/flutter.tar.xz -C "$HOME"
+if [ ! -d "$FLUTTER_HOME" ]; then
+  git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.24.0 "$FLUTTER_HOME"
 fi
 
-export PATH="$FLUTTER_DIR/bin:$PATH"
-
+flutter precache --web
 flutter config --enable-web
 flutter --version
 
