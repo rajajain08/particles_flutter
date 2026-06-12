@@ -57,5 +57,6 @@ class Emitter {
 
     // Reset the particle velocity to it's initial number on recylce - in case of physics
     particle.updateVelocity = particle.velocity;
+    particle.updateAge = 0.0;
   }
 }

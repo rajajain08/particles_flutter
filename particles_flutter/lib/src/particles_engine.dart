@@ -9,6 +9,7 @@ import 'package:particles_flutter/src/component/particle/particle.dart';
 import 'package:particles_flutter/src/painters/particle_painter.dart';
 import 'package:particles_flutter/src/utils/bound_type.dart';
 import 'package:particles_flutter/src/utils/emitter.dart';
+import 'package:particles_flutter/src/utils/particle_lifetime.dart';
 import 'package:particles_flutter/src/utils/particle_physics.dart';
 
 class Particles extends StatefulWidget {
@@ -85,6 +86,11 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           rng.nextDouble() * widget.width,
           rng.nextDouble() * widget.height,
         );
+        // Stagger initial age so particles don't all expire simultaneously
+        if (particles[index].lifetime != null) {
+          particles[index].updateAge =
+              rng.nextDouble() * particles[index].lifetime!;
+        }
       }
       for (int index = 0; index < widget.particles.length; index++) {
         widget.particles[index].updateVelocity = widget.particles[index].velocity;
@@ -114,34 +120,53 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
     setState(
       () {
         for (int index = 0; index < particles.length; index++) {
+          final p = particles[index];
+
+          // Age + lifetime features
+          if (p.lifetime != null) {
+            p.updateAge = p.age + deltaTime;
+            if (p.isExpired) {
+              if (widget.particleEmitter?.recycles == true) {
+                widget.particleEmitter!.recycle(p);
+              } else {
+                // No emitter: respawn at random position so pool never drains
+                p.updatePosition = Offset(
+                  rng.nextDouble() * widget.width,
+                  rng.nextDouble() * widget.height,
+                );
+                p.updateVelocity = p.velocity;
+              }
+              // Small random offset so respawned particles don't all expire together again
+              p.updateAge = rng.nextDouble() * (p.lifetime! * 0.15);
+            }
+            ParticleLifetime.update(p);
+          }
+
+          // Trail: record position before moving
+          if (p.trailEnabled) p.pushTrailPosition(p.position);
+
           //update particle position
-          double dx = particles[index].position.dx +
-              deltaTime * particles[index].currentVelocity.dx;
-          double dy = particles[index].position.dy +
-              deltaTime * particles[index].currentVelocity.dy;
+          double dx = p.position.dx + deltaTime * p.currentVelocity.dx;
+          double dy = p.position.dy + deltaTime * p.currentVelocity.dy;
 
           if (widget.boundType == BoundType.WrapAround)
-            particles[index].updatePosition =
-                getWrapPosition(dx, dy, widget.width, widget.height);
+            p.updatePosition = getWrapPosition(dx, dy, widget.width, widget.height);
           else if (widget.boundType == BoundType.Bounce)
-            particles[index].updatePosition = checkForBounce(
-                dx, dy, widget.width, widget.height, particles[index]);
+            p.updatePosition = checkForBounce(dx, dy, widget.width, widget.height, p);
           else if (outOfBound(dx, dy, widget.width, widget.height)) {
-            if (widget.particleEmitter != null) if (widget.particleEmitter!
-                .recycles) widget.particleEmitter!.recycle(particles[index]);
+            if (widget.particleEmitter != null)
+              if (widget.particleEmitter!.recycles)
+                widget.particleEmitter!.recycle(p);
           } else
-            particles[index].updatePosition =
-                (Offset(dx, dy)); // Continue as normal
+            p.updatePosition = Offset(dx, dy);
 
           if (widget.particlePhysics != null) {
-            particles[index].updateVelocity = widget.particlePhysics!
-                .applyGravity(particles[index].currentVelocity, deltaTime);
+            p.updateVelocity =
+                widget.particlePhysics!.applyGravity(p.currentVelocity, deltaTime);
           }
 
           //update particle rotation
-          double r = particles[index].rotation +
-              deltaTime * particles[index].rotationSpeed;
-          particles[index].updateRotation = (r);
+          p.updateRotation = p.rotation + deltaTime * p.rotationSpeed;
         }
         if (widget.connectDots) connectLines(); //not recommended
       },

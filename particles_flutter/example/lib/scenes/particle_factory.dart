@@ -5,6 +5,7 @@ import 'package:particles_flutter/engine.dart';
 import 'package:particles_flutter/shapes.dart';
 import '../models/scene_config.dart';
 
+
 // Corner burst — 60 confetti particles shot inward from a corner
 List<Particle> buildCornerBurst(SceneConfig s, Offset corner) {
   const colors = [
@@ -66,6 +67,14 @@ List<Particle> buildParticles(
       return _fireworks(scene, count);
     case SceneId.confetti:
       return _confetti(scene, count);
+    case SceneId.comet:
+      return _comet(scene, count);
+    case SceneId.pulse:
+      return _pulse(scene, count);
+    case SceneId.ghosts:
+      return _ghosts(scene, count);
+    case SceneId.rockets:
+      return _rockets(scene, count);
   }
 }
 
@@ -244,6 +253,222 @@ List<Particle> _confetti(SceneConfig s, int count) {
             alpha: (_rng.nextDouble() * 0.3 + 0.65) * s.opacity),
         velocity: Offset(vx, vy),
         rotationSpeed: _rng.nextDouble() * 3 * _sign(),
+      );
+    }
+  });
+}
+
+// v2.1 — Color over lifetime + trails
+List<Particle> _comet(SceneConfig s, int count) {
+  const colors = [
+    Color(0xFFFFFFFF),
+    Color(0xFFFFD740),
+    Color(0xFFFF6D00),
+    Color(0xFFEA80FC),
+    Color(0xFF40C4FF),
+    Color(0xFF69F0AE),
+  ];
+  return List.generate(count, (_) {
+    final baseColor = colors[_rng.nextInt(colors.length)];
+    final speed = (_rng.nextDouble() * 0.6 + 0.4) * s.speed;
+    final angle = _rng.nextDouble() * 2 * pi;
+    return CircularParticle(
+      radius: (_rng.nextDouble() * 3 + 2) * s.sizeMultiplier,
+      color: baseColor,
+      velocity: Offset(cos(angle) * speed, sin(angle) * speed),
+      lifetime: _rng.nextDouble() * 2.0 + 1.5,
+      colorGradient: [
+        baseColor,
+        baseColor.withValues(alpha: 0.7),
+        Colors.orange.withValues(alpha: 0.4),
+        Colors.transparent,
+      ],
+      colorCurve: Curves.linear,
+      startOpacity: 0.0,
+      endOpacity: 0.0,
+      opacityCurve: Curves.linear,
+      trailEnabled: true,
+      trailLength: 7,
+      trailFade: true,
+    );
+  });
+}
+
+// v2.1 — Scale over lifetime
+List<Particle> _pulse(SceneConfig s, int count) {
+  const colors = [
+    Color(0xFF7C4DFF),
+    Color(0xFFE040FB),
+    Color(0xFF40C4FF),
+    Color(0xFF69F0AE),
+    Color(0xFFFF4081),
+  ];
+  return List.generate(count, (_) {
+    final color = colors[_rng.nextInt(colors.length)];
+    final lifetime = _rng.nextDouble() * 1.5 + 1.5;
+    return CircularParticle(
+      radius: (_rng.nextDouble() * 10 + 6) * s.sizeMultiplier,
+      color: color.withValues(alpha: s.opacity),
+      velocity: Offset(
+        _rng.nextDouble() * s.speed * 0.4 * _sign(),
+        _rng.nextDouble() * s.speed * 0.4 * _sign(),
+      ),
+      lifetime: lifetime,
+      startScale: 0.1,
+      endScale: 1.6,
+      scaleCurve: Curves.easeInOut,
+      startOpacity: 0.0,
+      endOpacity: 0.0,
+      opacityCurve: Curves.linear,
+    );
+  });
+}
+
+// v2.1 — Fade over lifetime
+List<Particle> _ghosts(SceneConfig s, int count) {
+  const shapes = 3;
+  const ghostColors = [
+    Color(0xFFE8F5E9),
+    Color(0xFF69F0AE),
+    Color(0xFF80CBC4),
+    Color(0xFFB2DFDB),
+    Color(0xFFA5D6A7),
+  ];
+  return List.generate(count, (_) {
+    final color = ghostColors[_rng.nextInt(ghostColors.length)];
+    final lifetime = _rng.nextDouble() * 3.0 + 2.0;
+    final vx = _rng.nextDouble() * s.speed * 0.3 * _sign();
+    final vy = _rng.nextDouble() * s.speed * 0.2 * _sign();
+    final shape = _rng.nextInt(shapes);
+    // Fade: 0→peak→0 is approximated by startOpacity=0, endOpacity=0
+    // and peak driven by Curves.easeInOut (ramps up then down)
+    if (shape == 0) {
+      return CircularParticle(
+        radius: (_rng.nextDouble() * 14 + 8) * s.sizeMultiplier,
+        color: color,
+        velocity: Offset(vx, vy),
+        lifetime: lifetime,
+        startOpacity: 0.0,
+        endOpacity: 0.0,
+        opacityCurve: Curves.easeInOut,
+        startScale: 0.6,
+        endScale: 1.2,
+        scaleCurve: Curves.easeOut,
+      );
+    } else if (shape == 1) {
+      return OvoidalParticle(
+        width: (_rng.nextDouble() * 24 + 14) * s.sizeMultiplier,
+        height: (_rng.nextDouble() * 14 + 8) * s.sizeMultiplier,
+        color: color,
+        velocity: Offset(vx, vy),
+        rotationSpeed: _rng.nextDouble() * 0.3 * _sign(),
+        lifetime: lifetime,
+        startOpacity: 0.0,
+        endOpacity: 0.0,
+        opacityCurve: Curves.easeInOut,
+        startScale: 0.5,
+        endScale: 1.1,
+        scaleCurve: Curves.easeOut,
+      );
+    } else {
+      return RoundRectangularParticle(
+        width: (_rng.nextDouble() * 20 + 10) * s.sizeMultiplier,
+        height: (_rng.nextDouble() * 20 + 10) * s.sizeMultiplier,
+        cornerRadius: 6,
+        color: color,
+        velocity: Offset(vx, vy),
+        rotationSpeed: _rng.nextDouble() * 0.4 * _sign(),
+        lifetime: lifetime,
+        startOpacity: 0.0,
+        endOpacity: 0.0,
+        opacityCurve: Curves.easeInOut,
+        startScale: 0.5,
+        endScale: 1.2,
+        scaleCurve: Curves.easeOut,
+      );
+    }
+  });
+}
+
+// v2.1 — All features combined
+List<Particle> _rockets(SceneConfig s, int count) {
+  const colors = [
+    Color(0xFFFFD740),
+    Color(0xFFFF6D00),
+    Color(0xFFFF4081),
+    Color(0xFF40C4FF),
+    Color(0xFF69F0AE),
+    Color(0xFFEA80FC),
+    Color(0xFFFFFFFF),
+    Color(0xFFFF1744),
+  ];
+  return List.generate(count, (_) {
+    final baseColor = colors[_rng.nextInt(colors.length)];
+    final angle = _rng.nextDouble() * 2 * pi;
+    final speed = (_rng.nextDouble() * 0.5 + 0.5) * s.speed;
+    final lifetime = _rng.nextDouble() * 1.0 + 1.2;
+    final shape = _rng.nextInt(3);
+    final vel = Offset(cos(angle) * speed, sin(angle) * speed);
+
+    if (shape == 0) {
+      return CircularParticle(
+        radius: (_rng.nextDouble() * 4 + 2) * s.sizeMultiplier,
+        color: baseColor,
+        velocity: vel,
+        rotationSpeed: _rng.nextDouble() * 2 * _sign(),
+        lifetime: lifetime,
+        colorGradient: [baseColor, Colors.orange, Colors.red, Colors.transparent],
+        colorCurve: Curves.linear,
+        startScale: 1.0,
+        endScale: 0.0,
+        scaleCurve: Curves.easeIn,
+        startOpacity: 0.0,
+        endOpacity: 0.0,
+        opacityCurve: Curves.linear,
+        trailEnabled: true,
+        trailLength: 6,
+        trailFade: true,
+      );
+    } else if (shape == 1) {
+      return TriangularParticle(
+        width: (_rng.nextDouble() * 7 + 3) * s.sizeMultiplier,
+        height: (_rng.nextDouble() * 7 + 3) * s.sizeMultiplier,
+        color: baseColor,
+        velocity: vel,
+        rotationSpeed: _rng.nextDouble() * 5 * _sign(),
+        lifetime: lifetime,
+        colorGradient: [baseColor, Colors.deepOrange, Colors.transparent],
+        colorCurve: Curves.linear,
+        startScale: 0.8,
+        endScale: 0.0,
+        scaleCurve: Curves.easeIn,
+        startOpacity: 0.0,
+        endOpacity: 0.0,
+        opacityCurve: Curves.linear,
+        trailEnabled: true,
+        trailLength: 5,
+        trailFade: true,
+      );
+    } else {
+      return RoundRectangularParticle(
+        width: (_rng.nextDouble() * 10 + 4) * s.sizeMultiplier,
+        height: (_rng.nextDouble() * 3 + 1.5) * s.sizeMultiplier,
+        cornerRadius: 2,
+        color: baseColor,
+        velocity: vel,
+        rotationSpeed: _rng.nextDouble() * 4 * _sign(),
+        lifetime: lifetime,
+        colorGradient: [baseColor, Colors.orange, Colors.transparent],
+        colorCurve: Curves.linear,
+        startScale: 1.0,
+        endScale: 0.0,
+        scaleCurve: Curves.easeIn,
+        startOpacity: 0.0,
+        endOpacity: 0.0,
+        opacityCurve: Curves.linear,
+        trailEnabled: true,
+        trailLength: 5,
+        trailFade: true,
       );
     }
   });
