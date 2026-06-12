@@ -79,12 +79,21 @@ List<Particle> buildParticles(
 }
 
 List<Particle> _starfield(SceneConfig s, int count) {
+  // Multi-color stars: white core + purple/blue/pink accents
+  const starColors = [
+    Colors.white,
+    Color(0xFFE0CFFF),
+    Color(0xFFB3DFFE),
+    Color(0xFFFFD6E0),
+    Color(0xFFD4BBFF),
+    Color(0xFF93C5FD),
+  ];
   return List.generate(count, (_) {
     final size = (_rng.nextDouble() * 3 + 0.5) * s.sizeMultiplier;
+    final color = starColors[_rng.nextInt(starColors.length)];
     return CircularParticle(
       radius: size,
-      color: Color.lerp(Colors.white, s.accentColor, _rng.nextDouble())!
-          .withValues(alpha: (_rng.nextDouble() * 0.5 + 0.4) * s.opacity),
+      color: color.withValues(alpha: (_rng.nextDouble() * 0.5 + 0.35) * s.opacity),
       velocity: Offset(
         _rng.nextDouble() * s.speed * 0.6 * _sign(),
         _rng.nextDouble() * s.speed * 0.6 * _sign(),
@@ -94,11 +103,20 @@ List<Particle> _starfield(SceneConfig s, int count) {
 }
 
 List<Particle> _web(SceneConfig s, int count) {
+  // Cyan-to-teal-to-blue gradient web — more depth than single color
+  const webColors = [
+    Color(0xFF22D3EE),
+    Color(0xFF67E8F9),
+    Color(0xFF06B6D4),
+    Color(0xFF38BDF8),
+    Color(0xFF7DD3FC),
+    Color(0xFF2DD4BF),
+  ];
   return List.generate(count, (_) {
+    final color = webColors[_rng.nextInt(webColors.length)];
     return CircularParticle(
       radius: (_rng.nextDouble() * 3 + 1.5) * s.sizeMultiplier,
-      color: s.accentColor.withValues(
-          alpha: (_rng.nextDouble() * 0.4 + 0.5) * s.opacity),
+      color: color.withValues(alpha: (_rng.nextDouble() * 0.4 + 0.45) * s.opacity),
       velocity: Offset(
         _rng.nextDouble() * s.speed * _sign(),
         _rng.nextDouble() * s.speed * _sign(),
@@ -108,12 +126,20 @@ List<Particle> _web(SceneConfig s, int count) {
 }
 
 List<Particle> _snow(SceneConfig s, int count) {
+  // Snow with blue tint variation — feels like real snowflakes under moonlight
+  const snowColors = [
+    Colors.white,
+    Color(0xFFE0F2FE),
+    Color(0xFFBAE6FD),
+    Color(0xFF93C5FD),
+    Color(0xFFDBEAFE),
+  ];
   return List.generate(count, (_) {
     final size = (_rng.nextDouble() * 6 + 2) * s.sizeMultiplier;
+    final color = snowColors[_rng.nextInt(snowColors.length)];
     return CircularParticle(
       radius: size,
-      color: Colors.white
-          .withValues(alpha: (_rng.nextDouble() * 0.5 + 0.4) * s.opacity),
+      color: color.withValues(alpha: (_rng.nextDouble() * 0.45 + 0.35) * s.opacity),
       velocity: Offset(
         _rng.nextDouble() * 20 * _sign(),
         _rng.nextDouble() * s.speed * 0.3 + 5,
@@ -123,12 +149,16 @@ List<Particle> _snow(SceneConfig s, int count) {
 }
 
 List<Particle> _nebula(SceneConfig s, int count) {
+  // Rich nebula palette — pinks, purples, magentas, teals
   const colors = [
-    Color(0xFFFF4081),
-    Color(0xFF7C4DFF),
-    Color(0xFF00E5FF),
-    Color(0xFFFFD740),
-    Color(0xFF69F0AE),
+    Color(0xFFF472B6),
+    Color(0xFFE879F9),
+    Color(0xFFA78BFA),
+    Color(0xFF818CF8),
+    Color(0xFF34D399),
+    Color(0xFF22D3EE),
+    Color(0xFFFB7185),
+    Color(0xFFFC8E68),
   ];
   return List.generate(count, (_) {
     final color = colors[_rng.nextInt(colors.length)];
@@ -157,15 +187,18 @@ List<Particle> _nebula(SceneConfig s, int count) {
 }
 
 List<Particle> _fireworks(SceneConfig s, int count) {
+  // Vivid firework burst — warm + cool contrast
   const colors = [
-    Color(0xFFFF6D00),
-    Color(0xFFFFD740),
-    Color(0xFFFF4081),
-    Color(0xFF69F0AE),
-    Color(0xFF40C4FF),
-    Color(0xFFEA80FC),
-    Color(0xFFFFFF00),
-    Color(0xFFFF1744),
+    Color(0xFFFB923C),
+    Color(0xFFFBBF24),
+    Color(0xFFF472B6),
+    Color(0xFF34D399),
+    Color(0xFF38BDF8),
+    Color(0xFFE879F9),
+    Color(0xFFFEF08A),
+    Color(0xFFFF6B6B),
+    Color(0xFF67E8F9),
+    Color(0xFFFFFFFF),
   ];
   return List.generate(count, (_) {
     final color = colors[_rng.nextInt(colors.length)];
@@ -210,17 +243,20 @@ List<Particle> _fireworks(SceneConfig s, int count) {
 }
 
 List<Particle> _confetti(SceneConfig s, int count) {
+  // Celebration palette — vivid neons, golds, corals, mints
   const colors = [
-    Color(0xFFE53935),
-    Color(0xFF8E24AA),
-    Color(0xFF1E88E5),
-    Color(0xFF00ACC1),
-    Color(0xFF43A047),
-    Color(0xFFFFB300),
-    Color(0xFFFF6F00),
-    Color(0xFFEC407A),
+    Color(0xFFFF6B6B),
+    Color(0xFFFF9F43),
+    Color(0xFFFECA57),
+    Color(0xFF48DBFB),
+    Color(0xFF1DD1A1),
+    Color(0xFFF368E0),
+    Color(0xFFFF9FF3),
+    Color(0xFF54A0FF),
     Color(0xFFFFFFFF),
-    Color(0xFFFFD700),
+    Color(0xFFF7DC6F),
+    Color(0xFFA29BFE),
+    Color(0xFF55EFC4),
   ];
   return List.generate(count, (_) {
     final color = colors[_rng.nextInt(colors.length)];

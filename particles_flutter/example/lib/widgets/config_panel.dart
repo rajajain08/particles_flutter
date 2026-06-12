@@ -38,7 +38,7 @@ class ConfigPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final accent = scene.accentColor;
     return Container(
-      color: Colors.black87,
+      color: Colors.transparent,
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

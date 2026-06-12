@@ -324,7 +324,7 @@ class _WideLayout extends StatelessWidget {
         Theme(
           data: Theme.of(context).copyWith(
             navigationRailTheme: NavigationRailThemeData(
-              backgroundColor: const Color(0xFF090909),
+              backgroundColor: const Color(0xFF0D1120),
               indicatorColor: scene.accentColor.withValues(alpha: 0.18),
               selectedIconTheme: IconThemeData(color: scene.accentColor),
               unselectedIconTheme:
@@ -481,16 +481,14 @@ class _WideLayout extends StatelessWidget {
                                 horizontal: 14, vertical: 5),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: const Color(0xFF7C4DFF)
-                                      .withValues(alpha: 0.5)),
+                                  color: scene.accentColor.withValues(alpha: 0.5)),
                               borderRadius: BorderRadius.circular(20),
-                              color: const Color(0xFF7C4DFF)
-                                  .withValues(alpha: 0.1),
+                              color: scene.accentColor.withValues(alpha: 0.1),
                             ),
-                            child: const Text(
+                            child: Text(
                               'pub.dev  ·  particles_flutter',
                               style: TextStyle(
-                                color: Color(0xFF7C4DFF),
+                                color: scene.accentColor,
                                 fontSize: 11,
                                 letterSpacing: 1.2,
                                 fontWeight: FontWeight.w500,
@@ -525,37 +523,25 @@ class _WideLayout extends StatelessWidget {
               Positioned(
                 top: 16,
                 right: 16,
-                child: GestureDetector(
+                child: _GlowButton(
+                  accent: scene.accentColor,
+                  active: showPanel,
                   onTap: onTogglePanel,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: showPanel
-                          ? scene.accentColor.withValues(alpha: 0.2)
-                          : Colors.black.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: scene.accentColor.withValues(alpha: 0.4),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.tune_rounded,
-                            color: scene.accentColor, size: 16),
-                        const SizedBox(width: 6),
-                        Text(
-                          showPanel ? 'Hide' : 'Controls',
-                          style: TextStyle(
-                            color: scene.accentColor,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                          ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.tune_rounded,
+                          color: scene.accentColor, size: 16),
+                      const SizedBox(width: 6),
+                      Text(
+                        showPanel ? 'Hide' : 'Controls',
+                        style: TextStyle(
+                          color: scene.accentColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -569,37 +555,47 @@ class _WideLayout extends StatelessWidget {
           curve: Curves.easeInOut,
           width: showPanel ? panelW : 0,
           child: showPanel
-              ? Container(
-                  width: panelW,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF0D0D0D),
-                    border:
-                        Border(left: BorderSide(color: Colors.white10)),
-                  ),
-                  child: Column(
-                    children: [
-                      // Panel header with tabs
-                      Container(
-                        padding: const EdgeInsets.fromLTRB(16, 14, 12, 12),
-                        decoration: const BoxDecoration(
-                          border: Border(
-                              bottom:
-                                  BorderSide(color: Colors.white10)),
-                        ),
-                        child: _PanelTabBar(
-                          active: panelTab,
-                          accent: scene.accentColor,
-                          onSwitch: onSwitchTab,
+              ? ClipRect(
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                    child: Container(
+                      width: panelW,
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.72),
+                        border: Border(
+                          left: BorderSide(
+                            color: scene.accentColor.withValues(alpha: 0.18),
+                          ),
                         ),
                       ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: panelTab == _PanelTab.config
-                              ? configPanel
-                              : codePanel,
-                        ),
+                      child: Column(
+                        children: [
+                          // Panel header with tabs
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(16, 14, 12, 12),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(
+                                  color: scene.accentColor.withValues(alpha: 0.12),
+                                ),
+                              ),
+                            ),
+                            child: _PanelTabBar(
+                              active: panelTab,
+                              accent: scene.accentColor,
+                              onSwitch: onSwitchTab,
+                            ),
+                          ),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: panelTab == _PanelTab.config
+                                  ? configPanel
+                                  : codePanel,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 )
               : const SizedBox.shrink(),
@@ -678,14 +674,14 @@ class _NarrowLayout extends StatelessWidget {
                           horizontal: 14, vertical: 5),
                       decoration: BoxDecoration(
                         border: Border.all(
-                            color: const Color(0xFF7C4DFF).withValues(alpha: 0.5)),
+                            color: scene.accentColor.withValues(alpha: 0.5)),
                         borderRadius: BorderRadius.circular(20),
-                        color: const Color(0xFF7C4DFF).withValues(alpha: 0.1),
+                        color: scene.accentColor.withValues(alpha: 0.1),
                       ),
-                      child: const Text(
+                      child: Text(
                         'pub.dev  ·  particles_flutter',
                         style: TextStyle(
-                          color: Color(0xFF7C4DFF),
+                          color: scene.accentColor,
                           fontSize: 11,
                           letterSpacing: 1.2,
                           fontWeight: FontWeight.w500,
@@ -717,23 +713,13 @@ class _NarrowLayout extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SceneBadge(scene: scene),
-                GestureDetector(
+                _GlowButton(
+                  accent: scene.accentColor,
+                  active: showPanel,
                   onTap: onTogglePanel,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: showPanel
-                          ? scene.accentColor.withValues(alpha: 0.2)
-                          : Colors.black.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: scene.accentColor.withValues(alpha: 0.4),
-                      ),
-                    ),
-                    child: Icon(Icons.tune_rounded,
-                        color: scene.accentColor, size: 20),
-                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: Icon(Icons.tune_rounded,
+                      color: scene.accentColor, size: 20),
                 ),
               ],
             ),
@@ -753,38 +739,42 @@ class _NarrowLayout extends StatelessWidget {
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
                 child: showPanel
-                    ? Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF0D0D0D),
-                          border: Border(
-                              top: BorderSide(
-                                  color: scene.accentColor
-                                      .withValues(alpha: 0.2))),
-                        ),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Tab bar inside panel
-                            Padding(
-                              padding:
-                                  const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                              child: _PanelTabBar(
-                                active: panelTab,
-                                accent: scene.accentColor,
-                                onSwitch: onSwitchTab,
+                    ? ClipRect(
+                        child: BackdropFilter(
+                          filter: ui.ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.72),
+                              border: Border(
+                                top: BorderSide(
+                                  color: scene.accentColor.withValues(alpha: 0.25),
+                                ),
                               ),
                             ),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: screenSize.height * 0.45,
-                              ),
-                              child: SingleChildScrollView(
-                                child: panelTab == _PanelTab.config
-                                    ? configPanel
-                                    : codePanel,
-                              ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                                  child: _PanelTabBar(
+                                    active: panelTab,
+                                    accent: scene.accentColor,
+                                    onSwitch: onSwitchTab,
+                                  ),
+                                ),
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight: screenSize.height * 0.45,
+                                  ),
+                                  child: SingleChildScrollView(
+                                    child: panelTab == _PanelTab.config
+                                        ? configPanel
+                                        : codePanel,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       )
                     : const SizedBox.shrink(),
@@ -799,7 +789,7 @@ class _NarrowLayout extends StatelessWidget {
 
               // Footer
               Container(
-                color: const Color(0xFF090909),
+                color: const Color(0xFF0D1120),
                 padding: const EdgeInsets.only(
                     bottom: 12, left: 16, right: 16, top: 8),
                 child: Column(
@@ -839,6 +829,95 @@ class _NarrowLayout extends StatelessWidget {
           ),
         ),
       ],
+      ),
+    );
+  }
+}
+
+class _GlowButton extends StatefulWidget {
+  final Color accent;
+  final bool active;
+  final VoidCallback onTap;
+  final Widget child;
+  final EdgeInsets padding;
+
+  const _GlowButton({
+    required this.accent,
+    required this.active,
+    required this.onTap,
+    required this.child,
+    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+  });
+
+  @override
+  State<_GlowButton> createState() => _GlowButtonState();
+}
+
+class _GlowButtonState extends State<_GlowButton>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _ctrl;
+  late Animation<double> _glow;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1600),
+    );
+    _glow = Tween<double>(begin: 0.2, end: 0.55).animate(
+      CurvedAnimation(parent: _ctrl, curve: Curves.easeInOut),
+    );
+    if (widget.active) _ctrl.repeat(reverse: true);
+  }
+
+  @override
+  void didUpdateWidget(_GlowButton old) {
+    super.didUpdateWidget(old);
+    if (widget.active && !old.active) {
+      _ctrl.repeat(reverse: true);
+    } else if (!widget.active && old.active) {
+      _ctrl.stop();
+      _ctrl.value = 0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedBuilder(
+        animation: _glow,
+        builder: (context, child) => AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: widget.padding,
+          decoration: BoxDecoration(
+            color: widget.active
+                ? widget.accent.withValues(alpha: 0.18)
+                : Colors.black.withValues(alpha: 0.55),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: widget.accent.withValues(alpha: widget.active ? 0.7 : 0.35),
+            ),
+            boxShadow: widget.active
+                ? [
+                    BoxShadow(
+                      color: widget.accent.withValues(alpha: _glow.value),
+                      blurRadius: 14,
+                      spreadRadius: 0,
+                    ),
+                  ]
+                : [],
+          ),
+          child: child,
+        ),
+        child: widget.child,
       ),
     );
   }
