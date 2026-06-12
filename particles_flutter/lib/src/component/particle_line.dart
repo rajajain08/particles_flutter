@@ -8,9 +8,15 @@ class ParticleLine extends CustomPainter {
     this.length
   );
   static Paint? randomColorPaint;
-  final Particle origin;
-  final Particle destination;
-  final double length;
+  Particle origin;
+  Particle destination;
+  double length;
+
+  void reset(Particle newOrigin, Particle newDestination, double newLength) {
+    origin = newOrigin;
+    destination = newDestination;
+    length = newLength;
+  }
 
   @override
   void paint(Canvas canvas, Size size) {

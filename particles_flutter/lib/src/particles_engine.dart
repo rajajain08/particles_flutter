@@ -70,7 +70,8 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   Runner _runner = Runner();
   _ParticlesState();
 
-  List<ParticleLine> lineList = [];
+  List<ParticleLine> _linePool = [];
+  int _activeLineCount = 0;
 
   get math => null;
 
@@ -154,7 +155,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   }
 
   void connectLines() {
-    lineList = [];
+    _activeLineCount = 0;
     const double threshold = 110;
     const double thresholdSquared = threshold * threshold;
     for (int point1 = 0; point1 < particles.length; point1++) {
@@ -164,8 +165,14 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
         final double distSquared = dx * dx + dy * dy;
         if (distSquared < thresholdSquared) {
           final double distanceBetween = sqrt(distSquared);
-          lineList.add(ParticleLine(
-              particles[point1], particles[point2], distanceBetween));
+          if (_activeLineCount < _linePool.length) {
+            _linePool[_activeLineCount].reset(
+                particles[point1], particles[point2], distanceBetween);
+          } else {
+            _linePool.add(ParticleLine(
+                particles[point1], particles[point2], distanceBetween));
+          }
+          _activeLineCount++;
         }
       }
     }
@@ -179,7 +186,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
       child: Stack(
         children: [
           CustomPaint(
-            painter: ParticlePainter(particles: particles, lines: lineList),
+            painter: ParticlePainter(particles: particles, lines: _linePool, activeLineCount: _activeLineCount),
           ),
           if (widget.interaction != null) widget.interaction!,
         ],
