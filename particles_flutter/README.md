@@ -2,7 +2,7 @@
 
 # particles_flutter
 
-**A Flutter package for high-performance, fully customisable particle animations. Build starfields, snow, confetti, fireworks, connected webs, comets, and more — with physics, touch/hover interaction, lifetime animations, trails, and an emission controller.**
+**A Flutter package for high-performance, fully customisable particle animations. Build starfields, snow, confetti, fireworks, connected webs, comets, burst explosions, and more — with physics, touch/hover interaction, lifetime animations, trails, burst emitters, and an emission controller.**
 
 [![pub package](https://img.shields.io/pub/v/particles_flutter.svg)](https://pub.dev/packages/particles_flutter)
 [![pub points](https://img.shields.io/pub/points/particles_flutter)](https://pub.dev/packages/particles_flutter/score)
@@ -54,6 +54,20 @@ Particles(
   }),
 )
 ```
+
+---
+
+## What's New in v2.2
+
+| Feature | Description |
+|---|---|
+| **BurstEmitter** | Fire fixed particle counts in configurable spread patterns — radial, cone, or directional |
+| **BurstEmitterController** | Trigger bursts manually from gesture callbacks, game events, or any code |
+| **Tap-to-burst** | Wire `BurstEmitterController.trigger()` to `onPointerDown` for per-tap explosions at the touch point |
+| **Overlap-safe pooling** | Multiple bursts in flight simultaneously; memory hard-capped at `maxPoolSize` (default 500) |
+| **Spread patterns** | `RadialBurst`, `ConeBurst`, `DirectionalBurst`, `CustomBurst` — or write your own via callback |
+
+All new features are **additive and fully backward compatible** — no changes needed to existing code.
 
 ---
 
@@ -230,6 +244,136 @@ Particles(
 
 ---
 
+### Burst Emitter (v2.2)
+
+Fire a fixed number of particles in a single burst — with configurable spread, repeat, physics, and optional controller for manual triggering.
+
+Import with `import 'package:particles_flutter/engine.dart';`
+
+#### Spread patterns
+
+| Pattern | Description |
+|---|---|
+| `RadialBurst` | Particles spread in all directions evenly |
+| `ConeBurst` | Particles spread within a configurable cone angle |
+| `DirectionalBurst` | All particles fire in one direction with spread |
+| `CustomBurst` | Provide your own `Offset Function(int index, int total)` velocity builder |
+
+#### One-shot radial explosion
+
+```dart
+Particles(
+  particles: const [],
+  width: size.width,
+  height: size.height,
+  boundType: BoundType.None,
+  burstEmitters: [
+    BurstEmitter(
+      position: (size) => size.center(Offset.zero),
+      particleCount: 60,
+      pattern: RadialBurst(minSpeed: 150, maxSpeed: 400),
+      repeatCount: 1,
+      physics: ParticlePhysics(gravityScale: 120),
+      particleFactory: (i, total) => CircularParticle(
+        radius: 4,
+        color: Colors.orange,
+        velocity: Offset.zero,
+        lifetime: 1.8,
+        endOpacity: 0.0,
+      ),
+    ),
+  ],
+)
+```
+
+#### Cone confetti from bottom
+
+```dart
+BurstEmitter(
+  position: (size) => Offset(size.width / 2, size.height),
+  particleCount: 50,
+  pattern: ConeBurst(
+    angle: -pi / 2,   // shoot upward
+    spread: pi / 2.5,
+    minSpeed: 300,
+    maxSpeed: 600,
+  ),
+  repeatCount: 1,
+  positionRadius: 60,
+  physics: ParticlePhysics(gravityScale: 200),
+  particleFactory: (i, total) => RoundRectangularParticle(
+    width: 12, height: 4, cornerRadius: 2,
+    color: Colors.pink,
+    velocity: Offset.zero,
+    rotationSpeed: 3.0,
+    lifetime: 2.0,
+    endOpacity: 0.0,
+  ),
+)
+```
+
+#### Tap-to-burst at touch point
+
+```dart
+// In your State:
+final _ctrl = BurstEmitterController();
+Offset _tapPos = Offset.zero;
+
+// In your build:
+Listener(
+  behavior: HitTestBehavior.opaque,
+  onPointerDown: (event) {
+    _tapPos = event.localPosition;
+    _ctrl.trigger();
+  },
+  child: Particles(
+    particles: const [],
+    width: size.width,
+    height: size.height,
+    boundType: BoundType.None,
+    burstEmitters: [
+      BurstEmitter(
+        position: (size) => _tapPos,
+        particleCount: 40,
+        pattern: RadialBurst(minSpeed: 80, maxSpeed: 240),
+        repeatCount: 0,        // 0 = fire only when triggered
+        controller: _ctrl,
+        physics: ParticlePhysics(gravityScale: 80),
+        particleFactory: (i, total) => CircularParticle(
+          radius: 3,
+          color: Colors.cyan,
+          velocity: Offset.zero,
+          lifetime: 1.2,
+          endScale: 0.0,
+          endOpacity: 0.0,
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+#### BurstEmitter parameters
+
+| Parameter | Type | Default | Description |
+|---|---|---|---|
+| `position` | `Offset Function(Size)` | required | Burst origin as a fraction of widget size |
+| `particleCount` | `int` | required | Particles emitted per burst |
+| `particleFactory` | `Particle Function(int, int)` | required | Called once per particle to build its appearance |
+| `pattern` | `BurstPattern` | required | Velocity spread strategy |
+| `initialDelay` | `Duration` | `Duration.zero` | Delay before first burst |
+| `repeatCount` | `int` | `1` | Repeat count; `0` = controller-triggered only |
+| `repeatInterval` | `Duration` | `Duration.zero` | Gap between repeats |
+| `positionRadius` | `double` | `0` | Spawn scatter radius around `position` |
+| `physics` | `ParticlePhysics?` | `null` | Gravity applied to burst particles |
+| `enableTrails` | `bool` | `false` | Enable trail rendering (expensive at high counts) |
+| `controller` | `BurstEmitterController?` | `null` | Manual trigger controller |
+| `maxPoolSize` | `int` | `500` | Memory ceiling; oldest particles reclaimed when full |
+
+> **Tip:** `Emitter.burst(...)` is a shorthand factory that returns a `BurstEmitter` with identical parameters — use whichever style you prefer.
+
+---
+
 ## Example Scenes
 
 ### ✨ Starfield
@@ -380,6 +524,42 @@ Particles(
     );
   }),
   ...
+)
+```
+
+### 💥 Burst — tap-to-explode
+
+```dart
+final ctrl = BurstEmitterController();
+Offset tapPos = Offset.zero;
+
+Listener(
+  behavior: HitTestBehavior.opaque,
+  onPointerDown: (e) { tapPos = e.localPosition; ctrl.trigger(); },
+  child: Particles(
+    particles: const [],
+    width: size.width,
+    height: size.height,
+    boundType: BoundType.None,
+    burstEmitters: [
+      BurstEmitter(
+        position: (size) => tapPos,
+        particleCount: 40,
+        pattern: RadialBurst(minSpeed: 100, maxSpeed: 300),
+        repeatCount: 0,
+        controller: ctrl,
+        physics: ParticlePhysics(gravityScale: 80),
+        particleFactory: (i, _) => CircularParticle(
+          radius: Random().nextDouble() * 3 + 1.5,
+          color: Colors.orange,
+          velocity: Offset.zero,
+          lifetime: 1.2,
+          endScale: 0.0,
+          endOpacity: 0.0,
+        ),
+      ),
+    ],
+  ),
 )
 ```
 
