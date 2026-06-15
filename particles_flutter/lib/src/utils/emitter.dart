@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/src/utils/particle_physics.dart';
 
 class Emitter {
   const Emitter({
@@ -58,5 +59,36 @@ class Emitter {
     // Reset the particle velocity to it's initial number on recylce - in case of physics
     particle.updateVelocity = particle.velocity;
     particle.updateAge = 0.0;
+  }
+
+  /// Shorthand factory for creating a [BurstEmitter].
+  static BurstEmitter burst({
+    required Offset Function(Size size) position,
+    required int particleCount,
+    required Particle Function(int index, int total) particleFactory,
+    required BurstPattern pattern,
+    Duration initialDelay = Duration.zero,
+    int repeatCount = 1,
+    Duration repeatInterval = Duration.zero,
+    double positionRadius = 0.0,
+    ParticlePhysics? physics,
+    bool enableTrails = false,
+    BurstEmitterController? controller,
+    int maxPoolSize = 500,
+  }) {
+    return BurstEmitter(
+      position: position,
+      particleCount: particleCount,
+      particleFactory: particleFactory,
+      pattern: pattern,
+      initialDelay: initialDelay,
+      repeatCount: repeatCount,
+      repeatInterval: repeatInterval,
+      positionRadius: positionRadius,
+      physics: physics,
+      enableTrails: enableTrails,
+      controller: controller,
+      maxPoolSize: maxPoolSize,
+    );
   }
 }

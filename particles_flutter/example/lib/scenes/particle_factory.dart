@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/physics.dart';
 import 'package:particles_flutter/shapes.dart';
 import '../models/scene_config.dart';
 
@@ -75,7 +76,167 @@ List<Particle> buildParticles(
       return _ghosts(scene, count);
     case SceneId.rockets:
       return _rockets(scene, count);
+    case SceneId.burstDemo:
+      return []; // burst scene uses only burstEmitters, no background particles
   }
+}
+
+/// Builds the BurstEmitters for the burst demo scene.
+///
+/// [tapPosition] is read lazily on each fire, so the tap explosion follows
+/// wherever the user last clicked.
+List<BurstEmitter> buildBurstEmitters(
+  SceneConfig scene,
+  BurstEmitterController tapController,
+  Offset Function() tapPosition,
+) {
+  if (scene.id != SceneId.burstDemo) return [];
+
+  const fireworkColors = [
+    Color(0xFFFB923C), Color(0xFFFBBF24), Color(0xFFF472B6),
+    Color(0xFF34D399), Color(0xFF38BDF8), Color(0xFFE879F9),
+    Color(0xFFFEF08A), Color(0xFFFF6B6B), Color(0xFF67E8F9),
+    Color(0xFFFFFFFF),
+  ];
+
+  const confettiColors = [
+    Color(0xFFFF6B6B), Color(0xFFFF9F43), Color(0xFFFECA57),
+    Color(0xFF48DBFB), Color(0xFF1DD1A1), Color(0xFFF368E0),
+    Color(0xFF54A0FF), Color(0xFFFFFFFF), Color(0xFFA29BFE),
+  ];
+
+  // 1. Radial firework — center, single welcome burst on load
+  final firework = BurstEmitter(
+    position: (size) => Offset(size.width / 2, size.height * 0.4),
+    particleCount: 70,
+    pattern: const RadialBurst(minSpeed: 160, maxSpeed: 420),
+    repeatCount: 1,
+    physics: const ParticlePhysics(gravityScale: 130),
+    particleFactory: (i, total) {
+      final color = fireworkColors[_rng.nextInt(fireworkColors.length)];
+      final shape = _rng.nextInt(3);
+      if (shape == 0) {
+        return CircularParticle(
+          radius: _rng.nextDouble() * 4 + 2,
+          color: color,
+          velocity: Offset.zero,
+          lifetime: _rng.nextDouble() * 0.8 + 1.0,
+          colorGradient: [color, color.withValues(alpha: 0.4), Colors.transparent],
+          colorCurve: Curves.linear,
+          startOpacity: 0.0,
+          endOpacity: 0.0,
+          opacityCurve: Curves.linear,
+          trailEnabled: true,
+          trailLength: 5,
+          trailFade: true,
+        );
+      } else if (shape == 1) {
+        return TriangularParticle(
+          width: _rng.nextDouble() * 6 + 3,
+          height: _rng.nextDouble() * 6 + 3,
+          color: color,
+          velocity: Offset.zero,
+          rotationSpeed: _rng.nextDouble() * 6 * _sign(),
+          lifetime: _rng.nextDouble() * 0.8 + 1.0,
+          endOpacity: 0.0,
+          opacityCurve: Curves.easeIn,
+        );
+      } else {
+        return RoundRectangularParticle(
+          width: _rng.nextDouble() * 10 + 4,
+          height: _rng.nextDouble() * 3 + 1.5,
+          cornerRadius: 2,
+          color: color,
+          velocity: Offset.zero,
+          rotationSpeed: _rng.nextDouble() * 5 * _sign(),
+          lifetime: _rng.nextDouble() * 0.8 + 1.0,
+          endOpacity: 0.0,
+          opacityCurve: Curves.easeIn,
+        );
+      }
+    },
+  );
+
+  // 2. Cone confetti — shoots upward from bottom center, single welcome burst
+  final confetti = BurstEmitter(
+    position: (size) => Offset(size.width / 2, size.height + 10),
+    particleCount: 50,
+    pattern: const ConeBurst(
+      angle: -pi / 2,
+      spread: pi / 2.5,
+      minSpeed: 300,
+      maxSpeed: 600,
+    ),
+    initialDelay: const Duration(milliseconds: 400),
+    repeatCount: 1,
+    positionRadius: 60,
+    physics: const ParticlePhysics(gravityScale: 200),
+    particleFactory: (i, total) {
+      final color = confettiColors[_rng.nextInt(confettiColors.length)];
+      final shape = _rng.nextInt(3);
+      if (shape == 0) {
+        return RoundRectangularParticle(
+          width: _rng.nextDouble() * 12 + 6,
+          height: _rng.nextDouble() * 4 + 2,
+          cornerRadius: 1.5,
+          color: color,
+          velocity: Offset.zero,
+          rotationSpeed: _rng.nextDouble() * 5 * _sign(),
+          lifetime: _rng.nextDouble() * 1.0 + 1.5,
+          endOpacity: 0.0,
+          opacityCurve: Curves.easeIn,
+        );
+      } else if (shape == 1) {
+        return CircularParticle(
+          radius: _rng.nextDouble() * 4 + 2,
+          color: color,
+          velocity: Offset.zero,
+          lifetime: _rng.nextDouble() * 1.0 + 1.5,
+          endOpacity: 0.0,
+          opacityCurve: Curves.easeIn,
+        );
+      } else {
+        final side = _rng.nextDouble() * 7 + 4;
+        return TriangularParticle(
+          width: side,
+          height: side,
+          color: color,
+          velocity: Offset.zero,
+          rotationSpeed: _rng.nextDouble() * 4 * _sign(),
+          lifetime: _rng.nextDouble() * 1.0 + 1.5,
+          endOpacity: 0.0,
+          opacityCurve: Curves.easeIn,
+        );
+      }
+    },
+  );
+
+  // 3. Tap explosion — controller-driven, radial, fires wherever tapped
+  final tapBurst = BurstEmitter(
+    position: (size) => tapPosition(),
+    particleCount: 35,
+    pattern: const RadialBurst(minSpeed: 80, maxSpeed: 240),
+    repeatCount: 0,
+    controller: tapController,
+    physics: const ParticlePhysics(gravityScale: 80),
+    particleFactory: (i, total) {
+      final color = fireworkColors[_rng.nextInt(fireworkColors.length)];
+      return CircularParticle(
+        radius: _rng.nextDouble() * 3 + 1.5,
+        color: color,
+        velocity: Offset.zero,
+        lifetime: _rng.nextDouble() * 0.5 + 0.8,
+        startScale: 1.0,
+        endScale: 0.0,
+        scaleCurve: Curves.easeIn,
+        startOpacity: 0.0,
+        endOpacity: 0.0,
+        opacityCurve: Curves.linear,
+      );
+    },
+  );
+
+  return [firework, confetti, tapBurst];
 }
 
 List<Particle> _starfield(SceneConfig s, int count) {

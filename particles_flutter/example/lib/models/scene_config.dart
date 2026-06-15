@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/engine.dart';
 
-enum SceneId { starfield, web, snow, nebula, fireworks, confetti, comet, pulse, ghosts, rockets }
+enum SceneId { starfield, web, snow, nebula, fireworks, confetti, comet, pulse, ghosts, rockets, burstDemo }
 
 class SceneConfig {
   final SceneId id;
@@ -385,6 +385,50 @@ const List<SceneConfig> kScenes = [
     sizeMultiplier: 1.1,
     awayRadius: 80.0,
     gravityScale: 40.0,
+    opacity: 1.0,
+  ),
+  // v2.2 — BurstEmitter
+  SceneConfig(
+    id: SceneId.burstDemo,
+    name: 'Burst',
+    emoji: '💥',
+    tagline: 'Tap anywhere · radial explosion · confetti rain',
+    codeSnippet: '''// One-shot welcome firework
+BurstEmitter(
+  position: (size) => size.center(Offset.zero),
+  particleCount: 60,
+  pattern: RadialBurst(minSpeed: 150, maxSpeed: 400),
+  repeatCount: 1,
+  physics: ParticlePhysics(gravityScale: 120),
+  particleFactory: (i, total) => CircularParticle(
+    radius: 4,
+    color: Colors.orange,
+    velocity: Offset.zero,
+    lifetime: 1.8,
+    endOpacity: 0.0,
+  ),
+)
+
+// Tap explosion — fires wherever you click
+final ctrl = BurstEmitterController();
+Offset tapPos = Offset.zero;
+// onTapDown: (d) { tapPos = d.localPosition; ctrl.trigger(); }
+BurstEmitter(
+  position: (size) => tapPos,
+  particleCount: 40,
+  pattern: RadialBurst(minSpeed: 80, maxSpeed: 220),
+  repeatCount: 0,
+  controller: ctrl,
+  particleFactory: (i, total) => CircularParticle(...),
+)''',
+    bgColor: Color(0xFF08060F),
+    accentColor: Color(0xFFFF6B35),
+    boundType: BoundType.None,
+    connectDots: false,
+    gravity: false,
+    interaction: false,
+    speed: 0,
+    gravityScale: 120,
     opacity: 1.0,
   ),
 ];

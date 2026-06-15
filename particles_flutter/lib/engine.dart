@@ -5,3 +5,6 @@ export 'src/component/particle/circular_particle.dart';
 export 'src/component/particle_line.dart';
 export 'src/utils/bound_type.dart';
 export 'src/utils/emitter.dart';
+export 'src/utils/burst_emitter.dart';
+export 'src/utils/burst_emitter_controller.dart';
+export 'src/utils/burst_pattern.dart';

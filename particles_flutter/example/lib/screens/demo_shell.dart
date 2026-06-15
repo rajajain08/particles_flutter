@@ -38,11 +38,42 @@ class _DemoShellState extends State<DemoShell> {
   late SceneConfig _scene;
   Key _particleKey = UniqueKey();
   final List<_CornerBurst> _cornerBursts = [];
+  final BurstEmitterController _tapBurstController = BurstEmitterController();
+
+  /// Last tap position for the burst scene. The tap emitter reads this via its
+  /// position callback, so explosions fire wherever the user clicks.
+  Offset _lastTapPosition = Offset.zero;
+
+  /// Burst emitters are stateful (own a particle pool + auto-fire loop) and
+  /// MUST persist across rebuilds. Rebuilt only when the scene key changes,
+  /// never inside build().
+  List<BurstEmitter> _burstEmitters = const [];
 
   @override
   void initState() {
     super.initState();
     _scene = kScenes[_sceneIndex];
+    _refreshBurstEmitters();
+  }
+
+  void _refreshBurstEmitters() {
+    // Old emitters are disposed by the outgoing Particles State (its key
+    // changes on every scene switch / reset, forcing a fresh State).
+    _tapBurstController.reset();
+    _burstEmitters = buildBurstEmitters(
+      _scene,
+      _tapBurstController,
+      () => _lastTapPosition,
+    );
+    // One welcome explosion at center; afterwards the tap burst fires on tap.
+    if (_scene.id == SceneId.burstDemo) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted || _scene.id != SceneId.burstDemo) return;
+        final size = MediaQuery.of(context).size;
+        _lastTapPosition = Offset(size.width / 2, size.height / 2);
+        _tapBurstController.trigger();
+      });
+    }
   }
 
   void _rebuild() => setState(() => _particleKey = UniqueKey());
@@ -51,16 +82,19 @@ class _DemoShellState extends State<DemoShell> {
         _sceneIndex = index;
         _scene = kScenes[index];
         _particleKey = UniqueKey();
+        _refreshBurstEmitters();
       });
 
   void _resetScene() => setState(() {
         _scene = kScenes[_sceneIndex];
         _particleKey = UniqueKey();
+        _refreshBurstEmitters();
       });
 
   void _updateSceneAndRebuild(SceneConfig updated) => setState(() {
         _scene = updated;
         _particleKey = UniqueKey();
+        _refreshBurstEmitters();
       });
 
   void _fireCorner(Offset position) {
@@ -109,9 +143,10 @@ class _DemoShellState extends State<DemoShell> {
               hoverRadius: _scene.awayRadius * 0.7,
             )
           : ParticleInteraction.none(),
+      burstEmitters: _burstEmitters,
     );
 
-    return AnimatedContainer(
+    final inner = AnimatedContainer(
       duration: const Duration(milliseconds: 600),
       color: _scene.bgColor,
       child: Stack(
@@ -155,9 +190,42 @@ class _DemoShellState extends State<DemoShell> {
                 onTap: () =>
                     _fireCorner(Offset(size.width, size.height))),
           ],
+          // Tap hint for burst scene
+          if (_scene.id == SceneId.burstDemo)
+            const Positioned(
+              bottom: 32,
+              left: 0,
+              right: 0,
+              child: IgnorePointer(
+                child: Text(
+                  'Tap anywhere to explode',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Color(0x99FFFFFF),
+                    fontSize: 13,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
     );
+
+    if (_scene.id == SceneId.burstDemo) {
+      // Listener (raw pointer) instead of GestureDetector — fires on every
+      // pointer-down without gesture-arena disambiguation, so no taps are
+      // dropped when the pointer moves slightly or recognizers compete.
+      return Listener(
+        behavior: HitTestBehavior.opaque,
+        onPointerDown: (event) {
+          _lastTapPosition = event.localPosition;
+          _tapBurstController.trigger();
+        },
+        child: inner,
+      );
+    }
+    return inner;
   }
 
   Widget _buildConfigPanel() => ConfigPanel(

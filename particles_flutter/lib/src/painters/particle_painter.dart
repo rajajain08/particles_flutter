@@ -7,11 +7,13 @@ class ParticlePainter extends CustomPainter {
   static Paint? randomColorPaint;
   final List<ParticleLine> lines;
   final int activeLineCount;
+  final List<List<Particle>> burstParticleLists;
 
   ParticlePainter({
     required this.particles,
     required this.lines,
     this.activeLineCount = -1,
+    this.burstParticleLists = const [],
   });
 
   static final Paint _trailPaint = Paint()
@@ -30,6 +32,16 @@ class ParticlePainter extends CustomPainter {
 
     for (final particle in particles) {
       particle.paint(canvas, size);
+    }
+
+    // Render burst particles — skip expired ones (dead-slot pattern)
+    for (final burstList in burstParticleLists) {
+      for (int i = 0; i < burstList.length; i++) {
+        final p = burstList[i];
+        if (p.lifetime != null && p.isExpired) continue;
+        if (p.trailEnabled && p.trailCount > 1) _paintTrail(canvas, p);
+        p.paint(canvas, size);
+      }
     }
 
     final int count = activeLineCount < 0 ? lines.length : activeLineCount;

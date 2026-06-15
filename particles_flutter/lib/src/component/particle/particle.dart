@@ -18,6 +18,11 @@ class _TrailBuffer {
       _positions[(_head - _count + i) % _positions.length];
 
   int get count => _count;
+
+  void clear() {
+    _head = 0;
+    _count = 0;
+  }
 }
 
 /// Single Particle Model
@@ -101,6 +106,15 @@ abstract class Particle {
   void pushTrailPosition(Offset pos) => _trail?.push(pos);
   int get trailCount => _trail?.count ?? 0;
   Offset trailPositionAt(int i) => _trail![i];
+
+  /// Resets lifetime-driven runtime state (color/scale/opacity/trail) back to
+  /// start values. Used when a pooled particle slot is reused for a new burst.
+  void resetLifetimeState() {
+    _currentColor = color;
+    _currentScale = startScale;
+    _currentOpacity = startOpacity;
+    _trail?.clear();
+  }
 
   // Resolved color+opacity for painter
   Color get paintColor =>

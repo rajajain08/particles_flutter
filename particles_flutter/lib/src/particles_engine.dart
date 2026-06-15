@@ -8,6 +8,7 @@ import 'package:particles_flutter/src/core/runner.dart';
 import 'package:particles_flutter/src/component/particle/particle.dart';
 import 'package:particles_flutter/src/painters/particle_painter.dart';
 import 'package:particles_flutter/src/utils/bound_type.dart';
+import 'package:particles_flutter/src/utils/burst_emitter.dart';
 import 'package:particles_flutter/src/utils/emitter.dart';
 import 'package:particles_flutter/src/utils/particle_lifetime.dart';
 import 'package:particles_flutter/src/utils/particle_physics.dart';
@@ -24,6 +25,7 @@ class Particles extends StatefulWidget {
     this.particlePhysics,
     this.boundType = BoundType.None,
     this.interaction,
+    this.burstEmitters = const [],
   }) : super(key: key);
 
   /// Define the boundary size for the particle engine.
@@ -61,6 +63,9 @@ class Particles extends StatefulWidget {
   /// Set physics options.
   final ParticlePhysics? particlePhysics;
 
+  /// Burst emitters run alongside the main particle pool.
+  final List<BurstEmitter> burstEmitters;
+
   _ParticlesState createState() => _ParticlesState();
 }
 
@@ -74,9 +79,12 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
   List<ParticleLine> _linePool = [];
   int _activeLineCount = 0;
 
+  Size _widgetSize = Size.zero;
+
   get math => null;
 
   void initailizeParticles(_) {
+    _widgetSize = Size(widget.width, widget.height);
     widget.interaction?.state.particles = widget.particles;
 
     if (widget.particleEmitter == null) {
@@ -106,6 +114,10 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
         _engine(deltaTime);
       });
       widget.particleEmitter!.emit(widget.particles, particles);
+    }
+
+    for (final burst in widget.burstEmitters) {
+      burst.initialize(_widgetSize);
     }
   }
 
@@ -169,13 +181,35 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           p.updateRotation = p.rotation + deltaTime * p.rotationSpeed;
         }
         if (widget.connectDots) connectLines(); //not recommended
+
+        for (final burst in widget.burstEmitters) {
+          burst.updateParticles(deltaTime, widget.width, widget.height, _widgetSize);
+        }
       },
     );
   }
 
   @override
+  void didUpdateWidget(Particles oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // If the burst emitter list instances changed, stop the old ones (kills
+    // their auto-fire loops + frees pools) and initialize the new ones.
+    if (!identical(oldWidget.burstEmitters, widget.burstEmitters)) {
+      for (final burst in oldWidget.burstEmitters) {
+        if (!widget.burstEmitters.contains(burst)) burst.dispose();
+      }
+      for (final burst in widget.burstEmitters) {
+        burst.initialize(_widgetSize);
+      }
+    }
+  }
+
+  @override
   void dispose() {
     _runner.stop();
+    for (final burst in widget.burstEmitters) {
+      burst.dispose();
+    }
     super.dispose();
   }
 
@@ -211,7 +245,14 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
       child: Stack(
         children: [
           CustomPaint(
-            painter: ParticlePainter(particles: particles, lines: _linePool, activeLineCount: _activeLineCount),
+            painter: ParticlePainter(
+              particles: particles,
+              lines: _linePool,
+              activeLineCount: _activeLineCount,
+              burstParticleLists: [
+                for (final burst in widget.burstEmitters) burst.particles,
+              ],
+            ),
           ),
           if (widget.interaction != null) widget.interaction!,
         ],
