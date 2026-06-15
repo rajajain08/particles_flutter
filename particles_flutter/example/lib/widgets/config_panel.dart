@@ -50,7 +50,7 @@ class ConfigPanel extends StatelessWidget {
             label: 'Count',
             value: particleCount.toDouble(),
             min: 20,
-            max: 400,
+            max: 1000,
             divisions: 38,
             displayValue: '$particleCount',
             accent: accent,
@@ -258,11 +258,11 @@ class _BoundTypePicker extends StatelessWidget {
             onTap: () => onChanged(t),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color:
-                    selected ? accent.withValues(alpha: 0.2) : Colors.transparent,
+                color: selected
+                    ? accent.withValues(alpha: 0.2)
+                    : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(
                   color: selected ? accent : Colors.white24,
@@ -274,8 +274,7 @@ class _BoundTypePicker extends StatelessWidget {
                 style: TextStyle(
                   color: selected ? accent : Colors.white38,
                   fontSize: 11,
-                  fontWeight:
-                      selected ? FontWeight.w700 : FontWeight.normal,
+                  fontWeight: selected ? FontWeight.w700 : FontWeight.normal,
                 ),
               ),
             ),
