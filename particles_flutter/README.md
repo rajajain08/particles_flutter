@@ -18,7 +18,11 @@
 ---
 
 <p align="center">
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/newparticledemo.gif?raw=true" height="400"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_1.png?raw=true" height="420"/>
+  &nbsp;&nbsp;
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_2.png?raw=true" height="420"/>
+  &nbsp;&nbsp;
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_3.png?raw=true" height="420"/>
 </p>
 
 ---
@@ -570,7 +574,12 @@ Listener(
 See all scenes running live → **[particles-flutter.vercel.app](https://particles-flutter.vercel.app/)**
 
 <p align="center">
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/web_demo.gif?raw=true"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_web_1.png?raw=true" width="49%"/>
+  &nbsp;
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_web_2.png?raw=true" width="49%"/>
+</p>
+<p align="center">
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_web_3.png?raw=true" width="49%"/>
 </p>
 
 ---
