@@ -52,7 +52,7 @@
 - Performance improvements to touch interaction, physics, and emitter update loops.
 - Four new example scenes: Comet, Pulse, Ghosts, Rockets.
 
-## [2.2.0] - 17/06/2026.
+## [3.0.0] - 17/06/2026.
 
 - **Breaking:** Minimum Dart SDK bumped to `>=3.0.0` (was `>=2.13.0`). Requires Flutter 3.10+.
 
