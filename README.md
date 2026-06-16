@@ -19,11 +19,11 @@ Starfields, snow, confetti, fireworks, connected webs, comets, burst explosions 
 ---
 
 <p align="center">
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_1.png?raw=true" width="30%"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_1.png?raw=true" width="200"/>
   &nbsp;&nbsp;
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_2.png?raw=true" width="30%"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_2.png?raw=true" width="200"/>
   &nbsp;&nbsp;
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_3.png?raw=true" width="30%"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_3.png?raw=true" width="200"/>
 </p>
 
 ---

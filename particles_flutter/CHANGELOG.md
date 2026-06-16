@@ -52,6 +52,10 @@
 - Performance improvements to touch interaction, physics, and emitter update loops.
 - Four new example scenes: Comet, Pulse, Ghosts, Rockets.
 
+## [3.0.2] - 17/06/2026.
+
+- Synced both READMEs; fixed mobile screenshot sizing on pub.dev.
+
 ## [3.0.1] - 17/06/2026.
 
 - Fixed mobile screenshot sizing in README.

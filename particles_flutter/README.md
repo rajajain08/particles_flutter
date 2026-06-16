@@ -2,7 +2,8 @@
 
 # particles_flutter
 
-**A Flutter package for high-performance, fully customisable particle animations. Build starfields, snow, confetti, fireworks, connected webs, comets, burst explosions, and more — with physics, touch/hover interaction, lifetime animations, trails, burst emitters, and an emission controller.**
+**High-performance, fully customisable particle animations for Flutter.**
+Starfields, snow, confetti, fireworks, connected webs, comets, burst explosions — with physics, touch/hover interaction, lifetime animations, trails, and burst emitters.
 
 [![pub package](https://img.shields.io/pub/v/particles_flutter.svg)](https://pub.dev/packages/particles_flutter)
 [![pub points](https://img.shields.io/pub/points/particles_flutter)](https://pub.dev/packages/particles_flutter/score)
@@ -18,12 +19,32 @@
 ---
 
 <p align="center">
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_1.png?raw=true" height="420"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_1.png?raw=true" width="200"/>
   &nbsp;&nbsp;
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_2.png?raw=true" height="420"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_2.png?raw=true" width="200"/>
   &nbsp;&nbsp;
-  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_3.png?raw=true" height="420"/>
+  <img src="https://github.com/rajajain08/particles_flutter/blob/master/particles_flutter/readme_src/ss_mob_3.png?raw=true" width="200"/>
 </p>
+
+---
+
+## Table of Contents
+
+- [Install](#install)
+- [Quick Start](#quick-start)
+- [Features](#features)
+  - [Particle Shapes](#particle-shapes)
+  - [Lifetime Animations](#lifetime-animations)
+  - [Boundary Types](#boundary-types)
+  - [Touch & Hover Interaction](#touch--hover-interaction)
+  - [Particle Physics](#particle-physics)
+  - [Emission Controller](#emission-controller)
+  - [Burst Emitter](#burst-emitter)
+- [Example Scenes](#example-scenes)
+- [Live Demo](#live-demo)
+- [Changelog](#changelog)
+- [Support](#support)
+- [Contributing](#contributing)
 
 ---
 
@@ -61,38 +82,11 @@ Particles(
 
 ---
 
-## What's New in v2.2
-
-| Feature | Description |
-|---|---|
-| **BurstEmitter** | Fire fixed particle counts in configurable spread patterns — radial, cone, or directional |
-| **BurstEmitterController** | Trigger bursts manually from gesture callbacks, game events, or any code |
-| **Tap-to-burst** | Wire `BurstEmitterController.trigger()` to `onPointerDown` for per-tap explosions at the touch point |
-| **Overlap-safe pooling** | Multiple bursts in flight simultaneously; memory hard-capped at `maxPoolSize` (default 500) |
-| **Spread patterns** | `RadialBurst`, `ConeBurst`, `DirectionalBurst`, `CustomBurst` — or write your own via callback |
-
-All new features are **additive and fully backward compatible** — no changes needed to existing code.
-
----
-
-## What's New in v2.1
-
-| Feature | Description |
-|---|---|
-| **Color over lifetime** | Smoothly transition between colors or across a gradient |
-| **Scale over lifetime** | Grow or shrink particles with curve support |
-| **Fade over lifetime** | Fade in, fade out, or both — with `startOpacity`/`endOpacity` |
-| **Particle trails** | Motion trails behind moving particles, configurable length and fade |
-
-All new features are **optional and fully backward compatible** — existing code compiles and behaves identically.
-
----
-
 ## Features
 
 ### Particle Shapes
 
-Import with `import 'package:particles_flutter/shapes.dart';`
+Import: `import 'package:particles_flutter/shapes.dart';`
 
 | Shape | Class |
 |---|---|
@@ -103,13 +97,13 @@ Import with `import 'package:particles_flutter/shapes.dart';`
 | Oval | `OvoidalParticle(width, height, color, velocity, rotationSpeed)` |
 | Image | `ImageParticle(image, width, height, color, velocity)` |
 
-All shapes support `rotationSpeed` for spinning effects, and all v2.1 lifetime parameters.
+All shapes support `rotationSpeed` and all lifetime animation parameters.
 
 ---
 
-### Lifetime Animations (v2.1)
+### Lifetime Animations
 
-All shapes accept these optional parameters. Omit them to keep existing behavior.
+All shapes accept these optional parameters. Omit any to keep default behavior.
 
 #### Color over lifetime
 
@@ -117,9 +111,9 @@ All shapes accept these optional parameters. Omit them to keep existing behavior
 CircularParticle(
   color: Colors.yellow,
   lifetime: 3.0,
-  // Two-color transition
+  // Two-color transition:
   endColor: Colors.transparent,
-  // OR gradient across lifetime
+  // OR gradient across lifetime:
   colorGradient: [Colors.white, Colors.yellow, Colors.orange, Colors.transparent],
   colorCurve: Curves.linear,
   ...
@@ -152,7 +146,7 @@ CircularParticle(
 )
 ```
 
-> **Tip:** Set both `startOpacity: 0.0` and `endOpacity: 0.0` to get a triangle fade — particles fade in to full opacity at mid-life, then fade back out. Seamless spawn and death with no visible pop.
+> **Tip:** Set both `startOpacity: 0.0` **and** `endOpacity: 0.0` for a triangle fade — particles fade in to full opacity at mid-life, then back out. No visible pop on spawn or death.
 
 ```dart
 CircularParticle(
@@ -170,7 +164,7 @@ CircularParticle(
   color: Colors.cyan,
   lifetime: 2.0,
   trailEnabled: true,
-  trailLength: 7,   // number of past positions to draw
+  trailLength: 7,   // past positions to draw
   trailFade: true,  // fade older segments
   ...
 )
@@ -180,24 +174,24 @@ CircularParticle(
 
 ### Boundary Types
 
-```dart
-Particles(
-  boundType: BoundType.WrapAround, // wrap | Bounce | None
-  ...
-)
-```
-
 | Value | Behaviour |
 |---|---|
 | `BoundType.None` | Particles exit the canvas (default) |
 | `BoundType.WrapAround` | Particles reappear from the opposite edge |
 | `BoundType.Bounce` | Particles reflect off edges |
 
+```dart
+Particles(
+  boundType: BoundType.WrapAround,
+  ...
+)
+```
+
 ---
 
 ### Touch & Hover Interaction
 
-Import with `import 'package:particles_flutter/interactions.dart';`
+Import: `import 'package:particles_flutter/interactions.dart';`
 
 ```dart
 Particles(
@@ -215,9 +209,9 @@ Particles(
 
 ---
 
-### Particle Physics (Gravity)
+### Particle Physics
 
-Import with `import 'package:particles_flutter/physics.dart';`
+Import: `import 'package:particles_flutter/physics.dart';`
 
 ```dart
 Particles(
@@ -230,17 +224,17 @@ Particles(
 
 ### Emission Controller
 
-Spawn particles from a fixed point — great for fireworks and fountains.
+Spawn particles from a fixed point — great for fountains and fireworks.
 
 ```dart
 Particles(
   boundType: BoundType.None,
   particleEmitter: Emitter(
     startPosition: Offset(width / 2, height / 2),
-    startPositionRadius: 10,  // spawn spread radius
+    startPositionRadius: 10,  // spawn scatter radius
     clusterSize: 10,           // particles per burst
     delay: Duration(milliseconds: 300),
-    recycles: false,           // true = infinite loop
+    recycles: false,           // true = loop forever
   ),
   ...
 )
@@ -248,20 +242,20 @@ Particles(
 
 ---
 
-### Burst Emitter (v2.2)
+### Burst Emitter
 
-Fire a fixed number of particles in a single burst — with configurable spread, repeat, physics, and optional controller for manual triggering.
+Fire a fixed number of particles in a single burst — configurable spread, repeat interval, physics, and optional manual controller.
 
-Import with `import 'package:particles_flutter/engine.dart';`
+Import: `import 'package:particles_flutter/engine.dart';`
 
 #### Spread patterns
 
 | Pattern | Description |
 |---|---|
-| `RadialBurst` | Particles spread in all directions evenly |
-| `ConeBurst` | Particles spread within a configurable cone angle |
-| `DirectionalBurst` | All particles fire in one direction with spread |
-| `CustomBurst` | Provide your own `Offset Function(int index, int total)` velocity builder |
+| `RadialBurst` | All directions evenly |
+| `ConeBurst` | Within a configurable cone angle |
+| `DirectionalBurst` | One direction with spread |
+| `CustomBurst` | `Offset Function(int index, int total)` — build your own |
 
 #### One-shot radial explosion
 
@@ -297,7 +291,7 @@ BurstEmitter(
   position: (size) => Offset(size.width / 2, size.height),
   particleCount: 50,
   pattern: ConeBurst(
-    angle: -pi / 2,   // shoot upward
+    angle: -pi / 2,    // shoot upward
     spread: pi / 2.5,
     minSpeed: 300,
     maxSpeed: 600,
@@ -323,7 +317,7 @@ BurstEmitter(
 final _ctrl = BurstEmitterController();
 Offset _tapPos = Offset.zero;
 
-// In your build:
+// In build:
 Listener(
   behavior: HitTestBehavior.opaque,
   onPointerDown: (event) {
@@ -340,7 +334,7 @@ Listener(
         position: (size) => _tapPos,
         particleCount: 40,
         pattern: RadialBurst(minSpeed: 80, maxSpeed: 240),
-        repeatCount: 0,        // 0 = fire only when triggered
+        repeatCount: 0,       // 0 = fire only when triggered
         controller: _ctrl,
         physics: ParticlePhysics(gravityScale: 80),
         particleFactory: (i, total) => CircularParticle(
@@ -361,20 +355,20 @@ Listener(
 
 | Parameter | Type | Default | Description |
 |---|---|---|---|
-| `position` | `Offset Function(Size)` | required | Burst origin as a fraction of widget size |
-| `particleCount` | `int` | required | Particles emitted per burst |
-| `particleFactory` | `Particle Function(int, int)` | required | Called once per particle to build its appearance |
+| `position` | `Offset Function(Size)` | required | Burst origin |
+| `particleCount` | `int` | required | Particles per burst |
+| `particleFactory` | `Particle Function(int, int)` | required | Builds each particle |
 | `pattern` | `BurstPattern` | required | Velocity spread strategy |
 | `initialDelay` | `Duration` | `Duration.zero` | Delay before first burst |
-| `repeatCount` | `int` | `1` | Repeat count; `0` = controller-triggered only |
+| `repeatCount` | `int` | `1` | Bursts to fire; `0` = controller-only |
 | `repeatInterval` | `Duration` | `Duration.zero` | Gap between repeats |
-| `positionRadius` | `double` | `0` | Spawn scatter radius around `position` |
-| `physics` | `ParticlePhysics?` | `null` | Gravity applied to burst particles |
-| `enableTrails` | `bool` | `false` | Enable trail rendering (expensive at high counts) |
-| `controller` | `BurstEmitterController?` | `null` | Manual trigger controller |
+| `positionRadius` | `double` | `0` | Scatter radius around `position` |
+| `physics` | `ParticlePhysics?` | `null` | Gravity for burst particles |
+| `enableTrails` | `bool` | `false` | Trail rendering (expensive at high counts) |
+| `controller` | `BurstEmitterController?` | `null` | Manual trigger |
 | `maxPoolSize` | `int` | `500` | Memory ceiling; oldest particles reclaimed when full |
 
-> **Tip:** `Emitter.burst(...)` is a shorthand factory that returns a `BurstEmitter` with identical parameters — use whichever style you prefer.
+> `Emitter.burst(...)` is a shorthand factory that returns a `BurstEmitter` — use whichever style you prefer.
 
 ---
 
@@ -435,7 +429,7 @@ Particles(
 )
 ```
 
-### ☄️ Comet — color gradient + trails
+### ☄️ Comets — color gradient + trails
 
 ```dart
 Particles(
@@ -492,7 +486,7 @@ Particles(
     velocity: Offset((Random().nextDouble() - 0.5) * 15,
                      (Random().nextDouble() - 0.5) * 10),
     lifetime: Random().nextDouble() * 3.0 + 2.0,
-    startOpacity: 0.0,  // triangle fade: 0 → peak → 0
+    startOpacity: 0.0,
     endOpacity: 0.0,
     startScale: 0.6,
     endScale: 1.2,
@@ -502,7 +496,7 @@ Particles(
 )
 ```
 
-### 🚀 Rockets — all v2.1 features
+### 🚀 Rockets — all lifetime features combined
 
 ```dart
 Particles(
@@ -584,9 +578,30 @@ See all scenes running live → **[particles-flutter.vercel.app](https://particl
 
 ---
 
+## Changelog
+
+### v3.0
+- **Breaking:** Dart SDK `>=3.0.0` required (Flutter 3.10+). Projects on Dart 2.x must upgrade first.
+- **BurstEmitter** — fire fixed particle counts in radial, cone, directional, or custom spread patterns
+- **BurstEmitterController** — trigger bursts manually from gestures, game events, or any code
+- **Tap-to-burst** — `BurstEmitterController.trigger()` + `onPointerDown` for per-tap explosions
+- **Overlap-safe pooling** — multiple bursts in flight simultaneously; memory hard-capped at `maxPoolSize`
+
+### v2.1
+- **Color over lifetime** — smooth two-color or gradient transitions
+- **Scale over lifetime** — grow/shrink with curve support
+- **Fade over lifetime** — fade in, out, or triangle (both ends zero = auto mid-peak)
+- **Particle trails** — motion trails with configurable length and fade
+- **Object pooling for ParticleLine** — reduced GC pressure on line-connected scenes
+- **Performance improvements** — touch interaction, physics, and emitter update loops
+
+All releases are fully backward compatible — no changes needed to existing code.
+
+---
+
 ## Support
 
-If this package saved you time, please:
+If this package saved you time:
 
 - ⭐ [Star on GitHub](https://github.com/rajajain08/particles_flutter)
 - 👍 [Thumbs up on pub.dev](https://pub.dev/packages/particles_flutter)
