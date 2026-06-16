@@ -16,7 +16,6 @@ class Runner {
   // Initially, assumed that we are ticking at 60 frames per second.
   double _prevDeltaTime = 1000 / 60;
 
-
   /// Creates a gameloop that provides callback to help continously [tick] the Engine.
   void run(RunnerCallback dtCallback) {
     _dtCallback = dtCallback;
@@ -27,7 +26,9 @@ class Runner {
 
   /// Calculates time delta and correction factor from current time.
   void _tick(Duration currentTime) {
-    final diff = _previousTime == Duration.zero ? Duration.zero : currentTime - _previousTime;
+    final diff = _previousTime == Duration.zero
+        ? Duration.zero
+        : currentTime - _previousTime;
     _previousTime = currentTime;
 
     // New delta time in seconds.

@@ -80,8 +80,7 @@ class BurstEmitter {
   int _completedRepeats = 0;
 
   bool get _isInfinite => repeatCount == 0;
-  bool get _autoRepeatDone =>
-      !_isInfinite && _completedRepeats >= repeatCount;
+  bool get _autoRepeatDone => !_isInfinite && _completedRepeats >= repeatCount;
 
   /// Called once by the engine after the widget lays out.
   void initialize(Size size) {
@@ -260,9 +259,12 @@ void from_lifetime(Particle p) {
   if (p.endOpacity != null) {
     final ot = p.opacityCurve.transform(t);
     if (p.startOpacity == 0.0 && p.endOpacity == 0.0) {
-      p.updateCurrentOpacity = (ot <= 0.5 ? ot * 2.0 : (1.0 - ot) * 2.0).clamp(0.0, 1.0);
+      p.updateCurrentOpacity =
+          (ot <= 0.5 ? ot * 2.0 : (1.0 - ot) * 2.0).clamp(0.0, 1.0);
     } else {
-      p.updateCurrentOpacity = (p.startOpacity + (p.endOpacity! - p.startOpacity) * ot).clamp(0.0, 1.0);
+      p.updateCurrentOpacity =
+          (p.startOpacity + (p.endOpacity! - p.startOpacity) * ot)
+              .clamp(0.0, 1.0);
     }
   }
 }

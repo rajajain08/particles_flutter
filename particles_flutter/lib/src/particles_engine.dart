@@ -101,14 +101,16 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
         }
       }
       for (int index = 0; index < widget.particles.length; index++) {
-        widget.particles[index].updateVelocity = widget.particles[index].velocity;
+        widget.particles[index].updateVelocity =
+            widget.particles[index].velocity;
       }
       _runner.run((double deltaTime, double correction) {
         _engine(deltaTime);
       });
     } else {
       for (int index = 0; index < widget.particles.length; index++) {
-        widget.particles[index].updateVelocity = widget.particles[index].velocity;
+        widget.particles[index].updateVelocity =
+            widget.particles[index].velocity;
       }
       _runner.run((double deltaTime, double correction) {
         _engine(deltaTime);
@@ -162,19 +164,20 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           double dy = p.position.dy + deltaTime * p.currentVelocity.dy;
 
           if (widget.boundType == BoundType.WrapAround)
-            p.updatePosition = getWrapPosition(dx, dy, widget.width, widget.height);
+            p.updatePosition =
+                getWrapPosition(dx, dy, widget.width, widget.height);
           else if (widget.boundType == BoundType.Bounce)
-            p.updatePosition = checkForBounce(dx, dy, widget.width, widget.height, p);
+            p.updatePosition =
+                checkForBounce(dx, dy, widget.width, widget.height, p);
           else if (outOfBound(dx, dy, widget.width, widget.height)) {
-            if (widget.particleEmitter != null)
-              if (widget.particleEmitter!.recycles)
-                widget.particleEmitter!.recycle(p);
+            if (widget.particleEmitter != null) if (widget
+                .particleEmitter!.recycles) widget.particleEmitter!.recycle(p);
           } else
             p.updatePosition = Offset(dx, dy);
 
           if (widget.particlePhysics != null) {
-            p.updateVelocity =
-                widget.particlePhysics!.applyGravity(p.currentVelocity, deltaTime);
+            p.updateVelocity = widget.particlePhysics!
+                .applyGravity(p.currentVelocity, deltaTime);
           }
 
           //update particle rotation
@@ -183,7 +186,8 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
         if (widget.connectDots) connectLines(); //not recommended
 
         for (final burst in widget.burstEmitters) {
-          burst.updateParticles(deltaTime, widget.width, widget.height, _widgetSize);
+          burst.updateParticles(
+              deltaTime, widget.width, widget.height, _widgetSize);
         }
       },
     );
@@ -219,14 +223,16 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
     const double thresholdSquared = threshold * threshold;
     for (int point1 = 0; point1 < particles.length; point1++) {
       for (int point2 = point1 + 1; point2 < particles.length; point2++) {
-        final double dx = particles[point2].position.dx - particles[point1].position.dx;
-        final double dy = particles[point2].position.dy - particles[point1].position.dy;
+        final double dx =
+            particles[point2].position.dx - particles[point1].position.dx;
+        final double dy =
+            particles[point2].position.dy - particles[point1].position.dy;
         final double distSquared = dx * dx + dy * dy;
         if (distSquared < thresholdSquared) {
           final double distanceBetween = sqrt(distSquared);
           if (_activeLineCount < _linePool.length) {
-            _linePool[_activeLineCount].reset(
-                particles[point1], particles[point2], distanceBetween);
+            _linePool[_activeLineCount]
+                .reset(particles[point1], particles[point2], distanceBetween);
           } else {
             _linePool.add(ParticleLine(
                 particles[point1], particles[point2], distanceBetween));

@@ -581,6 +581,7 @@ See all scenes running live → **[particles-flutter.vercel.app](https://particl
 ## Changelog
 
 ### v2.2
+- **Breaking:** Dart SDK `>=3.0.0` required (Flutter 3.10+). Projects on Dart 2.x must upgrade first.
 - **BurstEmitter** — fire fixed particle counts in radial, cone, directional, or custom spread patterns
 - **BurstEmitterController** — trigger bursts manually from gestures, game events, or any code
 - **Tap-to-burst** — `BurstEmitterController.trigger()` + `onPointerDown` for per-tap explosions

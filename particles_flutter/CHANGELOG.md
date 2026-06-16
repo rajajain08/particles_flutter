@@ -54,6 +54,8 @@
 
 ## [2.2.0] - 17/06/2026.
 
+- **Breaking:** Minimum Dart SDK bumped to `>=3.0.0` (was `>=2.13.0`). Requires Flutter 3.10+.
+
 - BurstEmitter: fire fixed particle counts in radial, cone, directional, or custom spread patterns.
 - BurstEmitterController: trigger bursts manually from gestures, game events, or any code.
 - Tap-to-burst: wire BurstEmitterController.trigger() to onPointerDown for per-tap explosions.

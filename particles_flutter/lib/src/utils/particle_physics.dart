@@ -7,7 +7,6 @@ class ParticlePhysics {
 
   final double gravityScale;
 
-
   Offset applyGravity(Offset velocity, double deltaTime) {
     return Offset(velocity.dx, velocity.dy + gravityScale * deltaTime);
   }

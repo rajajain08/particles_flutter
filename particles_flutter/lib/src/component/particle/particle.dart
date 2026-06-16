@@ -49,10 +49,10 @@ abstract class Particle {
     this.trailEnabled = false,
     this.trailLength = 10,
     this.trailFade = true,
-  }) : _currentColor = color,
-       _currentScale = startScale,
-       _currentOpacity = startOpacity,
-       _trail = trailEnabled ? _TrailBuffer(trailLength) : null;
+  })  : _currentColor = color,
+        _currentScale = startScale,
+        _currentOpacity = startOpacity,
+        _trail = trailEnabled ? _TrailBuffer(trailLength) : null;
 
   /// Define the color of a single particle.
   final Color color;
@@ -117,15 +117,13 @@ abstract class Particle {
   }
 
   // Resolved color+opacity for painter
-  Color get paintColor =>
-      _currentOpacity >= 1.0
-          ? _currentColor
-          : _currentColor.withValues(alpha: _currentOpacity);
+  Color get paintColor => _currentOpacity >= 1.0
+      ? _currentColor
+      : _currentColor.withValues(alpha: _currentOpacity);
 
-  double get lifetimeProgress =>
-      (lifetime == null || lifetime! <= 0)
-          ? 0.0
-          : (_age / lifetime!).clamp(0.0, 1.0);
+  double get lifetimeProgress => (lifetime == null || lifetime! <= 0)
+      ? 0.0
+      : (_age / lifetime!).clamp(0.0, 1.0);
 
   bool get isExpired => lifetime != null && _age >= lifetime!;
 
