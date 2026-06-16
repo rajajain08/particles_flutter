@@ -591,6 +591,8 @@ See all scenes running live → **[particles-flutter.vercel.app](https://particl
 - **Scale over lifetime** — grow/shrink with curve support
 - **Fade over lifetime** — fade in, out, or triangle (both ends zero = auto mid-peak)
 - **Particle trails** — motion trails with configurable length and fade
+- **Object pooling for ParticleLine** — reduced GC pressure on line-connected scenes
+- **Performance improvements** — touch interaction, physics, and emitter update loops
 
 All releases are fully backward compatible — no changes needed to existing code.
 

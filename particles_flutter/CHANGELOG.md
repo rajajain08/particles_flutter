@@ -42,3 +42,22 @@
 
 - Updated doc.
 
+## [2.1.0] - 12/06/2026.
+
+- Color over lifetime: smooth two-color or gradient transitions with curve support.
+- Scale over lifetime: grow/shrink particles with configurable curve.
+- Fade over lifetime: fade in, fade out, or triangle fade (startOpacity=0 + endOpacity=0 auto mid-peak).
+- Particle trails: motion trails via ring buffer with configurable length and fade.
+- Object pooling for ParticleLine: reduced GC pressure on line-connected particle scenes.
+- Performance improvements to touch interaction, physics, and emitter update loops.
+- Four new example scenes: Comet, Pulse, Ghosts, Rockets.
+
+## [2.2.0] - 17/06/2026.
+
+- BurstEmitter: fire fixed particle counts in radial, cone, directional, or custom spread patterns.
+- BurstEmitterController: trigger bursts manually from gestures, game events, or any code.
+- Tap-to-burst: wire BurstEmitterController.trigger() to onPointerDown for per-tap explosions.
+- Overlap-safe pooling: multiple bursts in flight simultaneously, memory hard-capped at maxPoolSize (default 500).
+- Four spread patterns: RadialBurst, ConeBurst, DirectionalBurst, CustomBurst.
+- Emitter.burst(...) shorthand factory added.
+
