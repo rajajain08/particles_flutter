@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/engine.dart';
 
-enum SceneId { starfield, web, snow, nebula, fireworks, confetti, comet, pulse, ghosts, rockets, burstDemo }
+enum SceneId { starfield, web, snow, nebula, fireworks, confetti, comet, pulse, ghosts, rockets, burstDemo, poolCycle }
 
 class SceneConfig {
   final SceneId id;
@@ -9,6 +9,10 @@ class SceneConfig {
   final String emoji;
   final String tagline;
   final String codeSnippet;
+
+  /// Short explanation of the technical mechanism this scene demonstrates.
+  /// Shown above the code snippet in the Code panel. Null = not documented.
+  final String? techNotes;
   final Color bgColor;
   final Color accentColor;
   final BoundType boundType;
@@ -27,6 +31,7 @@ class SceneConfig {
     required this.emoji,
     required this.tagline,
     required this.codeSnippet,
+    this.techNotes,
     required this.bgColor,
     required this.accentColor,
     required this.boundType,
@@ -57,6 +62,7 @@ class SceneConfig {
         emoji: emoji,
         tagline: tagline,
         codeSnippet: codeSnippet,
+        techNotes: techNotes,
         bgColor: bgColor,
         accentColor: accentColor,
         boundType: boundType ?? this.boundType,
@@ -77,6 +83,11 @@ const List<SceneConfig> kScenes = [
     name: 'Starfield',
     emoji: '✨',
     tagline: 'Repels from cursor · wrap-around bounds',
+    techNotes: "BoundType.WrapAround teleports a particle to the opposite "
+        "edge once it exits the canvas, instead of clipping or bouncing it — "
+        "so the field always looks fully populated. ParticleInteraction with "
+        "enableHover pushes nearby particles away from the pointer inside "
+        "awayRadius, computed every frame against the live cursor position.",
     codeSnippet: '''Particles(
   particles: List.generate(120, (_) =>
     CircularParticle(
@@ -106,6 +117,12 @@ const List<SceneConfig> kScenes = [
     name: 'Web',
     emoji: '🕸️',
     tagline: 'Connected mesh · bouncing physics',
+    techNotes: "connectDots draws a line between every pair of particles "
+        "closer than a fixed threshold, redone every frame — O(n²) pair "
+        "checks, which is why it's flagged 'not recommended for performance' "
+        "at higher counts. BoundType.Bounce flips velocity on the axis that "
+        "hit an edge, so particles ricochet inside the canvas instead of "
+        "wrapping or exiting.",
     codeSnippet: '''Particles(
   particles: List.generate(80, (_) =>
     CircularParticle(
@@ -136,6 +153,11 @@ const List<SceneConfig> kScenes = [
     name: 'Snow',
     emoji: '❄️',
     tagline: 'Gravity-driven · wrap-around bounds',
+    techNotes: "ParticlePhysics(gravityScale: ...) adds a constant downward "
+        "acceleration to each particle's velocity every frame, independent "
+        "of the particle's own initial velocity. Combined with "
+        "BoundType.WrapAround, flakes that fall past the bottom edge "
+        "reappear at the top, so the snowfall never runs out.",
     codeSnippet: '''Particles(
   particles: List.generate(100, (_) =>
     CircularParticle(
@@ -165,6 +187,11 @@ const List<SceneConfig> kScenes = [
     name: 'Nebula',
     emoji: '🌌',
     tagline: 'Ovoidal shapes · rotating particles',
+    techNotes: "rotationSpeed sets a constant angular velocity (radians/sec) "
+        "applied every frame via canvas.rotate before drawing, independent "
+        "of the particle's linear velocity — so shape and motion direction "
+        "are decoupled. OvoidalParticle just draws an ellipse instead of a "
+        "circle, using independent width/height instead of a single radius.",
     codeSnippet: '''Particles(
   particles: List.generate(60, (_) =>
     OvoidalParticle(
@@ -197,6 +224,12 @@ const List<SceneConfig> kScenes = [
     name: 'Fireworks',
     emoji: '🎆',
     tagline: 'Multi-burst emitter · gravity trails',
+    techNotes: "Emitter releases particles from the pool in clusterSize "
+        "batches every delay, from startPosition ± startPositionRadius, "
+        "instead of showing all particles at once. recycles: false means "
+        "expired/out-of-bounds particles are dropped rather than reused, so "
+        "the burst thins out and ends — paired with gravityScale for the "
+        "falling-embers look.",
     codeSnippet: '''Particles(
   particles: List.generate(150, (_) =>
     TriangularParticle(
@@ -234,6 +267,11 @@ const List<SceneConfig> kScenes = [
     name: 'Confetti',
     emoji: '🎉',
     tagline: 'Celebration rain · rotating ribbons',
+    techNotes: "No emitter or boundType here — particles fall under gravity "
+        "and are simply respawned at a random position once they fall past "
+        "the canvas edge (the engine's default behavior when there's no "
+        "emitter/wrap/bounce configured), so confetti keeps raining "
+        "indefinitely without ever running out.",
     codeSnippet: '''Particles(
   particles: List.generate(120, (_) =>
     RoundRectangularParticle(
@@ -268,6 +306,11 @@ const List<SceneConfig> kScenes = [
     name: 'Comet',
     emoji: '☄️',
     tagline: 'Color gradient · particle trails',
+    techNotes: "colorGradient lerps across multiple colors over the "
+        "particle's lifetime (not just start→end), driven by lifetimeProgress "
+        "and colorCurve. trailEnabled records the last trailLength positions "
+        "each frame into a ring buffer and paints fading line segments "
+        "between them, giving the streak-behind-the-particle look.",
     codeSnippet: '''CircularParticle(
   radius: 4,
   color: Colors.yellow,
@@ -301,6 +344,11 @@ const List<SceneConfig> kScenes = [
     name: 'Pulse',
     emoji: '🔮',
     tagline: 'Scale over lifetime · breathing particles',
+    techNotes: "startScale/endScale interpolate the particle's paint-time "
+        "scale (canvas.scale) across its lifetime using scaleCurve, "
+        "independent of its opacity fade — so a particle can grow while "
+        "fading, shrink while fading, or any combination, purely from curve "
+        "choice.",
     codeSnippet: '''CircularParticle(
   radius: 8,
   color: Color(0xFF7C4DFF),
@@ -331,6 +379,11 @@ const List<SceneConfig> kScenes = [
     name: 'Ghosts',
     emoji: '👻',
     tagline: 'Fade in · fade out · eerie drift',
+    techNotes: "startOpacity: 0 and endOpacity: 0 together trigger a special "
+        "case in ParticleLifetime: instead of a straight fade, opacity ramps "
+        "0→1→0 (rising for the first half of lifetimeProgress, falling for "
+        "the second), so the particle fades in then back out rather than "
+        "just fading in one direction.",
     codeSnippet: '''CircularParticle(
   radius: 12,
   color: Colors.white,
@@ -359,6 +412,11 @@ const List<SceneConfig> kScenes = [
     name: 'Rockets',
     emoji: '🚀',
     tagline: 'All v2.1 features · color · scale · fade · trails',
+    techNotes: "Stacks every lifetime feature on one particle: colorGradient "
+        "for the color arc, startScale/endScale for shrink-as-it-dies, "
+        "startOpacity/endOpacity for the fade, and trailEnabled for the "
+        "streak — each resolved independently every frame by "
+        "ParticleLifetime.update from the same lifetimeProgress value.",
     codeSnippet: '''CircularParticle(
   radius: 4,
   color: Colors.yellow,
@@ -393,6 +451,13 @@ const List<SceneConfig> kScenes = [
     name: 'Burst',
     emoji: '💥',
     tagline: 'Tap anywhere · radial explosion · confetti rain',
+    techNotes: "BurstEmitter owns its own particle pool and fire loop, "
+        "separate from the main Particles(particles: ...) list — it's "
+        "passed via burstEmitters and repeats on its own schedule "
+        "(repeatCount/repeatInterval) or on demand via a "
+        "BurstEmitterController.trigger(). particleFactory builds each "
+        "burst's particles fresh from a RadialBurst/ConeBurst pattern, which "
+        "assigns each particle an outward velocity from the burst position.",
     codeSnippet: '''// One-shot welcome firework
 BurstEmitter(
   position: (size) => size.center(Offset.zero),
@@ -429,6 +494,58 @@ BurstEmitter(
     interaction: false,
     speed: 0,
     gravityScale: 120,
+    opacity: 1.0,
+  ),
+  // v3.1 — startPosition + onParticleExpired: bounded pool cycled from a larger set
+  SceneConfig(
+    id: SceneId.poolCycle,
+    name: 'Pool Cycle',
+    emoji: '🔁',
+    tagline: '10 slots on screen · cycling a pool of 100',
+    techNotes: "Uses Particle.startPosition (place a new particle exactly "
+        "where you want, instead of a random spawn) and "
+        "Particles.onParticleExpired (a hook fired the instant a particle's "
+        "lifetime ends). Since color/image are set at construction and are "
+        "immutable, the callback swaps the slot for a freshly-built particle "
+        "rather than mutating the expired one in place — the same approach "
+        "an app would use to cycle a small set of visible items (e.g. photos) "
+        "through a much larger backing list.",
+    codeSnippet: '''// Only `visibleSlots` particles ever render; each expiry
+// swaps that slot for the next item in a much bigger pool.
+int nextPoolIndex = visibleSlots;
+
+CircularParticle particleForPoolIndex(int i) => CircularParticle(
+  color: colorForPoolIndex(i),
+  velocity: Offset.zero,
+  lifetime: 1.2,
+  startPosition: randomPosition(),
+  startOpacity: 0.0,
+  endOpacity: 0.0,
+  opacityCurve: Curves.easeInOut,
+);
+
+final particles = List.generate(visibleSlots, particleForPoolIndex);
+
+Particles(
+  particles: particles,
+  width: size.width,
+  height: size.height,
+  onParticleExpired: (p) {
+    final slot = particles.indexOf(p);
+    final poolIndex = nextPoolIndex % poolSize;
+    nextPoolIndex++;
+    // color/image are set at construction, so swap in a fresh
+    // particle for this slot rather than mutating the old one.
+    setState(() => particles[slot] = particleForPoolIndex(poolIndex));
+  },
+)''',
+    bgColor: Color(0xFF0A0F1C),
+    accentColor: Color(0xFF38BDF8),
+    boundType: BoundType.None,
+    connectDots: false,
+    gravity: false,
+    interaction: false,
+    speed: 0,
     opacity: 1.0,
   ),
 ];

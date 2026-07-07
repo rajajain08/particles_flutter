@@ -78,6 +78,8 @@ List<Particle> buildParticles(
       return _rockets(scene, count);
     case SceneId.burstDemo:
       return []; // burst scene uses only burstEmitters, no background particles
+    case SceneId.poolCycle:
+      return []; // poolCycle scene renders its own PoolCycleScene widget
   }
 }
 

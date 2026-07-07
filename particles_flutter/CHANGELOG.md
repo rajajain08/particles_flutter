@@ -1,3 +1,9 @@
+## [3.1.0] - 08/07/2026.
+
+- Particle.startPosition: place a particle exactly where you want at construction, instead of a random spawn.
+- Particles.onParticleExpired: callback fired the instant a particle's lifetime ends, before recycle/respawn.
+- New example scene: Pool Cycle — cycling a small visible set of particles from a much larger pool.
+
 ## [0.1.0] - 23/06/2019.
 
 - Initial release.

@@ -31,6 +31,7 @@ abstract class Particle {
     required this.color,
     required this.velocity,
     this.rotationSpeed = 0,
+    Offset? startPosition,
     // Lifetime
     this.lifetime,
     // Color over lifetime
@@ -52,7 +53,8 @@ abstract class Particle {
   })  : _currentColor = color,
         _currentScale = startScale,
         _currentOpacity = startOpacity,
-        _trail = trailEnabled ? _TrailBuffer(trailLength) : null;
+        _trail = trailEnabled ? _TrailBuffer(trailLength) : null,
+        _position = startPosition ?? Offset.zero;
 
   /// Define the color of a single particle.
   final Color color;
@@ -128,7 +130,7 @@ abstract class Particle {
   bool get isExpired => lifetime != null && _age >= lifetime!;
 
   // Update the current position of the particle
-  Offset _position = Offset(0, 0);
+  Offset _position;
   set updatePosition(Offset newPosition) {
     _position = newPosition;
   }

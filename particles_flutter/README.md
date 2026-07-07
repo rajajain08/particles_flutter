@@ -35,6 +35,7 @@ Starfields, snow, confetti, fireworks, connected webs, comets, burst explosions 
 - [Features](#features)
   - [Particle Shapes](#particle-shapes)
   - [Lifetime Animations](#lifetime-animations)
+  - [Reacting to Expiry](#reacting-to-expiry)
   - [Boundary Types](#boundary-types)
   - [Touch & Hover Interaction](#touch--hover-interaction)
   - [Particle Physics](#particle-physics)
@@ -98,6 +99,21 @@ Import: `import 'package:particles_flutter/shapes.dart';`
 | Image | `ImageParticle(image, width, height, color, velocity)` |
 
 All shapes support `rotationSpeed` and all lifetime animation parameters.
+
+#### Starting position
+
+Every particle accepts an optional `startPosition` — place it exactly where
+you want instead of the default random spawn. Useful when adding particles
+to a running list after `initState` (they'd otherwise start at `(0, 0)`):
+
+```dart
+CircularParticle(
+  radius: 8,
+  color: Colors.cyan,
+  velocity: Offset.zero,
+  startPosition: Offset(120, 240),
+)
+```
 
 ---
 
@@ -167,6 +183,38 @@ CircularParticle(
   trailLength: 7,   // past positions to draw
   trailFade: true,  // fade older segments
   ...
+)
+```
+
+---
+
+### Reacting to Expiry
+
+`Particles.onParticleExpired` fires the instant a particle's `lifetime` ends,
+right before it's recycled/respawned. Use it to swap in new content for a
+slot — e.g. cycling a small set of visible particles through a much larger
+backing list (see [Pool Cycle](#-pool-cycle---cycling-a-larger-set) below).
+
+Color/image are set at construction and are immutable, so to change what a
+particle displays you build a fresh particle for that slot rather than
+mutating the expired one in place:
+
+```dart
+Particles(
+  particles: particles,
+  width: size.width,
+  height: size.height,
+  onParticleExpired: (p) {
+    final slot = particles.indexOf(p);
+    particles[slot] = CircularParticle(
+      color: nextColor(),
+      velocity: Offset.zero,
+      lifetime: 1.5,
+      startPosition: randomPosition(),
+      startOpacity: 0.0,
+      endOpacity: 0.0,
+    );
+  },
 )
 ```
 
@@ -561,6 +609,40 @@ Listener(
 )
 ```
 
+### 🔁 Pool Cycle — cycling a larger set
+
+Only `visibleSlots` particles ever render; each expiry swaps that slot for
+the next item in a much bigger pool — the pattern behind showing a rotating
+subset of photos/items from a larger backing list.
+
+```dart
+int nextPoolIndex = visibleSlots;
+
+CircularParticle particleForPoolIndex(int i) => CircularParticle(
+  color: colorForPoolIndex(i),
+  velocity: Offset.zero,
+  lifetime: 1.2,
+  startPosition: randomPosition(),
+  startOpacity: 0.0,
+  endOpacity: 0.0,
+  opacityCurve: Curves.easeInOut,
+);
+
+final particles = List.generate(visibleSlots, particleForPoolIndex);
+
+Particles(
+  particles: particles,
+  width: size.width,
+  height: size.height,
+  onParticleExpired: (p) {
+    final slot = particles.indexOf(p);
+    final poolIndex = nextPoolIndex % poolSize;
+    nextPoolIndex++;
+    setState(() => particles[slot] = particleForPoolIndex(poolIndex));
+  },
+)
+```
+
 ---
 
 ## Live Demo
@@ -579,6 +661,10 @@ See all scenes running live → **[particles-flutter.vercel.app](https://particl
 ---
 
 ## Changelog
+
+### v3.1
+- **`Particle.startPosition`** — place a particle exactly where you want at construction, instead of a random spawn (useful for particles added to a running list after `initState`)
+- **`Particles.onParticleExpired`** — callback fired the instant a particle's lifetime ends, before recycle/respawn — swap in new content for a slot (e.g. cycling a small visible set from a larger pool)
 
 ### v3.0
 - **Breaking:** Dart SDK `>=3.0.0` required (Flutter 3.10+). Projects on Dart 2.x must upgrade first.

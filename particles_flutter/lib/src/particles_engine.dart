@@ -26,6 +26,7 @@ class Particles extends StatefulWidget {
     this.boundType = BoundType.None,
     this.interaction,
     this.burstEmitters = const [],
+    this.onParticleExpired,
   }) : super(key: key);
 
   /// Define the boundary size for the particle engine.
@@ -65,6 +66,10 @@ class Particles extends StatefulWidget {
 
   /// Burst emitters run alongside the main particle pool.
   final List<BurstEmitter> burstEmitters;
+
+  /// Called when a particle's lifetime expires, before it is respawned/recycled.
+  /// Lets the caller swap out particle state (e.g. a new image) for reuse.
+  final void Function(Particle particle)? onParticleExpired;
 
   _ParticlesState createState() => _ParticlesState();
 }
@@ -140,6 +145,7 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
           if (p.lifetime != null) {
             p.updateAge = p.age + deltaTime;
             if (p.isExpired) {
+              widget.onParticleExpired?.call(p);
               if (widget.particleEmitter?.recycles == true) {
                 widget.particleEmitter!.recycle(p);
               } else {

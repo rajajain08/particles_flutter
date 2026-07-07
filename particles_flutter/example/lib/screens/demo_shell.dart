@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../models/scene_config.dart';
 import '../scenes/particle_factory.dart';
+import '../scenes/pool_cycle_scene.dart';
 import '../widgets/scene_badge.dart';
 import '../widgets/scene_tab_bar.dart';
 import '../widgets/config_panel.dart';
@@ -107,6 +108,20 @@ class _DemoShellState extends State<DemoShell> {
   }
 
   Widget _buildParticleCanvas(Size size) {
+    if (_scene.id == SceneId.poolCycle) {
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 600),
+        color: _scene.bgColor,
+        child: KeyedSubtree(
+          key: _particleKey,
+          child: PoolCycleScene(
+            size: size,
+            accentColor: _scene.accentColor,
+          ),
+        ),
+      );
+    }
+
     final mainParticles = Particles(
       particles: buildParticles(_scene, _particleCount, widget.snowflake),
       height: size.height,
@@ -162,8 +177,7 @@ class _DemoShellState extends State<DemoShell> {
                   height: size.height,
                   width: size.width,
                   boundType: BoundType.None,
-                  particlePhysics:
-                      const ParticlePhysics(gravityScale: 120),
+                  particlePhysics: const ParticlePhysics(gravityScale: 120),
                   particleEmitter: Emitter(
                     startPosition: burst.position,
                     startPositionRadius: 20,
@@ -187,8 +201,7 @@ class _DemoShellState extends State<DemoShell> {
                 onTap: () => _fireCorner(Offset(0, size.height))),
             _CornerButton(
                 alignment: Alignment.bottomRight,
-                onTap: () =>
-                    _fireCorner(Offset(size.width, size.height))),
+                onTap: () => _fireCorner(Offset(size.width, size.height))),
           ],
           // Tap hint for burst scene
           if (_scene.id == SceneId.burstDemo)
@@ -395,8 +408,7 @@ class _WideLayout extends StatelessWidget {
               backgroundColor: const Color(0xFF0D1120),
               indicatorColor: scene.accentColor.withValues(alpha: 0.18),
               selectedIconTheme: IconThemeData(color: scene.accentColor),
-              unselectedIconTheme:
-                  const IconThemeData(color: Colors.white38),
+              unselectedIconTheme: const IconThemeData(color: Colors.white38),
               selectedLabelTextStyle: TextStyle(
                 color: scene.accentColor,
                 fontSize: 10,
@@ -413,99 +425,106 @@ class _WideLayout extends StatelessWidget {
               color: Color(0xFF090909),
               border: Border(right: BorderSide(color: Colors.white10)),
             ),
-            child: NavigationRail(
-              selectedIndex: sceneIndex,
-              onDestinationSelected: onSwitchScene,
-              labelType: NavigationRailLabelType.all,
-              leading: Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 8),
-                    Text(
-                      'particles',
-                      style: TextStyle(
-                        color: Colors.white.withValues(alpha: 0.5),
-                        fontSize: 8,
-                        fontWeight: FontWeight.w300,
-                        letterSpacing: 2,
+            child: SingleChildScrollView(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: screenSize.height),
+                child: IntrinsicHeight(
+                  child: NavigationRail(
+                    selectedIndex: sceneIndex,
+                    onDestinationSelected: onSwitchScene,
+                    labelType: NavigationRailLabelType.all,
+                    leading: Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 8),
+                          Text(
+                            'particles',
+                            style: TextStyle(
+                              color: Colors.white.withValues(alpha: 0.5),
+                              fontSize: 8,
+                              fontWeight: FontWeight.w300,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                          Text(
+                            'flutter',
+                            style: TextStyle(
+                              color: scene.accentColor,
+                              fontSize: 9,
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: 2,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Divider(
+                              color: Colors.white.withValues(alpha: 0.08),
+                              height: 1,
+                              indent: 8,
+                              endIndent: 8),
+                        ],
                       ),
                     ),
-                    Text(
-                      'flutter',
-                      style: TextStyle(
-                        color: scene.accentColor,
-                        fontSize: 9,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Divider(
-                        color: Colors.white.withValues(alpha: 0.08),
-                        height: 1,
-                        indent: 8,
-                        endIndent: 8),
-                  ],
-                ),
-              ),
-              trailing: Expanded(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Divider(
-                            color: Colors.white.withValues(alpha: 0.08),
-                            height: 1,
-                            indent: 8,
-                            endIndent: 8),
-                        const SizedBox(height: 12),
-                        const Text(
-                          'Raja Jain',
-                          style: TextStyle(
-                            color: Colors.white54,
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            letterSpacing: 0.5,
+                    trailing: Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Divider(
+                                  color: Colors.white.withValues(alpha: 0.08),
+                                  height: 1,
+                                  indent: 8,
+                                  endIndent: 8),
+                              const SizedBox(height: 12),
+                              const Text(
+                                'Raja Jain',
+                                style: TextStyle(
+                                  color: Colors.white54,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              const _SocialButton(
+                                asset: 'assets/github.png',
+                                url:
+                                    'https://github.com/rajajain08/particles_flutter',
+                                label: 'GitHub',
+                              ),
+                              const SizedBox(height: 8),
+                              const _SocialButton(
+                                asset: 'assets/pub.png',
+                                url:
+                                    'https://pub.dev/packages/particles_flutter',
+                                label: 'pub.dev',
+                              ),
+                            ],
                           ),
                         ),
-                        const SizedBox(height: 8),
-                        const _SocialButton(
-                          asset: 'assets/github.png',
-                          url:
-                              'https://github.com/rajajain08/particles_flutter',
-                          label: 'GitHub',
-                        ),
-                        const SizedBox(height: 8),
-                        const _SocialButton(
-                          asset: 'assets/pub.png',
-                          url:
-                              'https://pub.dev/packages/particles_flutter',
-                          label: 'pub.dev',
-                        ),
-                      ],
+                      ),
                     ),
+                    destinations: kScenes.map((s) {
+                      return NavigationRailDestination(
+                        icon: Tooltip(
+                          message: s.tagline,
+                          child: Text(s.emoji,
+                              style: const TextStyle(fontSize: 20)),
+                        ),
+                        selectedIcon: Tooltip(
+                          message: s.tagline,
+                          child: Text(s.emoji,
+                              style: const TextStyle(fontSize: 22)),
+                        ),
+                        label: Text(s.name),
+                      );
+                    }).toList(),
                   ),
                 ),
               ),
-              destinations: kScenes.map((s) {
-                return NavigationRailDestination(
-                  icon: Tooltip(
-                    message: s.tagline,
-                    child: Text(s.emoji,
-                        style: const TextStyle(fontSize: 20)),
-                  ),
-                  selectedIcon: Tooltip(
-                    message: s.tagline,
-                    child: Text(s.emoji,
-                        style: const TextStyle(fontSize: 22)),
-                  ),
-                  label: Text(s.name),
-                );
-              }).toList(),
             ),
           ),
         ),
@@ -549,7 +568,8 @@ class _WideLayout extends StatelessWidget {
                                 horizontal: 14, vertical: 5),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: scene.accentColor.withValues(alpha: 0.5)),
+                                  color:
+                                      scene.accentColor.withValues(alpha: 0.5)),
                               borderRadius: BorderRadius.circular(20),
                               color: scene.accentColor.withValues(alpha: 0.1),
                             ),
@@ -644,7 +664,8 @@ class _WideLayout extends StatelessWidget {
                             decoration: BoxDecoration(
                               border: Border(
                                 bottom: BorderSide(
-                                  color: scene.accentColor.withValues(alpha: 0.12),
+                                  color:
+                                      scene.accentColor.withValues(alpha: 0.12),
                                 ),
                               ),
                             ),
@@ -706,197 +727,200 @@ class _NarrowLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Stack(
-      children: [
-        Positioned.fill(child: particleCanvas),
+        children: [
+          Positioned.fill(child: particleCanvas),
 
-        // Watermark — full splash branding at low opacity
-        Positioned.fill(
-          child: IgnorePointer(
-            child: Center(
-              child: Opacity(
-                opacity: 0.35,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      'particles',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w200,
-                        letterSpacing: 8,
-                      ),
-                    ),
-                    Text(
-                      'flutter',
-                      style: TextStyle(
-                        color: scene.accentColor,
-                        fontSize: 36,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: 8,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 14, vertical: 5),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: scene.accentColor.withValues(alpha: 0.5)),
-                        borderRadius: BorderRadius.circular(20),
-                        color: scene.accentColor.withValues(alpha: 0.1),
-                      ),
-                      child: Text(
-                        'pub.dev  ·  particles_flutter',
+          // Watermark — full splash branding at low opacity
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Center(
+                child: Opacity(
+                  opacity: 0.35,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        'particles',
                         style: TextStyle(
-                          color: scene.accentColor,
-                          fontSize: 11,
-                          letterSpacing: 1.2,
-                          fontWeight: FontWeight.w500,
+                          color: Colors.white,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w200,
+                          letterSpacing: 8,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 12),
-                    const Text(
-                      'by Raja Jain',
-                      style: TextStyle(
-                        color: Colors.white38,
-                        fontSize: 11,
-                        letterSpacing: 1.5,
-                        fontWeight: FontWeight.w300,
+                      Text(
+                        'flutter',
+                        style: TextStyle(
+                          color: scene.accentColor,
+                          fontSize: 36,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 8,
+                        ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 5),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: scene.accentColor.withValues(alpha: 0.5)),
+                          borderRadius: BorderRadius.circular(20),
+                          color: scene.accentColor.withValues(alpha: 0.1),
+                        ),
+                        child: Text(
+                          'pub.dev  ·  particles_flutter',
+                          style: TextStyle(
+                            color: scene.accentColor,
+                            fontSize: 11,
+                            letterSpacing: 1.2,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        'by Raja Jain',
+                        style: TextStyle(
+                          color: Colors.white38,
+                          fontSize: 11,
+                          letterSpacing: 1.5,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
 
-        // Top bar
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // Top bar
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SceneBadge(scene: scene),
+                  _GlowButton(
+                    accent: scene.accentColor,
+                    active: showPanel,
+                    onTap: onTogglePanel,
+                    padding: const EdgeInsets.all(8),
+                    child: Icon(Icons.tune_rounded,
+                        color: scene.accentColor, size: 20),
+                  ),
+                ],
+              ),
+            ),
+          ),
+
+          // Bottom controls
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                SceneBadge(scene: scene),
-                _GlowButton(
-                  accent: scene.accentColor,
-                  active: showPanel,
-                  onTap: onTogglePanel,
-                  padding: const EdgeInsets.all(8),
-                  child: Icon(Icons.tune_rounded,
-                      color: scene.accentColor, size: 20),
+                // Panel slide-up
+                AnimatedSize(
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeInOut,
+                  child: showPanel
+                      ? ClipRect(
+                          child: BackdropFilter(
+                            filter: ui.ImageFilter.blur(sigmaX: 24, sigmaY: 24),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.black.withValues(alpha: 0.72),
+                                border: Border(
+                                  top: BorderSide(
+                                    color: scene.accentColor
+                                        .withValues(alpha: 0.25),
+                                  ),
+                                ),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        16, 12, 16, 8),
+                                    child: _PanelTabBar(
+                                      active: panelTab,
+                                      accent: scene.accentColor,
+                                      onSwitch: onSwitchTab,
+                                    ),
+                                  ),
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight: screenSize.height * 0.45,
+                                    ),
+                                    child: SingleChildScrollView(
+                                      child: panelTab == _PanelTab.config
+                                          ? configPanel
+                                          : codePanel,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+
+                // Scene tab bar
+                SceneTabBar(
+                  scenes: kScenes,
+                  selectedIndex: sceneIndex,
+                  onSelect: onSwitchScene,
+                ),
+
+                // Footer
+                Container(
+                  color: const Color(0xFF0D1120),
+                  padding: const EdgeInsets.only(
+                      bottom: 12, left: 16, right: 16, top: 8),
+                  child: Column(
+                    children: [
+                      const Text(
+                        'particles flutter  ·  by Raja Jain',
+                        style: TextStyle(
+                          color: Colors.white54,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _SocialButton(
+                            asset: 'assets/github.png',
+                            url:
+                                'https://github.com/rajajain08/particles_flutter',
+                            size: 16,
+                            label: 'GitHub',
+                          ),
+                          SizedBox(width: 20),
+                          _SocialButton(
+                            asset: 'assets/pub.png',
+                            url: 'https://pub.dev/packages/particles_flutter',
+                            size: 16,
+                            label: 'pub.dev',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-        ),
-
-        // Bottom controls
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Panel slide-up
-              AnimatedSize(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-                child: showPanel
-                    ? ClipRect(
-                        child: BackdropFilter(
-                          filter: ui.ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.72),
-                              border: Border(
-                                top: BorderSide(
-                                  color: scene.accentColor.withValues(alpha: 0.25),
-                                ),
-                              ),
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                                  child: _PanelTabBar(
-                                    active: panelTab,
-                                    accent: scene.accentColor,
-                                    onSwitch: onSwitchTab,
-                                  ),
-                                ),
-                                ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                    maxHeight: screenSize.height * 0.45,
-                                  ),
-                                  child: SingleChildScrollView(
-                                    child: panelTab == _PanelTab.config
-                                        ? configPanel
-                                        : codePanel,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-
-              // Scene tab bar
-              SceneTabBar(
-                scenes: kScenes,
-                selectedIndex: sceneIndex,
-                onSelect: onSwitchScene,
-              ),
-
-              // Footer
-              Container(
-                color: const Color(0xFF0D1120),
-                padding: const EdgeInsets.only(
-                    bottom: 12, left: 16, right: 16, top: 8),
-                child: Column(
-                  children: [
-                    const Text(
-                      'particles flutter  ·  by Raja Jain',
-                      style: TextStyle(
-                        color: Colors.white54,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _SocialButton(
-                          asset: 'assets/github.png',
-                          url: 'https://github.com/rajajain08/particles_flutter',
-                          size: 16,
-                          label: 'GitHub',
-                        ),
-                        SizedBox(width: 20),
-                        _SocialButton(
-                          asset: 'assets/pub.png',
-                          url: 'https://pub.dev/packages/particles_flutter',
-                          size: 16,
-                          label: 'pub.dev',
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
+        ],
       ),
     );
   }
@@ -971,7 +995,8 @@ class _GlowButtonState extends State<_GlowButton>
                 : Colors.black.withValues(alpha: 0.55),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: widget.accent.withValues(alpha: widget.active ? 0.7 : 0.35),
+              color:
+                  widget.accent.withValues(alpha: widget.active ? 0.7 : 0.35),
             ),
             boxShadow: widget.active
                 ? [
