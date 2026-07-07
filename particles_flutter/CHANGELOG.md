@@ -1,3 +1,9 @@
+## [3.2.0] - 08/07/2026.
+
+- Attractor: attraction/repulsion point for ParticlePhysics — pulls or pushes particles with force falling off linearly to zero at a radius.
+- ParticlePhysics.attractors: list of Attractors applied alongside gravity every frame.
+- New example scene: Vortex — drag to pull the particle swarm, tap to flip attract/repel.
+
 ## [3.1.0] - 08/07/2026.
 
 - Particle.startPosition: place a particle exactly where you want at construction, instead of a random spawn.

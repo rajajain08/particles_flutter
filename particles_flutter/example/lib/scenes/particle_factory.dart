@@ -80,6 +80,8 @@ List<Particle> buildParticles(
       return []; // burst scene uses only burstEmitters, no background particles
     case SceneId.poolCycle:
       return []; // poolCycle scene renders its own PoolCycleScene widget
+    case SceneId.vortex:
+      return []; // vortex scene renders its own VortexScene widget
   }
 }
 

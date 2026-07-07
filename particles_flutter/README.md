@@ -268,6 +268,29 @@ Particles(
 )
 ```
 
+#### Attractors & repulsors
+
+Pull particles toward a point, or push them away — great for magnet/vortex
+effects, or letting particles follow the pointer. `position` is a callback
+re-evaluated every frame, so the point can move (e.g. track a drag).
+Force falls off linearly from full `strength` at the center to zero at
+`radius`. Use a negative `strength` to repel instead of attract.
+
+```dart
+Particles(
+  particlePhysics: ParticlePhysics(
+    attractors: [
+      Attractor(
+        position: () => pointerPosition,
+        strength: 4000,   // negative = repel
+        radius: 260,
+      ),
+    ],
+  ),
+  ...
+)
+```
+
 ---
 
 ### Emission Controller
@@ -640,6 +663,39 @@ Particles(
     nextPoolIndex++;
     setState(() => particles[slot] = particleForPoolIndex(poolIndex));
   },
+)
+```
+
+---
+
+### 🌀 Vortex — attract & repel
+
+Particles are pulled toward (or pushed away from) a point that follows the
+pointer — drag to pull the swarm around, flip `strength`'s sign to repel.
+
+```dart
+Offset pointerPosition = Offset.zero;
+
+final physics = ParticlePhysics(
+  attractors: [
+    Attractor(
+      position: () => pointerPosition,
+      strength: 4000,
+      radius: 260,
+    ),
+  ],
+);
+
+Listener(
+  behavior: HitTestBehavior.opaque,
+  onPointerMove: (e) => setState(() => pointerPosition = e.localPosition),
+  child: Particles(
+    particles: particles,
+    width: size.width,
+    height: size.height,
+    boundType: BoundType.WrapAround,
+    particlePhysics: physics,
+  ),
 )
 ```
 

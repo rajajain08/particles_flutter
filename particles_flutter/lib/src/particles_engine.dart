@@ -182,8 +182,10 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
             p.updatePosition = Offset(dx, dy);
 
           if (widget.particlePhysics != null) {
-            p.updateVelocity = widget.particlePhysics!
-                .applyGravity(p.currentVelocity, deltaTime);
+            final physics = widget.particlePhysics!;
+            var velocity = physics.applyGravity(p.currentVelocity, deltaTime);
+            velocity += physics.applyAttractors(p.position, deltaTime);
+            p.updateVelocity = physics.clampSpeed(velocity);
           }
 
           //update particle rotation

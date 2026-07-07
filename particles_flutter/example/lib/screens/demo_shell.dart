@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/scene_config.dart';
 import '../scenes/particle_factory.dart';
 import '../scenes/pool_cycle_scene.dart';
+import '../scenes/vortex_scene.dart';
 import '../widgets/scene_badge.dart';
 import '../widgets/scene_tab_bar.dart';
 import '../widgets/config_panel.dart';
@@ -122,15 +123,41 @@ class _DemoShellState extends State<DemoShell> {
       );
     }
 
+    if (_scene.id == SceneId.vortex) {
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 600),
+        color: _scene.bgColor,
+        child: KeyedSubtree(
+          key: _particleKey,
+          child: VortexScene(
+            size: size,
+            accentColor: _scene.accentColor,
+          ),
+        ),
+      );
+    }
+
     final mainParticles = Particles(
       particles: buildParticles(_scene, _particleCount, widget.snowflake),
       height: size.height,
       width: size.width,
       connectDots: _scene.connectDots,
       boundType: _scene.boundType,
-      particlePhysics: _scene.gravity
-          ? ParticlePhysics(gravityScale: _scene.gravityScale)
-          : null,
+      particlePhysics: _scene.id == SceneId.starfield
+          ? ParticlePhysics(
+              gravityScale: 0,
+              maxSpeed: _scene.speed * 1.5,
+              attractors: [
+                Attractor(
+                  position: () => Offset(size.width / 2, size.height / 2),
+                  strength: 0.6, // barely perceptible ambient drift
+                  radius: size.longestSide,
+                ),
+              ],
+            )
+          : _scene.gravity
+              ? ParticlePhysics(gravityScale: _scene.gravityScale)
+              : null,
       particleEmitter: _scene.id == SceneId.fireworks
           ? Emitter(
               startPosition: Offset(size.width / 2, size.height / 2),
