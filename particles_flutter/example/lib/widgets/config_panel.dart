@@ -37,6 +37,9 @@ class ConfigPanel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final accent = scene.accentColor;
+    if (scene.id == SceneId.textDissolve) {
+      return _buildTextDissolveConfig(accent);
+    }
     return Container(
       color: Colors.transparent,
       padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
@@ -74,7 +77,7 @@ class ConfigPanel extends StatelessWidget {
             min: 0.2,
             max: 4.0,
             divisions: 38,
-            displayValue: scene.sizeMultiplier.toStringAsFixed(1) + 'x',
+            displayValue: '${scene.sizeMultiplier.toStringAsFixed(1)}x',
             accent: accent,
             onChanged: onSizeChanged,
           ),
@@ -85,7 +88,7 @@ class ConfigPanel extends StatelessWidget {
             min: 0.1,
             max: 1.0,
             divisions: 18,
-            displayValue: (scene.opacity * 100).round().toString() + '%',
+            displayValue: '${(scene.opacity * 100).round()}%',
             accent: accent,
             onChanged: onOpacityChanged,
           ),
@@ -113,7 +116,7 @@ class ConfigPanel extends StatelessWidget {
             min: 20,
             max: 300,
             divisions: 28,
-            displayValue: scene.awayRadius.round().toString() + 'px',
+            displayValue: '${scene.awayRadius.round()}px',
             accent: accent,
             onChanged: onAwayRadiusChanged,
           ),
@@ -160,6 +163,44 @@ class ConfigPanel extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildTextDissolveConfig(Color accent) => Container(
+        color: Colors.transparent,
+        padding: const EdgeInsets.fromLTRB(20, 14, 20, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _sectionLabel('Interaction', accent),
+            _SliderRow(
+              icon: Icons.speed,
+              label: 'Reassemble',
+              value: scene.speed,
+              min: 5,
+              max: 200,
+              divisions: 39,
+              displayValue: scene.speed.round().toString(),
+              accent: accent,
+              onChanged: onSpeedChanged,
+            ),
+            _SliderRow(
+              icon: Icons.touch_app,
+              label: 'Repel',
+              value: scene.awayRadius,
+              min: 20,
+              max: 300,
+              divisions: 28,
+              displayValue: scene.awayRadius.round().toString(),
+              accent: accent,
+              onChanged: onAwayRadiusChanged,
+            ),
+            const SizedBox(height: 8),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: _ResetButton(accent: accent, onReset: onReset),
+            ),
+          ],
+        ),
+      );
 
   Widget _sectionLabel(String text, Color accent) => Padding(
         padding: const EdgeInsets.only(bottom: 4),

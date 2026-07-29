@@ -54,7 +54,15 @@ abstract class Particle {
         _currentScale = startScale,
         _currentOpacity = startOpacity,
         _trail = trailEnabled ? _TrailBuffer(trailLength) : null,
-        _position = startPosition ?? Offset.zero;
+        _position = startPosition ?? Offset.zero,
+        hasExplicitStartPosition = startPosition != null;
+
+  /// Whether a [startPosition] was explicitly provided at construction.
+  ///
+  /// The engine uses this to decide whether it may randomize this
+  /// particle's initial position (no explicit start) or must leave it where
+  /// the caller placed it (explicit start, e.g. text/image particle shapes).
+  final bool hasExplicitStartPosition;
 
   /// Define the color of a single particle.
   final Color color;

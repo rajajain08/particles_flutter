@@ -82,6 +82,8 @@ List<Particle> buildParticles(
       return []; // poolCycle scene renders its own PoolCycleScene widget
     case SceneId.vortex:
       return []; // vortex scene renders its own VortexScene widget
+    case SceneId.textDissolve:
+      return []; // textDissolve scene renders its own TextDissolveScene widget
   }
 }
 

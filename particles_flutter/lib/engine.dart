@@ -8,3 +8,4 @@ export 'src/utils/emitter.dart';
 export 'src/utils/burst_emitter.dart';
 export 'src/utils/burst_emitter_controller.dart';
 export 'src/utils/burst_pattern.dart';
+export 'src/utils/particle_shape_sampler.dart';

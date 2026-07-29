@@ -80,8 +80,15 @@ class _InteractivityState extends State<ParticleInteraction>
                 (tapdx - particles[index].position.dx)) +
             ((tapdy - particles[index].position.dy) *
                 (tapdy - particles[index].position.dy))));
-        directiondx = (tapdx - particles[index].position.dx) / distance[index];
-        directiondy = (tapdy - particles[index].position.dy) / distance[index];
+        if (distance[index] <= 0.0001) {
+          directiondx = 0;
+          directiondy = 0;
+        } else {
+          directiondx =
+              (tapdx - particles[index].position.dx) / distance[index];
+          directiondy =
+              (tapdy - particles[index].position.dy) / distance[index];
+        }
         Offset begin = particles[index].position;
         awayAnimation.add(
           Tween<Offset>(
@@ -115,10 +122,15 @@ class _InteractivityState extends State<ParticleInteraction>
                 (tapdx - particles[index].position.dx)) +
             ((tapdy - particles[index].position.dy) *
                 (tapdy - particles[index].position.dy)));
-        directiondx =
-            (tapdx - particles[index].position.dx) / noAnimationDistance;
-        directiondy =
-            (tapdy - particles[index].position.dy) / noAnimationDistance;
+        if (noAnimationDistance <= 0.0001) {
+          directiondx = 0;
+          directiondy = 0;
+        } else {
+          directiondx =
+              (tapdx - particles[index].position.dx) / noAnimationDistance;
+          directiondy =
+              (tapdy - particles[index].position.dy) / noAnimationDistance;
+        }
         if (noAnimationDistance < widget.awayRadius) {
           setState(() {
             particles[index].updatePosition = Offset(
@@ -153,10 +165,14 @@ class _InteractivityState extends State<ParticleInteraction>
                 (tapdx - particles[index].position.dx)) +
             ((tapdy - particles[index].position.dy) *
                 (tapdy - particles[index].position.dy)));
-        var directiondx =
-            (tapdx - particles[index].position.dx) / noAnimationDistance;
-        var directiondy =
-            (tapdy - particles[index].position.dy) / noAnimationDistance;
+        var directiondx = 0.0;
+        var directiondy = 0.0;
+        if (noAnimationDistance > 0.0001) {
+          directiondx =
+              (tapdx - particles[index].position.dx) / noAnimationDistance;
+          directiondy =
+              (tapdy - particles[index].position.dy) / noAnimationDistance;
+        }
         if (noAnimationDistance < widget.awayRadius) {
           setState(() {
             particles[index].updatePosition = Offset(

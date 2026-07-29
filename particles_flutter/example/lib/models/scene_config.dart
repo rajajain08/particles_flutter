@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/engine.dart';
 
-enum SceneId { starfield, web, snow, nebula, fireworks, confetti, comet, pulse, ghosts, rockets, burstDemo, poolCycle, vortex }
+enum SceneId { starfield, web, snow, nebula, fireworks, confetti, comet, pulse, ghosts, rockets, burstDemo, poolCycle, vortex, textDissolve }
 
 class SceneConfig {
   final SceneId id;
@@ -210,6 +210,54 @@ Listener(
     gravity: false,
     interaction: false,
     speed: 0,
+    opacity: 1.0,
+  ),
+  // v3.3 — ParticleShapeSampler: text-to-particles
+  SceneConfig(
+    id: SceneId.textDissolve,
+    name: 'Text',
+    emoji: '🔤',
+    tagline: 'Particles sampled from rendered text',
+    techNotes: "ParticleShapeSampler.fromText rasterizes a TextPainter "
+        "offscreen and reads back pixel alpha to produce sample points "
+        "covering the glyphs, used as each particle's home position. A "
+        "per-frame Ticker springs every particle back toward its home and "
+        "repels it away from the pointer within a radius, so the shape "
+        "scatters under the cursor and reassembles once it moves away.",
+    codeSnippet: '''final points = await ParticleShapeSampler.fromText(
+  'FLUTTER',
+  style: TextStyle(fontSize: 96, fontWeight: FontWeight.w600),
+  step: 2,
+  maxPoints: 1100,
+);
+
+// Each point is a particle's home position (spring target).
+final particles = [
+  for (final p in points)
+    CircularParticle(
+      radius: 1.3,
+      color: Colors.white,
+      velocity: Offset.zero,
+      startPosition: p,
+    ),
+];
+
+// Every frame: pull each particle toward its home, push it away
+// from the pointer within a radius, apply damping, then let
+// Particles' own engine integrate position from velocity.
+velocity += (home - particle.position) * springStrength * dt;
+if (pointer != null && distanceToPointer < repelRadius) {
+  velocity += awayFromPointer * repelStrength * falloff * dt;
+}
+particle.updateVelocity = velocity * damping;''',
+    bgColor: Color(0xFF0A0A14),
+    accentColor: Color(0xFF60A5FA),
+    boundType: BoundType.None,
+    connectDots: false,
+    gravity: false,
+    interaction: false,
+    speed: 200, // reassemble speed — mapped to springStrength (speed / 10)
+    awayRadius: 240, // repel strength — mapped to repelStrength (awayRadius * 20)
     opacity: 1.0,
   ),
   SceneConfig(

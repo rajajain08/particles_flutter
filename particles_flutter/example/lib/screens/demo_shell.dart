@@ -9,6 +9,7 @@ import '../models/scene_config.dart';
 import '../scenes/particle_factory.dart';
 import '../scenes/pool_cycle_scene.dart';
 import '../scenes/vortex_scene.dart';
+import '../scenes/text_dissolve_scene.dart';
 import '../widgets/scene_badge.dart';
 import '../widgets/scene_tab_bar.dart';
 import '../widgets/config_panel.dart';
@@ -132,6 +133,22 @@ class _DemoShellState extends State<DemoShell> {
           child: VortexScene(
             size: size,
             accentColor: _scene.accentColor,
+          ),
+        ),
+      );
+    }
+
+    if (_scene.id == SceneId.textDissolve) {
+      return AnimatedContainer(
+        duration: const Duration(milliseconds: 600),
+        color: _scene.bgColor,
+        child: KeyedSubtree(
+          key: _particleKey,
+          child: TextDissolveScene(
+            size: size,
+            accentColor: _scene.accentColor,
+            springStrength: _scene.speed / 10,
+            repelStrength: _scene.awayRadius * 20,
           ),
         ),
       );
@@ -910,9 +927,9 @@ class _NarrowLayout extends StatelessWidget {
                   color: const Color(0xFF0D1120),
                   padding: const EdgeInsets.only(
                       bottom: 12, left: 16, right: 16, top: 8),
-                  child: Column(
+                  child: const Column(
                     children: [
-                      const Text(
+                      Text(
                         'particles flutter  ·  by Raja Jain',
                         style: TextStyle(
                           color: Colors.white54,
@@ -921,8 +938,8 @@ class _NarrowLayout extends StatelessWidget {
                           letterSpacing: 0.5,
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      const Row(
+                      SizedBox(height: 8),
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           _SocialButton(

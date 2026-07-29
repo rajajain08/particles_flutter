@@ -95,10 +95,12 @@ class _ParticlesState extends State<Particles> with TickerProviderStateMixin {
     if (widget.particleEmitter == null) {
       particles = widget.particles;
       for (int index = 0; index < widget.particles.length; index++) {
-        particles[index].updatePosition = Offset(
-          rng.nextDouble() * widget.width,
-          rng.nextDouble() * widget.height,
-        );
+        if (!particles[index].hasExplicitStartPosition) {
+          particles[index].updatePosition = Offset(
+            rng.nextDouble() * widget.width,
+            rng.nextDouble() * widget.height,
+          );
+        }
         // Stagger initial age so particles don't all expire simultaneously
         if (particles[index].lifetime != null) {
           particles[index].updateAge =

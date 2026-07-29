@@ -1,3 +1,10 @@
+## [3.3.0] - 29/07/2026.
+
+- ParticleShapeSampler: sample pixel positions from rendered text (`fromText`) or any image (`fromImage`) into a list of points, for placing particles into the shape of a word or logo. Density and point count are configurable via `step`, `maxPoints`, and `alphaThreshold`.
+- Particle.hasExplicitStartPosition: the engine now respects a particle's `startPosition` when no emitter is set, instead of overwriting it with a random position on init.
+- Fixed a NaN particle position in ParticleInteraction when a tap/hover landed exactly on a particle's center (division by zero).
+- New example scene: Text — particles sampled from rendered text, assembling into the word with a glowing painter, cursor repel + spring-back, and an intro fly-in.
+
 ## [3.2.0] - 08/07/2026.
 
 - Attractor: attraction/repulsion point for ParticlePhysics — pulls or pushes particles with force falling off linearly to zero at a radius.

@@ -39,6 +39,7 @@ Starfields, snow, confetti, fireworks, connected webs, comets, burst explosions 
   - [Boundary Types](#boundary-types)
   - [Touch & Hover Interaction](#touch--hover-interaction)
   - [Particle Physics](#particle-physics)
+  - [Text & Image Shapes](#text--image-shapes)
   - [Emission Controller](#emission-controller)
   - [Burst Emitter](#burst-emitter)
 - [Example Scenes](#example-scenes)
@@ -290,6 +291,59 @@ Particles(
   ...
 )
 ```
+
+---
+
+### Text & Image Shapes
+
+`ParticleShapeSampler` turns rendered text or any image into a list of
+point positions, so you can arrange particles into the shape of a word or
+a logo. Combine with `Particle.startPosition` to spawn each particle
+exactly on its sampled point.
+
+```dart
+import 'package:particles_flutter/engine.dart';
+
+// Sample the glyphs of a word into points.
+final points = await ParticleShapeSampler.fromText(
+  'FLUTTER',
+  style: const TextStyle(fontSize: 96, fontWeight: FontWeight.w600),
+  step: 2,          // sampling stride in px (lower = denser)
+  maxPoints: 1100,  // cap the number of points
+);
+
+// Or sample the opaque pixels of an image:
+// final points = await ParticleShapeSampler.fromImage(uiImage, step: 3);
+
+final particles = [
+  for (final p in points)
+    CircularParticle(
+      radius: 1.4,
+      color: Colors.white,
+      velocity: Offset.zero,
+      startPosition: p, // spawn on the sampled point
+    ),
+];
+
+Particles(
+  particles: particles,
+  width: size.width,
+  height: size.height,
+);
+```
+
+| Parameter | Type | Default | Description |
+| --- | --- | --- | --- |
+| `step` | `double` | `4` | Sampling stride in pixels; lower is denser |
+| `maxPoints` | `int?` | `null` | Caps the number of points (randomly thinned) |
+| `alphaThreshold` | `int` | `32` | Minimum pixel alpha (0–255) counted as "inside" |
+| `offset` | `Offset` | `Offset.zero` | Added to every returned point |
+
+> `ParticleShapeSampler` rasterizes offscreen via `Picture.toImage`. In a
+> `testWidgets` test, wrap calls in `tester.runAsync(() async { ... })`.
+
+See the **Text** example scene for a full demo: particles fly in, assemble
+into the word, scatter away from the pointer, and spring back.
 
 ---
 
