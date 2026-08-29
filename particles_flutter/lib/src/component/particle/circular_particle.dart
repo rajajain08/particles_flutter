@@ -8,6 +8,7 @@ class CircularParticle extends Particle {
     required this.radius,
     required Color color,
     required Offset velocity,
+    this.glowSigma = 0,
     double rotationSpeed = 0,
     Offset? startPosition,
     double? lifetime,
@@ -46,12 +47,26 @@ class CircularParticle extends Particle {
   /// Define the radius of the circular particle
   final double radius;
 
+  /// Blur sigma of a soft glow halo drawn behind the particle. 0 = no glow.
+  ///
+  /// The halo is a blurred circle at ~1.8x [radius] in the particle's current
+  /// color, so fades/color-over-lifetime apply to it too. Blur has a real
+  /// per-particle cost — great for dozens of fireflies/stars, measure before
+  /// enabling it on hundreds of particles.
+  final double glowSigma;
+
   @override
   void drawParticle(Canvas canvas, Size size) {
-    canvas.drawCircle(
-      Offset(size.width / 2, size.height / 2),
-      radius,
-      Paint()..color = paintColor,
-    );
+    final center = Offset(size.width / 2, size.height / 2);
+    if (glowSigma > 0) {
+      canvas.drawCircle(
+        center,
+        radius * 1.8,
+        Paint()
+          ..color = paintColor
+          ..maskFilter = MaskFilter.blur(BlurStyle.normal, glowSigma),
+      );
+    }
+    canvas.drawCircle(center, radius, Paint()..color = paintColor);
   }
 }

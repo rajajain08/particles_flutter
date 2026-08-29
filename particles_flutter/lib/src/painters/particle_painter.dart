@@ -1,20 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/src/component/particle_line.dart';
 import 'package:particles_flutter/src/component/particle/particle.dart';
+import 'package:particles_flutter/src/utils/burst_emitter.dart';
 
 class ParticlePainter extends CustomPainter {
+  /// Live particle list owned by the engine; mutated in place every frame.
   final List<Particle> particles;
-  static Paint? randomColorPaint;
+
+  /// Line pool owned by the engine; only the first [activeLineCount]() entries
+  /// are valid for the current frame.
   final List<ParticleLine> lines;
-  final int activeLineCount;
-  final List<List<Particle>> burstParticleLists;
+
+  /// Returns the number of valid entries in [lines] for the current frame.
+  /// A negative value means "paint every pooled line".
+  final int Function() activeLineCount;
+
+  /// Burst emitters queried at paint time — their pools are created lazily,
+  /// so the particle lists cannot be captured when the painter is built.
+  final List<BurstEmitter> burstEmitters;
 
   ParticlePainter({
     required this.particles,
     required this.lines,
-    this.activeLineCount = -1,
-    this.burstParticleLists = const [],
-  });
+    int Function()? activeLineCount,
+    this.burstEmitters = const [],
+    Listenable? repaint,
+  })  : activeLineCount = activeLineCount ?? (() => -1),
+        super(repaint: repaint);
 
   static final Paint _trailPaint = Paint()
     ..strokeCap = StrokeCap.round
@@ -35,7 +47,8 @@ class ParticlePainter extends CustomPainter {
     }
 
     // Render burst particles — skip expired ones (dead-slot pattern)
-    for (final burstList in burstParticleLists) {
+    for (final burst in burstEmitters) {
+      final burstList = burst.particles;
       for (int i = 0; i < burstList.length; i++) {
         final p = burstList[i];
         if (p.lifetime != null && p.isExpired) continue;
@@ -44,7 +57,8 @@ class ParticlePainter extends CustomPainter {
       }
     }
 
-    final int count = activeLineCount < 0 ? lines.length : activeLineCount;
+    final int active = activeLineCount();
+    final int count = active < 0 ? lines.length : active;
     for (int i = 0; i < count; i++) {
       lines[i].paint(canvas, size);
     }

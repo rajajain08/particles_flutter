@@ -1,3 +1,18 @@
+## [3.4.0] - 29/08/2026.
+
+- CircularParticle.glowSigma: soft blurred glow halo behind the particle (fireflies, stars, embers). 0 = off (default).
+- ConnectionStyle for `connectDots`: configurable connect distance, line color, stroke width, and distance fade via `Particles.connectionStyle`. Fixes the old hardcoded style whose stroke width went negative for lines longer than 100px.
+- Engine ticker is now created through the widget's `TickerProvider`, so animation is properly muted when the route is covered or `TickerMode` disables it (previously a raw `Ticker` kept scheduling frames forever).
+- The engine no longer calls `setState` every frame; the painter repaints via a `Listenable`, eliminating a full widget rebuild per tick.
+- `ParticleInteraction` is now immutable (`const` constructors) and receives the particle list through an inherited scope instead of a mutable back-reference — interaction no longer silently breaks when the widget is rebuilt with a new instance.
+- `ParticleInteraction.hoverRadius` is now actually used for hover interaction (hover previously used `awayRadius`). Slight behavior change if you set `enableHover` without setting `hoverRadius`.
+- `Emitter.emit` accepts an `isCancelled` callback and the engine cancels in-flight emission loops on dispose or reconfiguration (previously the delayed loop ran forever).
+- `Particles` keeps its cached size in sync when `width`/`height` change. The particle set and emitter are still captured once at init (constructing them inline in build stays safe — parent rebuilds don't reset the scene); pass a new `Key` to re-initialize with a different set.
+- Fixed the runner's time-correction factor: no more division by zero on the second frame, and the initial previous-delta is in seconds (the correction value is now safe to use).
+- Fixed an `AnimationController` leak when `onTapAnimation` was false.
+- Removed dead code and fixed typos.
+- Added regression tests for the ticker, emitter cancellation, list swapping, and runner correction.
+
 ## [3.3.0] - 29/07/2026.
 
 - ParticleShapeSampler: sample pixel positions from rendered text (`fromText`) or any image (`fromImage`) into a list of points, for placing particles into the shape of a word or logo. Density and point count are configurable via `step`, `maxPoints`, and `alphaThreshold`.

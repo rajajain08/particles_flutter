@@ -30,7 +30,17 @@ class Emitter {
   /// Note - requires the particle engine to have a [boundType] of [BoundType.None]
   final bool recycles;
 
-  Future<void> emit(List<Particle> particles, List<Particle> render) async {
+  /// Emits [particles] into [render] cluster by cluster, waiting [delay]
+  /// between clusters.
+  ///
+  /// [isCancelled] is checked after every delay; when it returns true the
+  /// loop stops immediately. The engine passes a predicate tied to its widget
+  /// lifecycle so this loop cannot keep mutating lists after dispose.
+  Future<void> emit(
+    List<Particle> particles,
+    List<Particle> render, {
+    bool Function()? isCancelled,
+  }) async {
     var rng = Random();
 
     for (int index = 0; index < particles.length;) {
@@ -46,6 +56,7 @@ class Emitter {
       }
 
       await Future.delayed(delay);
+      if (isCancelled?.call() ?? false) return;
     }
   }
 
@@ -56,7 +67,7 @@ class Emitter {
       startPosition.dy + ((rng.nextDouble() * 2 - 1) * startPositionRadius),
     );
 
-    // Reset the particle velocity to it's initial number on recylce - in case of physics
+    // Reset the particle velocity to its initial value on recycle - in case of physics
     particle.updateVelocity = particle.velocity;
     particle.updateAge = 0.0;
   }

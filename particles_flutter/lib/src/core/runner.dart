@@ -12,15 +12,19 @@ class Runner {
   // Maintain previous duration to calculate the next deltaTime.
   Duration _previousTime = Duration.zero;
 
-  // Maintiain previous deltaTime (in seconds) to calculate next time correction.
+  // Maintain previous deltaTime (in seconds) to calculate next time correction.
   // Initially, assumed that we are ticking at 60 frames per second.
-  double _prevDeltaTime = 1000 / 60;
+  double _prevDeltaTime = 1 / 60;
 
   /// Creates a gameloop that provides callback to help continously [tick] the Engine.
-  void run(RunnerCallback dtCallback) {
+  ///
+  /// The ticker is created through [vsync] so it is muted whenever the widget's
+  /// [TickerMode] disables animation (e.g. the route is covered by an opaque
+  /// page) instead of scheduling frames forever.
+  void run(TickerProvider vsync, RunnerCallback dtCallback) {
     _dtCallback = dtCallback;
     _ticker?.dispose();
-    _ticker = Ticker(_tick);
+    _ticker = vsync.createTicker(_tick);
     _ticker!.start();
   }
 
@@ -36,9 +40,10 @@ class Runner {
 
     // TODO: filter delta over a few frames, to improve stability
 
-    // Calculate time correction.
-    _correction = deltaTime / _prevDeltaTime;
-    _prevDeltaTime = deltaTime;
+    // Calculate time correction. Guard against a zero previous delta (first
+    // frame) so the correction never divides by zero.
+    _correction = _prevDeltaTime > 0 ? deltaTime / _prevDeltaTime : 1.0;
+    if (deltaTime > 0) _prevDeltaTime = deltaTime;
     _dtCallback?.call(deltaTime, _correction);
   }
 
@@ -57,7 +62,7 @@ class Runner {
     _ticker?.dispose();
     _correction = 1.0;
     _previousTime = Duration.zero;
-    _prevDeltaTime = 1000 / 60;
+    _prevDeltaTime = 1 / 60;
     _ticker = null;
     _dtCallback = null;
   }

@@ -2,16 +2,16 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:particles_flutter/engine.dart';
+import 'package:particles_flutter/src/component/particle_scope.dart';
 
-// ignore: must_be_immutable
 class ParticleInteraction extends StatefulWidget {
   /// Creates touch and hover interaction with a particle engine.
   ///
   /// For use in the [interaction] field of [Particles]
   ///
   /// Defines hover interaction for interfaces with a cursor.
-  /// Defines tocuh gesture interaction for mobile device interfaces.
-  ParticleInteraction({
+  /// Defines touch gesture interaction for mobile device interfaces.
+  const ParticleInteraction({
     Key? key,
     this.onTapAnimation = true,
     this.awayRadius = 100,
@@ -21,7 +21,7 @@ class ParticleInteraction extends StatefulWidget {
     this.hoverRadius = 80,
   }) : super(key: key);
 
-  ParticleInteraction.none({
+  const ParticleInteraction.none({
     Key? key,
     this.onTapAnimation = false,
     this.awayRadius = 0,
@@ -31,9 +31,9 @@ class ParticleInteraction extends StatefulWidget {
     this.hoverRadius = 0,
   }) : super(key: key);
 
-  /// Define the radius of a cursor/gesture.
+  /// Define the radius of a tap gesture.
   ///
-  /// Particles will be pushed away from the cursor/gesture by this amount.
+  /// Particles will be pushed away from the gesture by this amount.
   final double awayRadius;
 
   /// Toggle interactions with particles with touch controls.
@@ -48,31 +48,35 @@ class ParticleInteraction extends StatefulWidget {
   /// Toggle interactions with particles from a cursor.
   final bool enableHover;
 
-  /// Unused, but implemented in the original package.
+  /// Define the radius of the cursor for hover interaction.
+  ///
+  /// Particles within this distance are pushed away from the cursor.
   final double hoverRadius;
 
-  late _InteractivityState state;
-
-  _InteractivityState createState() => state = _InteractivityState();
+  @override
+  State<ParticleInteraction> createState() => _InteractivityState();
 }
 
 class _InteractivityState extends State<ParticleInteraction>
     with TickerProviderStateMixin {
   final List<AnimationController> _activeControllers = [];
-  List<Particle> particles = [];
   DateTime _lastHoverTime = DateTime.fromMillisecondsSinceEpoch(0);
 
+  /// The engine's live particle list, provided via [ParticleScope].
+  List<Particle> get _particles => ParticleScope.of(context);
+
   void onTapGesture(double tapdx, double tapdy) {
-    final awayAnimationController = AnimationController(
-        duration: widget.awayAnimationDuration, vsync: this);
-    _activeControllers.add(awayAnimationController);
-    awayAnimationController.reset();
+    final particles = _particles;
     double directiondx;
     double directiondy;
     List<double> distance = [];
     double noAnimationDistance = 0;
 
     if (widget.onTapAnimation) {
+      final awayAnimationController = AnimationController(
+          duration: widget.awayAnimationDuration, vsync: this);
+      _activeControllers.add(awayAnimationController);
+      awayAnimationController.reset();
       List<Animation<Offset>> awayAnimation = [];
       awayAnimationController.forward();
       for (int index = 0; index < particles.length; index++) {
@@ -104,9 +108,11 @@ class _InteractivityState extends State<ParticleInteraction>
                   curve: widget.awayAnimationCurve))
             ..addListener(
               () {
-                if (distance[index] < widget.awayRadius)
-                  setState(() => particles[index].updatePosition =
-                      awayAnimation[index].value);
+                // Positions are mutated directly; the engine repaints every
+                // frame, so no setState is needed here.
+                if (distance[index] < widget.awayRadius) {
+                  particles[index].updatePosition = awayAnimation[index].value;
+                }
                 if (awayAnimationController.isCompleted &&
                     index == particles.length - 1) {
                   _activeControllers.remove(awayAnimationController);
@@ -132,14 +138,12 @@ class _InteractivityState extends State<ParticleInteraction>
               (tapdy - particles[index].position.dy) / noAnimationDistance;
         }
         if (noAnimationDistance < widget.awayRadius) {
-          setState(() {
-            particles[index].updatePosition = Offset(
-              particles[index].position.dx -
-                  (widget.awayRadius - noAnimationDistance) * directiondx,
-              particles[index].position.dy -
-                  (widget.awayRadius - noAnimationDistance) * directiondy,
-            );
-          });
+          particles[index].updatePosition = Offset(
+            particles[index].position.dx -
+                (widget.awayRadius - noAnimationDistance) * directiondx,
+            particles[index].position.dy -
+                (widget.awayRadius - noAnimationDistance) * directiondy,
+          );
         }
       }
     }
@@ -154,35 +158,33 @@ class _InteractivityState extends State<ParticleInteraction>
     super.dispose();
   }
 
-  void onHover(tapdx, tapdy) {
-    {
-      final now = DateTime.now();
-      if (now.difference(_lastHoverTime).inMilliseconds < 16) return;
-      _lastHoverTime = now;
-      double noAnimationDistance = 0;
-      for (int index = 0; index < particles.length; index++) {
-        noAnimationDistance = sqrt(((tapdx - particles[index].position.dx) *
-                (tapdx - particles[index].position.dx)) +
-            ((tapdy - particles[index].position.dy) *
-                (tapdy - particles[index].position.dy)));
-        var directiondx = 0.0;
-        var directiondy = 0.0;
-        if (noAnimationDistance > 0.0001) {
-          directiondx =
-              (tapdx - particles[index].position.dx) / noAnimationDistance;
-          directiondy =
-              (tapdy - particles[index].position.dy) / noAnimationDistance;
-        }
-        if (noAnimationDistance < widget.awayRadius) {
-          setState(() {
-            particles[index].updatePosition = Offset(
-              particles[index].position.dx -
-                  (widget.awayRadius - noAnimationDistance) * directiondx,
-              particles[index].position.dy -
-                  (widget.awayRadius - noAnimationDistance) * directiondy,
-            );
-          });
-        }
+  void onHover(double tapdx, double tapdy) {
+    final now = DateTime.now();
+    if (now.difference(_lastHoverTime).inMilliseconds < 16) return;
+    _lastHoverTime = now;
+    final particles = _particles;
+    final radius = widget.hoverRadius;
+    double noAnimationDistance = 0;
+    for (int index = 0; index < particles.length; index++) {
+      noAnimationDistance = sqrt(((tapdx - particles[index].position.dx) *
+              (tapdx - particles[index].position.dx)) +
+          ((tapdy - particles[index].position.dy) *
+              (tapdy - particles[index].position.dy)));
+      var directiondx = 0.0;
+      var directiondy = 0.0;
+      if (noAnimationDistance > 0.0001) {
+        directiondx =
+            (tapdx - particles[index].position.dx) / noAnimationDistance;
+        directiondy =
+            (tapdy - particles[index].position.dy) / noAnimationDistance;
+      }
+      if (noAnimationDistance < radius) {
+        particles[index].updatePosition = Offset(
+          particles[index].position.dx -
+              (radius - noAnimationDistance) * directiondx,
+          particles[index].position.dy -
+              (radius - noAnimationDistance) * directiondy,
+        );
       }
     }
   }
