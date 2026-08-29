@@ -5,8 +5,11 @@ export FLUTTER_HOME="$HOME/flutter"
 export PATH="$FLUTTER_HOME/bin:$PATH"
 export PUB_CACHE="$HOME/.pub-cache"
 
+# Keep this in step with the Flutter version the example is developed on.
+FLUTTER_VERSION="3.44.2"
+
 if [ ! -d "$FLUTTER_HOME" ]; then
-  git clone https://github.com/flutter/flutter.git --depth 1 --branch 3.27.0 "$FLUTTER_HOME"
+  git clone https://github.com/flutter/flutter.git --depth 1 --branch "$FLUTTER_VERSION" "$FLUTTER_HOME"
 fi
 
 flutter config --enable-web --no-analytics
