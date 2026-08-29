@@ -1,30 +1,24 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:example/main.dart';
+import 'package:example/guide/registry.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  setUpAll(() {
+    GoogleFonts.config.allowRuntimeFetching = false;
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
-
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+  testWidgets('field guide index shows all specimens', (tester) async {
+    await tester.pumpWidget(const FieldGuideApp());
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Particles in real interfaces'), findsOneWidget);
+    expect(specimens.length, 11);
+    // The phone index is a virtualized ListView — scroll each row into view.
+    for (final s in specimens) {
+      await tester.scrollUntilVisible(find.text(s.title), 80);
+      expect(find.text(s.title), findsOneWidget);
+    }
   });
 }
